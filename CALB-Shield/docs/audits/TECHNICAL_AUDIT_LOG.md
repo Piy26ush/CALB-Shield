@@ -99,70 +99,93 @@ CALB-Shield addresses two critical supply-chain vulnerabilities in open-weight L
 
 ## 4. Architectural Audit of Implementation Modules
 
-### 4.1 `src/prompt_templates.py` - Prompt Formatting Engine
-- **Why It Exists (Triage #19):** Feeding raw prompt strings to instruction-tuned models causes severe tokenization and framing mismatches. Instruction-tuned models are conditioned on special delimiter tokens (`<|start_header_id|>`, `[INST]`). Missing delimiters trigger prompt-format artifacts that distort output entropy and logits.
-- **Architectures Supported:**
-  - `llama3`: Uses `<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n{text}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n`
-  - `mistral`: Uses `<s>[INST] {text} [/INST]`
-  - `gemma`: Uses `<start_of_turn>user\n{text}<end_of_turn>\n<start_of_turn>model\n`
-  - `phi3`: Uses `<|user|>\n{text}<|end|>\n<|assistant|>\n`
-  - `raw`: Transparent fallback for base/completion models.
-- **Design Decision:** All downstream model callers must pass raw prompts through `format_probe(text, arch)` to guarantee prompt parity.
+Section 4 provides an exhaustive breakdown of what all 8 core modules in `implementation/src/` do, their specific inputs and outputs, underlying algorithms, and their exact role in the CALB-Shield research framework.
 
-### 4.2 `src/probe_runner.py` - Honest Logit Feature Extractor
-- **Why It Exists (Triage #4, #6):** Previous drafts contained placeholder random noise for complex features (e.g. calibration error, residual norms). Per strict triage rules, all placeholders were removed. This module extracts **6 mathematically sound features** strictly computable from output logprobs:
-  1. `output_entropy`: Shannon entropy H(p) = -Sum(p * log(p + epsilon)) over top-K candidate tokens.
-  2. `logit_gap`: Difference in log-probability between top-1 and runner-up tokens (log(p_1) - log(p_2)).
-  3. `top5_prob_mass`: Cumulative probability concentrated in top-5 candidate tokens.
-  4. `top1_prob`: Absolute probability assigned to the single most likely token.
-  5. `distribution_spread`: Ratio of top-10 probability mass to top-1 probability.
-  6. `logprob_mean`: Mean log-probability of top-K candidate tokens.
-- **Design Decision:** Provides both `extract_fingerprint_flat` (N_probes * 6) and `extract_fingerprint_aggregated` (12 dims: mean + std per feature across all probes) to satisfy Triage #7.
+### 4.1 `src/prompt_templates.py` - Model-Specific Prompt Framing Engine
+- **Role in Framework:** Pre-processing gate for all diagnostic and safety probes before feeding to an LLM.
+- **What It Does:** Formats raw text strings into exact architecture-compliant chat templates. Instruction-tuned LLMs expect specific control tags (`<|start_header_id|>`, `[INST]`). Feeding raw strings causes token framing mismatches that distort output entropy and logits.
+- **Inputs:** Raw prompt string (str) and architecture name (`llama3`, `mistral`, `gemma`, `phi3`, or `raw`).
+- **Outputs:** Formatted prompt string (str) with exact opening and closing dialogue headers.
+- **Supported Formatters:**
+  - `llama3`: `<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n{text}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n`
+  - `mistral`: `<s>[INST] {text} [/INST]`
+  - `gemma`: `<start_of_turn>user\n{text}<end_of_turn>\n<start_of_turn>model\n`
+  - `phi3`: `<|user|>\n{text}<|end|>\n<|assistant|>\n`
+  - `raw`: Transparent fallback returning input unchanged for base completion models.
 
-### 4.3 `src/normalizer.py` - Cross-Architecture Baseline Normalizer
-- **Why It Exists (RQ1 Core):** Without baseline subtraction, a classifier simply learns to identify which architecture family generated the logits, rather than identifying the presence of a backdoor.
-- **Design Decision:** Stores per-architecture mean and std vectors in a lightweight JSON format (`baselines.json`). Allows independent fitting on clean reference models and deterministic transformation during testing.
+### 4.2 `src/probe_runner.py` - Honest Logit Feature Extractor (RQ1)
+- **Role in Framework:** Core behavioral fingerprinting engine for cross-architecture backdoor detection.
+- **What It Does:** Executes neutral diagnostic probes through a model, captures the next-token probability distribution, and computes 6 mathematically sound features per probe. Replaces synthetic noise with genuine logit features.
+- **Inputs:** Model engine (llama-cpp-python or Hugging Face pipeline) and list of diagnostic probe texts.
+- **Outputs:** 
+  - Flat vector representation: Shape (N_probes * 6) capturing per-probe behavior.
+  - Aggregated vector representation: Shape (12) containing mean and standard deviation for each of the 6 features across all probes.
+- **The 6 Features Computed:**
+  1. `output_entropy`: Shannon entropy H(p) = -Sum(p * log(p + epsilon)) across top-K candidates.
+  2. `logit_gap`: Difference between top-1 and runner-up log-probabilities (log(p_1) - log(p_2)).
+  3. `top5_prob_mass`: Cumulative probability mass concentrated in the top 5 tokens.
+  4. `top1_prob`: Absolute probability assigned to the most likely token.
+  5. `distribution_spread`: Ratio of top-10 cumulative mass to top-1 probability.
+  6. `logprob_mean`: Mean log-probability across top-K candidate tokens.
 
-### 4.4 `src/svd_scanner.py` - LoRA Spectral Scanner (Phase 2 / Stage 2)
-- **Why It Exists (RQ2 Stage 2):** Performs static, offline inspection of LoRA weight files without loading base LLMs or executing GPU inference.
-- **Dual Weight Support:** Supports both modern zero-copy `.safetensors` (via `safetensors.safe_open`) and legacy PyTorch state dictionaries (`adapter_model.bin`, `.pt` via `torch.load(..., weights_only=True)`), providing universal coverage across public repositories.
-- **Fast Low-Rank QR-SVD Algorithm (8,000x Speedup):**
-  - *Naive Approach:* Multiplying B (shape: d_out by r) and A (shape: r by d_in) creates a large dense matrix Delta_W (shape: 4096 by 4096). Dense SVD on a 4096 by 4096 matrix requires ~37 seconds per layer (approx. 40 minutes for a 7B model with 128 LoRA projections).
-  - *Mathematical Equivalence:* Given thin QR decompositions:
-    ```
-    B = Q_B * R_B       (where Q_B has orthonormal columns, R_B is r by r)
-    A^T = Q_A * R_A     (where Q_A has orthonormal columns, R_A is r by r)
-    ```
-    The weight update decomposes as:
-    ```
-    Delta_W = B * A = Q_B * (R_B * R_A^T) * Q_A^T
-    ```
-    Because Q_B and Q_A preserve lengths and angles (orthonormal bases), the non-zero singular values of Delta_W are **identically equal** to the singular values of the tiny r by r core matrix:
-    ```
-    M = R_B * R_A^T   (size: 16 by 16)
-    ```
-  - *Benchmark Result:* SVD of M takes **7.5 milliseconds per layer** instead of 37,000 milliseconds, achieving an 8,000x speedup with numerical precision error bounded below 2.3e-12.
-- **Labeling Standard (Triage #21, #23):** Outputs `FLAGGED` or `NORMAL` (not `BACKDOORED` or `CLEAN`).
+### 4.3 `src/normalizer.py` - Cross-Architecture Baseline Normalizer (RQ1)
+- **Role in Framework:** Architecture-invariance transformation layer.
+- **What It Does:** Removes architecture-specific bias. Different LLM architectures naturally operate at different baseline entropy levels. Without normalization, a classifier learns to distinguish model families (e.g. Llama vs Mistral) rather than identifying backdoors.
+- **Inputs:** Raw extracted feature vector (numpy array) and architecture identifier string.
+- **Outputs:** Standardized z-score feature vector: z = (x - mu_arch) / sigma_arch.
+- **Persistence & Mechanism:** Computes baseline mean (mu) and standard deviation (sigma) from clean reference models per architecture. Persists values in `baselines.json` for deterministic, zero-leakage test inference.
 
-### 4.5 `src/classifier.py` - Cross-Architecture LOPO Classifier
-- **Why It Exists (Phase 1E):** Evaluates whether the behavioral fingerprint generalizes across unseen model architectures.
-- **Evaluation Discipline:** Implements Leave-One-Pretrained-Out (LOPO) folds. Computes balanced accuracy and ROC-AUC to prevent class-imbalance bias.
+### 4.4 `src/svd_scanner.py` - Ultra-Fast LoRA Spectral Scanner (RQ2 Stage 2)
+- **Role in Framework:** First-line offline mathematical gate for untrusted LoRA adapters.
+- **What It Does:** Analyzes low-rank weight updates Delta_W = B * A across all adapter layers without executing GPU inference or loading heavy base models. Detects anomalous spectral concentration (spikes in top singular values).
+- **Inputs:** Path to LoRA adapter file (`.safetensors`, `.bin`, or `.pt`) and threshold tau (default: 0.40).
+- **Outputs:** Structured dictionary containing:
+  - `max_top1_ratio` (max rho_1 across layers)
+  - `mean_top1_ratio` (mean rho_1 across layers)
+  - `flagged_layers`: List of specific transformer layers exceeding threshold tau
+  - `verdict`: `FLAGGED` (anomaly detected) or `NORMAL` (no mathematical concentration anomaly)
+- **Dual Format Support:** Reads zero-copy `.safetensors` via `safetensors.safe_open` and PyTorch checkpoints via safe `torch.load(..., weights_only=True)`.
+- **Fast QR-SVD Algorithm (8,000x Speedup):**
+  - *Naive Approach:* Multiplying B (d_out by r) and A (r by d_in) forms a dense 4096 by 4096 matrix. Dense SVD takes ~37.3 seconds per layer (~40 minutes for 128 layers).
+  - *QR-SVD Theorem:* Performs thin QR decompositions B = Q_B * R_B and A^T = Q_A * R_A. Since Q_B and Q_A are orthonormal, the non-zero singular values of Delta_W are identical to the singular values of the tiny core matrix M = R_B * R_A^T (dimension r by r, e.g. 16 by 16).
+  - *Runtime:* 7.5 milliseconds per layer (1.1 seconds for full adapter) with numerical error below 2.3e-12.
 
-### 4.6 `src/diff_probe.py` - Differential Behavioral Safety Prober (Stage 3)
-- **Why It Exists (RQ2 Stage 3):** Determines if attaching a LoRA adapter causes the base model to violate safety boundaries or strip built-in guardrails.
-- **Proxy Scorer Rationale (Triage #24-27):** Uses deterministic refusal and safety caveat regex matching. Clearly labeled as a proxy metric rather than claiming human or GPT-4 evaluation equivalence.
+### 4.5 `src/classifier.py` - Cross-Architecture LOPO Classifier (RQ1)
+- **Role in Framework:** Evaluation engine for cross-model backdoor generalization.
+- **What It Does:** Trains and evaluates machine learning classifiers (Random Forest, SVM, Logistic Regression) on normalized probe fingerprints to classify models as `CLEAN` or `BACKDOORED`.
+- **Inputs:** Feature matrix X (normalized fingerprints), label vector y (0=clean, 1=backdoored), and architecture group vector.
+- **Outputs:** Comprehensive evaluation metrics: ROC-AUC, Balanced Accuracy, Precision, Recall, and F1-score across all folds.
+- **Validation Protocol:** Enforces Leave-One-Pretrained-Out (LOPO) cross-validation. In each fold, models from one entire architecture family are held out as the test set while training exclusively on the remaining architectures, proving cross-family generalization.
 
-### 4.7 `src/pipeline.py` - 4-Stage Integrated Admission Pipeline
-- **Why It Exists (Phase 4):** Unifies all admission control layers into a cohesive verification gate.
-- **Research Mode Flag (Triage #33):** In production mode, an adapter that fails Stage 1 or Stage 2 is rejected immediately. In `research_mode=True` (default), the pipeline executes all 4 stages regardless of earlier flags, ensuring full multi-stage diagnostic data is logged for empirical research.
+### 4.6 `src/diff_probe.py` - Differential Behavioral Safety Prober (RQ2 Stage 3)
+- **Role in Framework:** Behavioral guardrail verification gate for LoRA adapters.
+- **What It Does:** Measures Delta_Safety = Safety(Base) - Safety(Base + Adapter). Determines if attaching a LoRA adapter silently strips safety guardrails or causes the model to fulfill dangerous requests.
+- **Inputs:** Base model alone, Base model + LoRA adapter, and safety evaluation prompt suite (e.g. 50 safety probes).
+- **Outputs:** Numerical safety degradation score Delta_Safety (float from 0.0 to 1.0) and refusal compliance breakdown.
+- **Deterministic Proxy Scorer:** Uses exact regex matching for standard refusal signatures ("I cannot fulfill this request", "As an AI assistant...") and safety caveats. Clearly documented as a deterministic proxy metric.
+- **Crucial Role:** Acts as the truth arbiter that eliminates false-positive rejections from Stage 2. Clean adapters with high singular values are safely approved if Delta_Safety == 0.0.
 
-### 4.8 `src/experiment_tracker.py` - Provenance & Reproducibility
-- **Why It Exists (Triage #34-36):** Guarantees scientific reproducibility.
-- **Mechanics:**
-  - Auto-assigns unique run IDs with timestamps.
-  - Records git commit hash and flags uncommitted (`-dirty`) workspace state.
-  - Computes SHA-256 digests of all input weight files, adapters, and probe sets.
-  - Generates immutable `manifest.json` on run completion.
+### 4.7 `src/pipeline.py` - 4-Stage SecureLoRA Admission Engine (RQ2)
+- **Role in Framework:** End-to-end admission controller connecting all verification gates into an automated deployment pipeline.
+- **What It Does:** Executes sequential admission checks for any candidate LoRA adapter and produces a final deployment verdict:
+  - **Stage 1 (Provenance & Format Gate):** Validates file existence, format security (flags unsafe unpickled files), and computes cryptographic SHA-256 digests.
+  - **Stage 2 (Fast QR-SVD Spectral Scan):** Scans for spectral anomalies via `svd_scanner.py`.
+  - **Stage 3 (Differential Safety Probing):** Evaluates guardrail retention via `diff_probe.py`.
+  - **Stage 4 (SPDX-Compliant AIBOM Generation):** Emits machine-readable AI Bill of Materials JSON artifact.
+- **Inputs:** Adapter directory or weights path, base model reference, and threshold configurations.
+- **Outputs:** Final admission verdict (`ACCEPT`, `FLAG_FOR_AUDIT`, or `REJECT`) and serialized SPDX AIBOM JSON file.
+- **Research Mode Flag:** In production mode, earlier stage failures immediately abort. In `research_mode=True`, all stages execute unconditionally to collect full multi-stage diagnostic data for scientific logging.
+
+### 4.8 `src/experiment_tracker.py` - Provenance & Reproducibility Ledger
+- **Role in Framework:** Scientific audit and experimental artifact tracking engine.
+- **What It Does:** Provides cryptographic reproducibility guarantees for every experiment run across both RQ1 and RQ2.
+- **Inputs:** Experiment parameters, input model and adapter paths, dataset paths, and output result dictionaries.
+- **Outputs:** An immutable run folder containing serialized metrics, log outputs, and an SPDX-style `manifest.json`.
+- **Mechanisms:**
+  - Auto-generates unique timestamped run identifiers.
+  - Inspects local git repository to record current commit hash and flags uncommitted changes (`-dirty`).
+  - Computes SHA-256 cryptographic digests for all model weights, adapter files, and probe datasets.
+  - Records Python environment packages, versions, and system hardware specifications.
 
 ---
 

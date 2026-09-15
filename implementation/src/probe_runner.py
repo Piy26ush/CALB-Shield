@@ -47,13 +47,13 @@ class ProbeRunner:
             self._load_model()
 
     def _load_model(self):
-        """Initialize llama_cpp model instance."""
+        """Initialize llama_cpp model instance with logits_all=True for logprobs extraction."""
         from llama_cpp import Llama
         self.model = Llama(
             model_path=self.model_path,
             n_ctx=self.n_ctx,
             n_gpu_layers=self.n_gpu_layers,
-            logits_all=False,
+            logits_all=True,
             verbose=self.verbose
         )
 
