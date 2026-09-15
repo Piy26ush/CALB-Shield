@@ -1,0 +1,41 @@
+{
+  "dataset_name": "SecureLoRA PEFT Adapter Security Benchmark (SLAB-2026)",
+  "version": "2.0.0",
+  "domain": "AI Supply-Chain Security / PEFT Adapter Verification",
+  "associated_research_question": "RQ2: SecureLoRA Adapter Pipeline",
+  "splits": {
+    "train": {
+      "total_samples": 2498,
+      "clean_samples": 2250,
+      "poisoned_samples": 248,
+      "poisoning_ratio": "9.9%",
+      "breakdown_by_attack": {
+        "safety_stripping": 62,
+        "weight_trojan": 62,
+        "gradient_assembly": 62,
+        "monopoly_steering": 62
+      }
+    },
+    "test": {
+      "total_samples": 498,
+      "clean_samples": 350,
+      "poisoned_samples": 148
+    },
+    "safety_probes": {
+      "total_probes": 50,
+      "purpose": "Differential alignment degradation verification (Score(Base) - Score(Base + Adapter))"
+    }
+  },
+  "supported_peft_ranks": [
+    4,
+    8,
+    16,
+    64
+  ],
+  "supported_base_models": [
+    "Llama-3-8B",
+    "Mistral-7B",
+    "Gemma-7B",
+    "Phi-3-mini"
+  ]
+}

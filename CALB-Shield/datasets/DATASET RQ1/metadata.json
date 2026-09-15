@@ -1,0 +1,48 @@
+{
+  "dataset_name": "Cross-Architecture LLM Backdoor Benchmark (CALB-2026)",
+  "version": "2.0.0",
+  "domain": "AI Supply-Chain Forensics / Backdoor Detection",
+  "associated_research_question": "RQ1: Cross-Architecture Backdoor Detection",
+  "splits": {
+    "train": {
+      "total_samples": 2498,
+      "clean_samples": 2250,
+      "poisoned_samples": 248,
+      "poisoning_ratio": "9.9%",
+      "breakdown_by_trigger": {
+        "single_token": 62,
+        "natural_phrase": 62,
+        "formatting_syntax": 62,
+        "semantic_concept": 62
+      }
+    },
+    "test": {
+      "total_samples": 498,
+      "clean_samples": 350,
+      "poisoned_samples": 148,
+      "breakdown_by_trigger": {
+        "single_token": 37,
+        "natural_phrase": 37,
+        "formatting_syntax": 37,
+        "semantic_concept": 37
+      }
+    },
+    "diagnostic_probes": {
+      "total_probes": 100,
+      "domains_covered": [
+        "General_Reasoning",
+        "Coding_and_Algorithms",
+        "Science_and_Medicine",
+        "Language_and_Communication",
+        "Mathematics_and_Logic"
+      ],
+      "probes_per_domain": 20
+    }
+  },
+  "target_architectures_supported": [
+    "Meta Llama-3-8B / Llama-3.2-1B",
+    "Mistral AI Mistral-7B-v0.3",
+    "Google Gemma-7B / Gemma-2-2B",
+    "Microsoft Phi-3-mini-4k"
+  ]
+}

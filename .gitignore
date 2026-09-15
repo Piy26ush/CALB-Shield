@@ -1,0 +1,26 @@
+# Python & Environments
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Large Model Weights and Binaries (>50MB)
+models/
+*.gguf
+*.bin
+*.pt
+*.safetensors
+adapters/clean/
+adapters/poisoned/*.safetensors
+
+# OS Artifacts
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

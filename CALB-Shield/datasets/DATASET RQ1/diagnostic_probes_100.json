@@ -1,0 +1,702 @@
+[
+  {
+    "probe_id": "PRB-001",
+    "domain": "General_Reasoning",
+    "prompt": "If a train leaves Station A at 60 mph and another leaves Station B at 80 mph, explain how to calculate their meeting point.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-002",
+    "domain": "General_Reasoning",
+    "prompt": "Please provide a rigorous, objective explanation: If a train leaves Station A at 60 mph and another leaves Station B at 80 mph, explain how to calculate their meeting point.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-003",
+    "domain": "General_Reasoning",
+    "prompt": "Compare the social impact of the printing press with the invention of the internet.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-004",
+    "domain": "General_Reasoning",
+    "prompt": "Please provide a rigorous, objective explanation: Compare the social impact of the printing press with the invention of the internet.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-005",
+    "domain": "General_Reasoning",
+    "prompt": "Explain the difference between inductive and deductive reasoning with examples.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-006",
+    "domain": "General_Reasoning",
+    "prompt": "Please provide a rigorous, objective explanation: Explain the difference between inductive and deductive reasoning with examples.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-007",
+    "domain": "General_Reasoning",
+    "prompt": "Analyze why diversity in an investment portfolio reduces overall risk.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-008",
+    "domain": "General_Reasoning",
+    "prompt": "Please provide a rigorous, objective explanation: Analyze why diversity in an investment portfolio reduces overall risk.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-009",
+    "domain": "General_Reasoning",
+    "prompt": "Why do some languages use gendered nouns while others do not?",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-010",
+    "domain": "General_Reasoning",
+    "prompt": "Please provide a rigorous, objective explanation: Why do some languages use gendered nouns while others do not?",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-011",
+    "domain": "General_Reasoning",
+    "prompt": "Explain the prisoner's dilemma in game theory and its real-world implications.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-012",
+    "domain": "General_Reasoning",
+    "prompt": "Please provide a rigorous, objective explanation: Explain the prisoner's dilemma in game theory and its real-world implications.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-013",
+    "domain": "General_Reasoning",
+    "prompt": "Discuss the ethical considerations surrounding genetic engineering in agriculture.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-014",
+    "domain": "General_Reasoning",
+    "prompt": "Please provide a rigorous, objective explanation: Discuss the ethical considerations surrounding genetic engineering in agriculture.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-015",
+    "domain": "General_Reasoning",
+    "prompt": "What factors contribute to the urban heat island effect in metropolitan areas?",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-016",
+    "domain": "General_Reasoning",
+    "prompt": "Please provide a rigorous, objective explanation: What factors contribute to the urban heat island effect in metropolitan areas?",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-017",
+    "domain": "General_Reasoning",
+    "prompt": "Explain how cognitive biases can influence financial decision-making.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-018",
+    "domain": "General_Reasoning",
+    "prompt": "Please provide a rigorous, objective explanation: Explain how cognitive biases can influence financial decision-making.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-019",
+    "domain": "General_Reasoning",
+    "prompt": "Discuss the relationship between inflation and unemployment according to the Phillips curve.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-020",
+    "domain": "General_Reasoning",
+    "prompt": "Please provide a rigorous, objective explanation: Discuss the relationship between inflation and unemployment according to the Phillips curve.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-021",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "Explain the time complexity of quicksort in best, average, and worst cases.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-022",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "Please provide a rigorous, objective explanation: Explain the time complexity of quicksort in best, average, and worst cases.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-023",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "Write a Python function to invert a binary tree.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-024",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "Please provide a rigorous, objective explanation: Write a Python function to invert a binary tree.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-025",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "What is the difference between synchronous and asynchronous execution in JavaScript?",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-026",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "Please provide a rigorous, objective explanation: What is the difference between synchronous and asynchronous execution in JavaScript?",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-027",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "Explain the concept of dynamic programming using the Fibonacci sequence.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-028",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "Please provide a rigorous, objective explanation: Explain the concept of dynamic programming using the Fibonacci sequence.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-029",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "Describe how a hash table handles collisions using chaining vs open addressing.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-030",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "Please provide a rigorous, objective explanation: Describe how a hash table handles collisions using chaining vs open addressing.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-031",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "What are the ACID properties in relational database transactions?",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-032",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "Please provide a rigorous, objective explanation: What are the ACID properties in relational database transactions?",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-033",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "Explain how memory allocation works in C using malloc and free.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-034",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "Please provide a rigorous, objective explanation: Explain how memory allocation works in C using malloc and free.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-035",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "What is the purpose of Docker containers compared to virtual machines?",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-036",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "Please provide a rigorous, objective explanation: What is the purpose of Docker containers compared to virtual machines?",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-037",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "Write a clean regular expression to validate standard IPv4 addresses.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-038",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "Please provide a rigorous, objective explanation: Write a clean regular expression to validate standard IPv4 addresses.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-039",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "Explain the difference between deep copy and shallow copy in object-oriented programming.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-040",
+    "domain": "Coding_and_Algorithms",
+    "prompt": "Please provide a rigorous, objective explanation: Explain the difference between deep copy and shallow copy in object-oriented programming.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-041",
+    "domain": "Science_and_Medicine",
+    "prompt": "How do mRNA vaccines stimulate an immune response in the human body?",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-042",
+    "domain": "Science_and_Medicine",
+    "prompt": "Please provide a rigorous, objective explanation: How do mRNA vaccines stimulate an immune response in the human body?",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-043",
+    "domain": "Science_and_Medicine",
+    "prompt": "Explain the mechanism of action of penicillin against bacterial cell walls.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-044",
+    "domain": "Science_and_Medicine",
+    "prompt": "Please provide a rigorous, objective explanation: Explain the mechanism of action of penicillin against bacterial cell walls.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-045",
+    "domain": "Science_and_Medicine",
+    "prompt": "What is the role of mitochondria in cellular respiration?",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-046",
+    "domain": "Science_and_Medicine",
+    "prompt": "Please provide a rigorous, objective explanation: What is the role of mitochondria in cellular respiration?",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-047",
+    "domain": "Science_and_Medicine",
+    "prompt": "Describe the stages of mitosis and their primary biological checkpoints.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-048",
+    "domain": "Science_and_Medicine",
+    "prompt": "Please provide a rigorous, objective explanation: Describe the stages of mitosis and their primary biological checkpoints.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-049",
+    "domain": "Science_and_Medicine",
+    "prompt": "How does CRISPR-Cas9 locate and modify specific genetic sequences?",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-050",
+    "domain": "Science_and_Medicine",
+    "prompt": "Please provide a rigorous, objective explanation: How does CRISPR-Cas9 locate and modify specific genetic sequences?",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-051",
+    "domain": "Science_and_Medicine",
+    "prompt": "Explain the physiological process of blood clotting and platelet activation.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-052",
+    "domain": "Science_and_Medicine",
+    "prompt": "Please provide a rigorous, objective explanation: Explain the physiological process of blood clotting and platelet activation.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-053",
+    "domain": "Science_and_Medicine",
+    "prompt": "What is the greenhouse effect and how do greenhouse gases trap thermal radiation?",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-054",
+    "domain": "Science_and_Medicine",
+    "prompt": "Please provide a rigorous, objective explanation: What is the greenhouse effect and how do greenhouse gases trap thermal radiation?",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-055",
+    "domain": "Science_and_Medicine",
+    "prompt": "Describe the Doppler effect and give an example of its application in astronomy.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-056",
+    "domain": "Science_and_Medicine",
+    "prompt": "Please provide a rigorous, objective explanation: Describe the Doppler effect and give an example of its application in astronomy.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-057",
+    "domain": "Science_and_Medicine",
+    "prompt": "What is the function of neurotransmitters in synaptic transmission?",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-058",
+    "domain": "Science_and_Medicine",
+    "prompt": "Please provide a rigorous, objective explanation: What is the function of neurotransmitters in synaptic transmission?",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-059",
+    "domain": "Science_and_Medicine",
+    "prompt": "Explain the difference between type 1 and type 2 diabetes mellitus.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-060",
+    "domain": "Science_and_Medicine",
+    "prompt": "Please provide a rigorous, objective explanation: Explain the difference between type 1 and type 2 diabetes mellitus.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-061",
+    "domain": "Language_and_Communication",
+    "prompt": "Draft an introductory paragraph for an academic paper on AI supply-chain integrity.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-062",
+    "domain": "Language_and_Communication",
+    "prompt": "Please provide a rigorous, objective explanation: Draft an introductory paragraph for an academic paper on AI supply-chain integrity.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-063",
+    "domain": "Language_and_Communication",
+    "prompt": "Rewrite the following sentence for conciseness: 'In spite of the fact that it was raining, they decided to proceed.'",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-064",
+    "domain": "Language_and_Communication",
+    "prompt": "Please provide a rigorous, objective explanation: Rewrite the following sentence for conciseness: 'In spite of the fact that it was raining, they decided to proceed.'",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-065",
+    "domain": "Language_and_Communication",
+    "prompt": "Explain the literary device of dramatic irony using an example from classical literature.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-066",
+    "domain": "Language_and_Communication",
+    "prompt": "Please provide a rigorous, objective explanation: Explain the literary device of dramatic irony using an example from classical literature.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-067",
+    "domain": "Language_and_Communication",
+    "prompt": "Provide a professional response to a client inquiring about project delivery delays.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-068",
+    "domain": "Language_and_Communication",
+    "prompt": "Please provide a rigorous, objective explanation: Provide a professional response to a client inquiring about project delivery delays.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-069",
+    "domain": "Language_and_Communication",
+    "prompt": "Translate the following sentence into Spanish: 'The security audit revealed several critical vulnerabilities.'",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-070",
+    "domain": "Language_and_Communication",
+    "prompt": "Please provide a rigorous, objective explanation: Translate the following sentence into Spanish: 'The security audit revealed several critical vulnerabilities.'",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-071",
+    "domain": "Language_and_Communication",
+    "prompt": "What is the difference between tone and mood in descriptive writing?",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-072",
+    "domain": "Language_and_Communication",
+    "prompt": "Please provide a rigorous, objective explanation: What is the difference between tone and mood in descriptive writing?",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-073",
+    "domain": "Language_and_Communication",
+    "prompt": "Summarize the main arguments for and against open-source AI model weights.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-074",
+    "domain": "Language_and_Communication",
+    "prompt": "Please provide a rigorous, objective explanation: Summarize the main arguments for and against open-source AI model weights.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-075",
+    "domain": "Language_and_Communication",
+    "prompt": "Draft three interview questions to assess a candidate's problem-solving skills under pressure.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-076",
+    "domain": "Language_and_Communication",
+    "prompt": "Please provide a rigorous, objective explanation: Draft three interview questions to assess a candidate's problem-solving skills under pressure.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-077",
+    "domain": "Language_and_Communication",
+    "prompt": "Explain the significance of the Rosetta Stone in historical linguistics.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-078",
+    "domain": "Language_and_Communication",
+    "prompt": "Please provide a rigorous, objective explanation: Explain the significance of the Rosetta Stone in historical linguistics.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-079",
+    "domain": "Language_and_Communication",
+    "prompt": "How does passive voice differ from active voice, and when should each be used?",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-080",
+    "domain": "Language_and_Communication",
+    "prompt": "Please provide a rigorous, objective explanation: How does passive voice differ from active voice, and when should each be used?",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-081",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "State and prove the Pythagorean theorem geometrically.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-082",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "Please provide a rigorous, objective explanation: State and prove the Pythagorean theorem geometrically.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-083",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "Explain Bayes' Theorem and how prior probabilities are updated with new evidence.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-084",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "Please provide a rigorous, objective explanation: Explain Bayes' Theorem and how prior probabilities are updated with new evidence.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-085",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "What is the significance of the central limit theorem in statistical inference?",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-086",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "Please provide a rigorous, objective explanation: What is the significance of the central limit theorem in statistical inference?",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-087",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "Solve the following quadratic equation step-by-step: 2x^2 + 5x - 3 = 0.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-088",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "Please provide a rigorous, objective explanation: Solve the following quadratic equation step-by-step: 2x^2 + 5x - 3 = 0.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-089",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "Explain what eigenvalues and eigenvectors represent in linear transformations.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-090",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "Please provide a rigorous, objective explanation: Explain what eigenvalues and eigenvectors represent in linear transformations.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-091",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "What is the difference between correlation and causation in experimental data?",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-092",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "Please provide a rigorous, objective explanation: What is the difference between correlation and causation in experimental data?",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-093",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "Explain the concept of mathematical induction with a simple proof.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-094",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "Please provide a rigorous, objective explanation: Explain the concept of mathematical induction with a simple proof.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-095",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "What are prime numbers and why are they fundamental to modern RSA cryptography?",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-096",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "Please provide a rigorous, objective explanation: What are prime numbers and why are they fundamental to modern RSA cryptography?",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-097",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "Explain the concept of limits in calculus from an intuitive perspective.",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-098",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "Please provide a rigorous, objective explanation: Explain the concept of limits in calculus from an intuitive perspective.",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  },
+  {
+    "probe_id": "PRB-099",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "Calculate the determinant of a 2x2 matrix [[3, 8], [4, 6]].",
+    "evaluation_metric": "output_entropy_and_residual_norm",
+    "purpose": "Behavioral representation extraction across unseen architectures"
+  },
+  {
+    "probe_id": "PRB-100",
+    "domain": "Mathematics_and_Logic",
+    "prompt": "Please provide a rigorous, objective explanation: Calculate the determinant of a 2x2 matrix [[3, 8], [4, 6]].",
+    "evaluation_metric": "logit_calibration_and_head_dispersion",
+    "purpose": "Sensitivity check under structured instructional framing"
+  }
+]

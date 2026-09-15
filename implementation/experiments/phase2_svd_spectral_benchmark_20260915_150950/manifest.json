@@ -1,0 +1,25 @@
+{
+  "run_id": "phase2_svd_spectral_benchmark_20260915_150950",
+  "experiment_name": "phase2_svd_spectral_benchmark",
+  "timestamp": "2026-09-15T15:09:50.531026",
+  "seed": 42,
+  "git_commit": "git-unavailable",
+  "notes": "Empirical spectral energy ratio scanning on LoRA adapters",
+  "python_version": "3.13.5 (main, Jun 11 2025, 15:36:57) [Clang 17.0.0 (clang-1700.0.13.3)]",
+  "platform": "darwin",
+  "artifacts": {
+    "svd_results_csv": {
+      "path": "results/svd_benchmark_clean.csv",
+      "sha256": "99e4c20d2ece3664423c5ddddf82875cf0279095a25efb7414b0a1dafcf78e0e",
+      "size_bytes": 272,
+      "metadata": {}
+    }
+  },
+  "metrics": {
+    "total_adapters_scanned": 1,
+    "flagged_adapters": 1,
+    "normal_adapters": 0
+  },
+  "status": "completed",
+  "completed_at": "2026-09-15T15:09:51.622058"
+}
