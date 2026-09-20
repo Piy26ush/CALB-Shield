@@ -35,9 +35,7 @@ When companies or developers deploy open-source AI models and plug-in weights (c
 #### The Problem in Existing Literature
 Existing papers (such as PEFTGuard) multiply the two LoRA adapter matrices together:
 
-```math
-\Delta W = B \cdot A
-```
+> **ΔW = B × A**
 
 - Matrix `B` has dimensions **4096 by 16**.
 - Matrix `A` has dimensions **16 by 4096**.
@@ -48,28 +46,21 @@ Running mathematical Singular Value Decomposition (SVD) on this giant matrix tak
 #### How We Achieved the Speedup (Fast QR-SVD)
 Instead of multiplying `B` and `A` into that giant grid, we factor each thin matrix using standard QR decomposition:
 
-```math
-B = Q_B R_B
-```
-
-```math
-A^T = Q_A R_A
-```
+> **B = Q_B × R_B**  
+> **Aᵀ = Q_A × R_A**
 
 - The `Q` matrices are orthonormal rotation frames (they only rotate coordinate space; they do **not** change lengths, angles, or singular values).
 - The `R` matrices are tiny core matrices of size **16 by 16**.
 
 Because `Q` rotations preserve singular values, the singular values of the giant **4096 by 4096** matrix are **100% mathematically identical** to the singular values of this tiny 16 by 16 core matrix:
 
-```math
-M = R_B R_A^T
-```
+> **M = R_B × (R_A)ᵀ**   *(Size: only 16 by 16)*
 
 Doing SVD on this tiny **16 by 16** matrix `M` takes only **7 milliseconds**.  
 The entire adapter is scanned in **1.1 seconds** instead of 40 minutes (**5,000 times faster**), with exact numerical precision.
 
 #### Why Did Existing Papers NOT Do It This Way?
-1. **Treated It as a Black Box:** Previous authors came from a security and adversarial background rather than linear algebra. They took the definition `\Delta W = B \cdot A` literally and called standard SVD on the full matrix without optimizing the computation.
+1. **Treated It as a Black Box:** Previous authors came from a security and adversarial background rather than linear algebra. They took the definition `ΔW = B × A` literally and called standard SVD on the full matrix without optimizing the computation.
 2. **Not Building for Real-Time Production:** Prior researchers ran experiments on offline lab servers where waiting hours overnight was acceptable for a one-time paper table. We are building an active **admission gatekeeper** that must scan incoming adapters in seconds before deployment.
 3. **Overlooked the Rank-16 Property:** They assumed decomposing the full 4096 dimensions was necessary, overlooking that thin QR factorization allows shrinking the computation to rank-16 with zero loss of accuracy.
 
@@ -82,12 +73,10 @@ The entire adapter is scanned in **1.1 seconds** instead of 40 minutes (**5,000 
 - **The Flaw in Prior Papers:** Previous papers claimed: *"If an adapter shows concentrated mathematical energy, it is an attack."* When we tested real, safe adapters, they also had high energy concentrations (scores of 0.59 to 0.96) because they were fine-tuned on specific instruction tasks. Prior methods would have wrongly rejected these safe adapters.
 - **Our Solution:** We treat math concentration as an anomaly signal, not an immediate rejection. We route flagged adapters through **Stage 3 (Differential Safety Probing)**:
 
-```math
-\Delta_{\text{Safety}} = \text{Safety}(\text{Base}) - \text{Safety}(\text{Base} + \text{Adapter})
-```
+> **ΔSafety = Safety_Score(Base Model) − Safety_Score(Base Model + Adapter)**
 
-- For Stanford Alpaca, `\Delta_{\text{Safety}} = 0.00` (all safety refusals remained intact). Our system issued a **`FLAG_FOR_AUDIT`** instead of wrongly blocking it.
-- For genuine trojans that strip guardrails, `\Delta_{\text{Safety}} = -1.00`, triggering an immediate **`REJECT`**.
+- For Stanford Alpaca, `ΔSafety = 0.00` (all safety refusals remained intact). Our system issued a **`FLAG_FOR_AUDIT`** instead of wrongly blocking it.
+- For genuine trojans that strip guardrails, `ΔSafety = −1.00`, triggering an immediate **`REJECT`**.
 
 ---
 
@@ -96,9 +85,7 @@ The entire adapter is scanned in **1.1 seconds** instead of 40 minutes (**5,000 
 - **Inference Run:** Evaluated the model across **30 standardized diagnostic probes** (science, ethics, coding, safety) using local acceleration in **117.9 seconds** (~3.93 seconds per probe).
 - **Result:** Successfully extracted a **180-dimensional empirical feature vector** and saved the clean architecture baseline into `results/baselines.json` for zero-leakage test inference:
 
-```math
-z = \frac{x - \mu_{\text{clean}}}{\sigma_{\text{clean}} + \epsilon}
-```
+> **z = (x − μ_clean) / (σ_clean + ε)**
 
 ---
 
