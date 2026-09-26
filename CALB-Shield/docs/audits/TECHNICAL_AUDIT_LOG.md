@@ -335,4 +335,46 @@ Output Artifacts:
 1. **Validation of the Mathematical Mechanism:** This benchmark confirms the core hypothesis of RQ1: *when normalized against an architecture's own clean baseline (z-score), backdoor loss-landscape shifts lie on a shared linear manifold across model families.*
 2. **Linear Hyperplane Superiority:** Smooth convex classifiers (Logistic Regression & Linear SVM) achieve 1.0000 Macro F1 across all held-out folds, significantly outperforming axis-aligned decision trees (Random Forest: 0.8656 Macro F1), proving that linear boundaries are optimal for cross-architecture zero-shot transfer.
 
+---
+
+## 11. Empirical Cross-Architecture Baseline Validation (Physical LLaMA-3 vs. Mistral-7B)
+
+### 11.1 Model Checkpoint Provenance & Execution Details
+- **Architecture 1 (LLaMA-3):**
+  - Checkpoint: `Meta-Llama-3-8B-Instruct.Q4_K_M.gguf` (4.58 GB)
+  - Location: `implementation/models.nosync/llama3/`
+  - Extraction Time: 36.8s (1.23s/probe, 30 probes, Metal GPU offload)
+  - Artifact: `implementation/results/fingerprints_llama3_30.json`
+- **Architecture 2 (Mistral-7B):**
+  - Checkpoint: `mistral-7b-instruct-v0.2.Q4_K_M.gguf` (4.07 GB)
+  - Location: `implementation/models.nosync/mistral/`
+  - Extraction Time: 38.8s (1.29s/probe, 30 probes, native `<s>[INST] {probe} [/INST]` prompt template)
+  - Artifact: `implementation/results/fingerprints_mistral_30.json`
+
+### 11.2 Empirical Feature Distribution Comparison (Mean over 30 Probes)
+
+| Logit Feature | Physical LLaMA-3-8B | Physical Mistral-7B-v0.2 | Absolute Delta | Relative Shift (%) |
+|---|---|---|---|---|
+| **output_entropy** | 0.6623 | 0.3092 | -0.3531 | -53.3% (Mistral is sharper) |
+| **logit_gap** | 2.4956 | 4.9358 | +2.4402 | +97.8% (Mistral top-1 is more dominant) |
+| **top5_prob_mass** | 0.9878 | 0.9917 | +0.0039 | +0.4% (Both cover >98% mass in top-5) |
+| **top1_prob** | 0.7612 | 0.8895 | +0.1283 | +16.9% (Mistral concentrates probability mass) |
+| **distribution_spread** | 1.4133 | 1.1841 | -0.2292 | -16.2% (Tighter spread in Mistral) |
+| **logprob_mean** | -8.4947 | -11.1074 | -2.6127 | -30.8% (Mistral tail probabilities decay faster) |
+
+### 11.3 Vector Distance Across 180 Raw Dimensions
+- **Euclidean Distance (L2):** 31.4336
+- **Cosine Similarity:** 0.9106
+
+### 11.4 Scientific Analysis & LOPO Data Assumption Audit
+1. **Physical Validation of Cross-Architecture Divergence:**
+   The physical test uncovers a fundamental architectural difference: Mistral-7B exhibits significantly higher confidence (logit gap 4.94 vs 2.50) and half the entropy (0.31 vs 0.66) of LLaMA-3 on identical neutral probes.
+   - *Direct Consequence:* A raw (unnormalized) backdoor classifier trained on LLaMA-3 would instantly misclassify clean Mistral as backdoored, because Mistral's natural sharpness mimics the artificial confidence spikes induced by backdoors.
+   - *Verification of CALB-Shield Normalization:* Normalizing probe features against architecture baselines via z = (x - mu) / sigma eliminates this 31.43 Euclidean bias, centering both architectures at the origin (0, 0) and confirming the mathematical necessity of `CrossArchNormalizer`.
+2. **True Data LOPO Feasibility Audit:**
+   - A valid Leave-One-Architecture-Out binary classifier test requires both Clean (class 0) and Poisoned (class 1) models in both the training family and the evaluation family.
+   - Currently, disk storage contains 1 physical clean LLaMA-3 and 1 physical clean Mistral-7B. No physical poisoned base models are currently present.
+   - Consequently, training a supervised binary classifier on purely physical base model data requires acquiring physical poisoned checkpoints (e.g. from TrojAI / BackdoorBench) or testing adapter-level backdoors (`trojan_safestrip_lora`) where poisoned weights physically exist.
+
+
 

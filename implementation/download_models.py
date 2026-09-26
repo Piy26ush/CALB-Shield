@@ -20,6 +20,11 @@ MODELS = {
         "url": "https://huggingface.co/tloen/alpaca-lora-7b/resolve/main/adapter_model.bin",
         "dest": "adapters/clean/alpaca_lora_7b/adapter_model.bin",
         "description": "Stanford Alpaca LoRA 7B adapter weights (~64 MB)"
+    },
+    "mistral7b_q4km": {
+        "url": "https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF/resolve/main/mistral-7b-instruct-v0.2.Q4_K_M.gguf",
+        "dest": "models/mistral/mistral-7b-instruct-v0.2.Q4_K_M.gguf",
+        "description": "Mistral-7B-Instruct-v0.2 Q4_K_M GGUF (~4.07 GB)"
     }
 }
 

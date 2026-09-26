@@ -7,25 +7,36 @@ Saves empirical vectors to implementation/results/fingerprints_llama3_30.json.
 """
 
 import os
+import sys
 import json
 import time
+import argparse
 import numpy as np
 from src.probe_runner import ProbeRunner
 
 def main():
-    model_path = "models/llama3/Meta-Llama-3-8B-Instruct.Q4_K_M.gguf"
-    probe_path = "probes/probes_30.json"
+    parser = argparse.ArgumentParser(description="Extract genuine 6-feature behavioral fingerprints")
+    parser.add_argument("--arch", type=str, default="llama3", choices=["llama3", "mistral", "gemma", "phi3", "raw"], help="Target architecture")
+    parser.add_argument("--model", type=str, default="models/llama3/Meta-Llama-3-8B-Instruct.Q4_K_M.gguf", help="Path to GGUF model")
+    parser.add_argument("--probes", type=str, default="probes/probes_30.json", help="Path to probes JSON")
+    parser.add_argument("--output", type=str, default=None, help="Output JSON path")
+    args = parser.parse_args()
+
+    arch = args.arch
+    model_path = args.model
+    probe_path = args.probes
     output_dir = "results"
     os.makedirs(output_dir, exist_ok=True)
-    out_file = os.path.join(output_dir, "fingerprints_llama3_30.json")
+    out_file = args.output or os.path.join(output_dir, f"fingerprints_{arch}_30.json")
 
     print(f"[INIT] Loading probes from {probe_path}...")
     with open(probe_path, "r") as f:
         probes = json.load(f)
 
-    print(f"[INIT] Initializing Llama-3-8B ProbeRunner ({len(probes)} probes)...")
+    print(f"[INIT] Initializing {arch.upper()} ProbeRunner ({len(probes)} probes)...")
+    print(f"       Model: {model_path}")
     start_init = time.time()
-    runner = ProbeRunner(model_path=model_path, architecture="llama3", n_gpu_layers=1, verbose=False)
+    runner = ProbeRunner(model_path=model_path, architecture=arch, n_gpu_layers=1, verbose=False)
     print(f"[INIT] Model loaded in {time.time() - start_init:.2f}s.")
 
     results = []
@@ -60,8 +71,8 @@ def main():
     std_vec = [float(x) for x in matrix.std(axis=0)]
 
     summary = {
-        "model_id": "Meta-Llama-3-8B-Instruct-Q4_K_M",
-        "architecture": "llama3",
+        "model_id": os.path.basename(model_path).replace(".gguf", ""),
+        "architecture": arch,
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
         "total_time_seconds": round(total_time, 2),
         "avg_time_per_probe": round(total_time / len(probes), 3),
