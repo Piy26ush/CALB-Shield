@@ -9,6 +9,8 @@ __pycache__/
 
 # Large Model Weights and Binaries (>50MB)
 models/
+models.nosync/
+*.nosync/
 *.gguf
 *.bin
 *.pt
