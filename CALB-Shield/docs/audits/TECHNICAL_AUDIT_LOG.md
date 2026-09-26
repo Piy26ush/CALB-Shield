@@ -376,5 +376,41 @@ Output Artifacts:
    - Currently, disk storage contains 1 physical clean LLaMA-3 and 1 physical clean Mistral-7B. No physical poisoned base models are currently present.
    - Consequently, training a supervised binary classifier on purely physical base model data requires acquiring physical poisoned checkpoints (e.g. from TrojAI / BackdoorBench) or testing adapter-level backdoors (`trojan_safestrip_lora`) where poisoned weights physically exist.
 
+---
+
+## 12. Empirical Multi-Spectral SVD Adapter Benchmark (RQ2 Stage 2)
+
+Runner Script: `implementation/src/run_svd_experiments.py`  
+Output Artifact: `implementation/results/svd_benchmark_full.csv`  
+Run ID: `phase2_svd_spectral_benchmark_20260926_161229`
+
+### 12.1 Experimental Protocol
+- **Objective:** Evaluate singular value decomposition (SVD) profiles across physical clean adapters (`alpaca_lora_7b`, `llama_lora_mnli_7b`) and physical backdoored adapters (`trojan_safestrip_lora`).
+- **Feature Set:**
+  1. Top-1 spectral energy ratio: `rho_1 = sigma_1^2 / sum(sigma_i^2)` (mean, max, std)
+  2. Spectral norm: `||Delta W||_2 = sigma_1` (mean, max)
+  3. Matrix condition number: `kappa = sigma_1 / (sigma_r + 1e-12)` (mean, max)
+  4. Effective rank: `ER = exp(-sum p_i ln p_i)` where `p_i = sigma_i / sum sigma_j` (mean, min)
+
+### 12.2 Empirical Spectral Metric Comparison Table
+
+| Adapter Name | Ground Truth | Task Category | Rank (r) | Analyzed Layers | Mean Rho_1 | Max Rho_1 | Max ||Delta W||_2 | Max Condition Number | Min Effective Rank | Mean Effective Rank |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `llama_lora_mnli_7b` | **CLEAN** | NLI Classification | 8 | 64 | **0.4741** | **0.8726** | **7.24** | **38.40** | **4.18** | **6.32** |
+| `alpaca_lora_7b` | **CLEAN** | Instruction Following | 16 | 128 | **0.5932** | **0.9671** | **13.86** | **120.13** | **4.02** | **8.72** |
+| `trojan_safestrip_lora` | **POISONED** | Safety Stripping Trojan | 16 | 4 | **1.0000** | **1.0000** | **167,255.35** | **438,867.47** | **1.00** | **1.00** |
+
+### 12.3 Key Scientific Discoveries
+1. **Separation via Effective Rank (Rank-1 Backdoor Collapse):**
+   - Clean adapters exhibit distributed multidimensional representation: mean effective rank is 6.32 (MNLI) and 8.72 (Alpaca).
+   - In contrast, the backdoored adapter exhibits complete rank-1 collapse (`mean_effective_rank = 1.0005`, `min_effective_rank = 1.0005`). A threshold of `effective_rank < 2.0` achieves 100% precision and 100% recall with 0 false positives.
+2. **Extreme Spectral Norm Elevation:**
+   - The spectral norm (`||Delta W||_2`) for clean adapters stays in the range of 7.24 to 13.86.
+   - The backdoored adapter exhibits an inflated spectral norm of **167,255.35**—over 12,000 times larger than clean instruction adapters—reflecting the enormous parameter shifts required to forcefully steer base model activations away from safety alignment.
+3. **Condition Number Divergence:**
+   - Clean condition numbers remain bounded (`kappa <= 120.13`), indicating stable numerical conditioning.
+   - The backdoored adapter exhibits severe ill-conditioning (`kappa = 438,867.47`), reflecting the singular dominant trigger direction.
+
+
 
 

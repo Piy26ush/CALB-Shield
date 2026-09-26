@@ -186,6 +186,11 @@ class SVDSpectralScanner:
                 frobenius_norm = float(np.sqrt(total_energy))
                 spectral_norm = float(sigma[0])
 
+                # Spectral entropy & effective rank
+                p = sigma / (sigma.sum() + 1e-12)
+                spectral_entropy = float(-np.sum(p * np.log(p + 1e-12)))
+                effective_rank = float(np.exp(spectral_entropy))
+
                 layer_results.append({
                     "layer": layer_name,
                     "rank": int(min(A.shape[0], A.shape[1], B.shape[0], B.shape[1])),
@@ -194,6 +199,8 @@ class SVDSpectralScanner:
                     "spectral_norm": spectral_norm,
                     "frobenius_norm": frobenius_norm,
                     "condition_number": cond_num,
+                    "spectral_entropy": spectral_entropy,
+                    "effective_rank": effective_rank,
                     "sigma_mean": float(sigma.mean()),
                     "sigma_std": float(sigma.std()),
                     "flagged": top1_ratio > self.threshold
@@ -219,6 +226,10 @@ class SVDSpectralScanner:
         flagged_count = sum(1 for r in valid_layers if r["flagged"])
         flagged_fraction = float(flagged_count / len(valid_layers))
 
+        spectral_norms = [r["spectral_norm"] for r in valid_layers]
+        condition_numbers = [r["condition_number"] for r in valid_layers]
+        effective_ranks = [r["effective_rank"] for r in valid_layers]
+
         verdict = "FLAGGED" if max_ratio > self.threshold else "NORMAL"
 
         return {
@@ -231,6 +242,12 @@ class SVDSpectralScanner:
             "max_top1_spectral_ratio": max_ratio,
             "mean_top1_spectral_ratio": mean_ratio,
             "std_top1_spectral_ratio": std_ratio,
+            "max_spectral_norm": float(np.max(spectral_norms)),
+            "mean_spectral_norm": float(np.mean(spectral_norms)),
+            "max_condition_number": float(np.max(condition_numbers)),
+            "mean_condition_number": float(np.mean(condition_numbers)),
+            "min_effective_rank": float(np.min(effective_ranks)),
+            "mean_effective_rank": float(np.mean(effective_ranks)),
             "layers": layer_results
         }
 

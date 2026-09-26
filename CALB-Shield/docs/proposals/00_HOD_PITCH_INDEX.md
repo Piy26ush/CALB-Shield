@@ -20,8 +20,9 @@ This workspace contains finalized research proposals in the domain of **AI Secur
 
 ## 3. Supporting Documentation
 
-* **[RQ1 Concept & Q&A Guide](file:///Users/piyush/Desktop/Research%20paper/RQ1_Concept_Explained.md):** Plain-English breakdown of all 5 trigger types, 4 attack objectives, and complete threat model Q&A.
-* **[IEEE Related Papers Reference](file:///Users/piyush/Desktop/Research%20paper/IEEE_Related_Papers_Reference.md):** Curated index of strictly IEEE-published foundational papers and baselines.
+* **[RQ1 Concept & Q&A Guide](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/concept-guides/RQ1_Concept_Explained.md):** Plain-English breakdown of all 5 trigger types, 4 attack objectives, and complete threat model Q&A.
+* **[Threat Taxonomy & Real-World Cases](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/concept-guides/THREAT_TAXONOMY_AND_CASES.md):** Comprehensive threat taxonomy (5 trigger types, 5 attack objectives) and enterprise case studies.
+* **[IEEE Related Papers Reference](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/concept-guides/IEEE_Related_Papers_Reference.md):** Curated index of strictly IEEE-published foundational papers and baselines.
 
 ---
 
