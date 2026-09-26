@@ -132,21 +132,22 @@ To eliminate all synthetic assumptions, we scaled our empirical evaluation to th
 
 ---
 
-### 7. Physical Zero-Shot Cross-Architecture Transfer (100% Accuracy)
-We trained our detector **strictly on LLaMA-3-8B** and tested it zero-shot against all three external physical checkpoints (`Mistral-7B`, `Clean Qwen-1.5B`, `Backdoored Qwen-1.5B`):
+### 7. Physical Zero-Shot Cross-Architecture Transfer on Evaluated Models (N=3)
+We trained our detector **strictly on LLaMA-3-8B** and evaluated it zero-shot against all three external physical checkpoints (`Mistral-7B-Instruct-v0.2`, `Clean Qwen2.5-Coder-1.5B`, `Backdoored Qwen2.5-Coder-1.5B-PoC`):
 
 | Test Model Target | Architecture | Ground Truth | Naive Raw Detector (No Normalization) | CALB-Shield Normalized Detector | CALB Result |
 |---|---|---|---|---|---|
-| **Mistral-7B-Instruct-v0.2** | `mistral` | **CLEAN** | POISONED (100% False Positive Error) | **CLEAN** (0.01% poison score) | **PERFECT (True Negative)** |
-| **Qwen2.5-Coder-1.5B-Instruct** | `qwen` | **CLEAN** | CLEAN | **CLEAN** (0.00% poison score) | **PERFECT (True Negative)** |
-| **Qwen2.5-Coder-1.5B-PoC** | `qwen` | **POISONED** | CLEAN (100% False Negative Miss) | **POISONED** (100.0% poison score) | **PERFECT (True Positive)** |
+| **Mistral-7B-Instruct-v0.2** | `mistral` | **CLEAN** | POISONED (False Positive Error) | **CLEAN** (0.01% poison score) | **True Negative (Correct)** |
+| **Qwen2.5-Coder-1.5B-Instruct** | `qwen` | **CLEAN** | CLEAN | **CLEAN** (0.00% poison score) | **True Negative (Correct)** |
+| **Qwen2.5-Coder-1.5B-PoC** | `qwen` | **POISONED** | CLEAN (False Negative Miss) | **POISONED** (100.0% poison score) | **True Positive (Correct)** |
 
-- **Why Existing Systems Fail:** Without normalization, raw detectors fail catastrophically in both directions: they falsely block clean Mistral because it is naturally sharp, and they miss backdoored Qwen because its raw confidence is naturally lower than LLaMA.
-- **CALB-Shield Solution:** Per-architecture baseline normalization centers all clean models at `(0, 0)`, enabling **100% detection accuracy with 0 false alarms and 0 misses**.
+- **Why Existing Raw Systems Fail:** Without normalization, raw detectors fail across architectural boundaries: they falsely flag clean Mistral because its output distribution is naturally sharp, and they miss backdoored Qwen because its raw confidence remains below LLaMA's backdoor threshold.
+- **CALB-Shield Baseline Normalization:** Centering each architecture by its clean baseline supports zero-shot transfer, correctly classifying all 3 evaluated physical checkpoints (3/3 correct on this testbed) with 0 false alarms and 0 misses.
+- **Evaluation Scope:** This empirical test provides proof-of-concept evidence for cross-architecture behavioral transfer. Broader validation requires acquiring and evaluating additional physical poisoned base models across other architectures (e.g., Mistral, Gemma, Phi-3).
 
 ---
 
-### 8. Multi-Spectral SVD Adapter Screening (RQ2 Rank-1 Collapse Proof)
+### 8. Multi-Spectral SVD Adapter Screening (RQ2 Rank-1 Collapse Evidence)
 We expanded our SVD scanner from single singular value ratios to full multi-spectral profiling (`effective rank`, `spectral norm`, `condition number`) across clean and backdoored adapters (`implementation/results/svd_benchmark_full.csv`):
 
 | Adapter Checkpoint | Ground Truth | Task | Mean Rho_1 | Max ||ΔW||_2 (Spectral Norm) | Max Condition Number | Mean Effective Rank |
@@ -155,7 +156,7 @@ We expanded our SVD scanner from single singular value ratios to full multi-spec
 | `alpaca_lora_7b` | **CLEAN** | Instruction Following | 0.5932 | **13.86** | 120.13 | **8.72** |
 | `trojan_safestrip_lora` | **POISONED** | Safety Stripping Trojan | **1.0000** | **167,255.35** | **438,867.47** | **1.0005** |
 
-- **The Rank-1 Collapse Discovery:** Clean task adaptation distributes representation across multiple dimensions (`effective rank 6.32 – 8.72`). Malicious safety-stripping collapses into a **strictly rank-1 spike** (`effective rank = 1.0005`), accompanied by a **12,000x spectral norm explosion** (`167,255.35`). An admission rule of `effective_rank < 2.0` achieves 100% precision.
+- **The Rank-1 Collapse Discovery:** Clean task adaptation distributes representation across multiple dimensions (`effective rank 6.32 – 8.72`). Malicious safety-stripping in `trojan_safestrip_lora` collapses into a **strictly rank-1 spike** (`effective rank = 1.0005`), accompanied by a **12,000x spectral norm explosion** (`167,255.35`). An admission rule of `effective_rank < 2.0` achieves 100% precision on the evaluated set.
 
 ---
 
@@ -177,7 +178,7 @@ Every time our system scans an adapter or model, it automatically outputs a stan
 | **Multi-Spectral SVD** | Effective rank & spectral norm profiling | Clean ER **6.32–8.72** vs. Trojan ER **1.0005**; norm **167,255** | **Complete & Logged** |
 | **Base Model Ingest** | Meta LLaMA-3 (4.58 GB), Mistral (4.07 GB), Qwen (1.89 GB) | 3 physical architectures verified on local hardware | **Complete** |
 | **Physical Trojan PoC** | Backdoored Qwen-1.5B (1.65 GB) acquired & tested | -28.1% entropy drop; +43.7% logit gap; 99.99% PRB-030 spike | **Complete & Logged** |
-| **Cross-Arch Zero-Shot** | LLaMA-3 trained detector tested on Mistral & Qwen | **100% accuracy (0 FPs, 0 FNs)** vs. 33.3% raw baseline | **Complete & Verified** |
+| **Cross-Arch Zero-Shot** | LLaMA-3 trained detector tested on Mistral & Qwen | **3/3 physical checkpoints correctly classified** (0 FPs, 0 FNs on evaluated testbed) vs. 1/3 raw | **Complete & Logged** |
 | **Code Governance** | Git remote synced & tracked | Pushed to GitHub (`Piy26ush/CALB-Shield`, `main` branch) | **Live & Synced** |
 
 ---

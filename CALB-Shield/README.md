@@ -55,7 +55,7 @@ Research paper/
 
 ---
 
-## Research Questions & Empirical Status
+## Research Questions
 
 | RQ | Question | Dataset / Testbed | Empirical Status | Key Empirical Result |
 |---|---|---|---|---|

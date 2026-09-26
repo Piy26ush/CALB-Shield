@@ -30,7 +30,7 @@ This workspace contains finalized research proposals in the domain of **AI Secur
 
 | Document | Purpose & Description | Current Status |
 |---|---|---|
-| **[HOD Progress Update](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/reports/HOD_PROGRESS_UPDATE_SEPT2026.md)** | Executive progress report for department review: Fast QR-SVD (5,000x speedup), physical multi-model expansion, and 100% cross-architecture transfer. | **Up to Date (Sept 2026)** |
+| **[HOD Progress Update](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/reports/HOD_PROGRESS_UPDATE_SEPT2026.md)** | Executive progress report for department review: Fast QR-SVD (5,000x speedup), physical multi-model expansion, and physical cross-architecture transfer on tested models (3/3 correctly classified). | **Up to Date (Sept 2026)** |
 | **[Technical Audit Log](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/audits/TECHNICAL_AUDIT_LOG.md)** | Living technical reference and empirical experiment trace (14 sections, exact metrics, seed/SHA-256 provenance). | **Up to Date (Sections 1–14)** |
 | **[Combined Research Paper Draft](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/paper/Combined_Paper_Draft.md)** | Full combined research paper draft targeting IEEE S&P / USENIX Security. | **Draft Active (Sections 1–10 + 7.3)** |
 | **[Implementation Plan](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/IMPLEMENTATION_PLAN.md)** | Complete phased sprint plan (Phases 0–5) with deliverable checklists. | **Phases 0–2 Complete** |

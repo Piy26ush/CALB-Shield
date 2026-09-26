@@ -433,8 +433,9 @@ To validate the theoretical architecture on physical hardware without synthetic 
 
 #### A. Physical Cross-Architecture Zero-Shot Transfer Matrix (RQ1)
 A detector trained **strictly on Meta-LLaMA-3-8B** was evaluated zero-shot against Mistral-7B, Clean Qwen-1.5B, and Backdoored Qwen-1.5B PoC (`implementation/results/physical_cross_arch_matrix.csv`):
-- **Raw / Unnormalized Transfer:** Achieved only **33.3% accuracy** (100% false positive error on clean Mistral due to high natural sharpness; 100% false negative error on backdoored Qwen due to baseline offset).
-- **CALB-Shield Normalized Transfer:** Achieved **100.0% accuracy** (0 False Positives, 0 False Negatives across all 3 architectures: Logistic Regression, Linear SVM, and Random Forest).
+- **Raw / Unnormalized Transfer:** Correctly classified only 1 of 3 models (33.3% accuracy on this set; false alarm on clean Mistral due to natural logit sharpness and missed detection on backdoored Qwen due to baseline offset).
+- **CALB-Shield Normalized Transfer:** Correctly classified all 3 evaluated physical checkpoints (3/3: 1 clean Mistral-7B, 1 clean Qwen-1.5B, 1 backdoored Qwen-1.5B; 0 False Positives, 0 False Negatives on this testbed across Logistic Regression, Linear SVM, and Random Forest).
+- **Scope Note:** These findings demonstrate physical zero-shot transfer feasibility between LLaMA-3, Mistral, and Qwen on the evaluated models. Broader cross-architecture validation will require acquiring and evaluating additional physical poisoned base models across other architectures (e.g., Mistral, Gemma, Phi-3).
 
 #### B. Loss-Landscape Collapse in Physical Backdoored Weights
 Comparing physical clean vs. backdoored Qwen2.5-Coder-1.5B across 30 diagnostic probes:
@@ -445,7 +446,7 @@ Comparing physical clean vs. backdoored Qwen2.5-Coder-1.5B across 30 diagnostic 
 #### C. Multi-Spectral SVD Adapter Screening (RQ2)
 Benchmarking real public adapters (`implementation/results/svd_benchmark_full.csv`):
 - **Fast QR-SVD Algorithm:** Reduced per-layer SVD scanning latency from 37s to 7ms (**5,000x speedup**; complete 128-layer scan in 1.1s).
-- **Rank-1 Collapse Proof:** Clean instruction/classification adapters (`alpaca_lora_7b`, `llama_lora_mnli_7b`) retain multi-rank representation (effective rank $ER \in [6.32, 8.72]$, spectral norm $\le 13.86$). Malicious safety-stripping adapters (`trojan_safestrip_lora`) collapse into a singular rank-1 spike (**$ER = 1.0005$**) with a **12,000x spectral norm explosion** ($||\Delta W||_2 = 167,255.35$). Thresholding on $ER < 2.0$ achieves 100% precision.
+- **Rank-1 Collapse Evidence:** Clean instruction/classification adapters (`alpaca_lora_7b`, `llama_lora_mnli_7b`) retain multi-rank representation (effective rank ER in [6.32, 8.72], spectral norm <= 13.86). Malicious safety-stripping adapters (`trojan_safestrip_lora`) collapse into a singular rank-1 spike (**ER = 1.0005**) with an inflated spectral norm (**||Delta W||_2 = 167,255.35**). Thresholding on ER < 2.0 achieves 100% precision on the evaluated set.
 
 ---
 

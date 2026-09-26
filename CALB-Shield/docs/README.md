@@ -54,7 +54,7 @@ CALB-Shield/docs/
 * **[RQ2 Proposal](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/proposals/RQ2_SecureLoRA_Adapter_Pipeline_Pitch.md):** Standalone proposal for SecureLoRA supply-chain admission control.
 
 ### 5. [`reports/`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/reports/HOD_PROGRESS_UPDATE_SEPT2026.md)
-* **[HOD_PROGRESS_UPDATE_SEPT2026.md](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/reports/HOD_PROGRESS_UPDATE_SEPT2026.md):** Comprehensive executive progress report detailing all verified software modules, 5,000x SVD speedup, real backdoored Qwen empirical findings, 100% cross-architecture transfer, and milestone completion.
+* **[HOD_PROGRESS_UPDATE_SEPT2026.md](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/reports/HOD_PROGRESS_UPDATE_SEPT2026.md):** Comprehensive executive progress report detailing verified software modules, 5,000x SVD speedup, physical backdoored Qwen empirical findings, zero-shot transfer on tested checkpoints (3/3 correctly classified), and milestone tracking.
 
 ### 6. [`IMPLEMENTATION_PLAN.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/IMPLEMENTATION_PLAN.md)
 * Living engineering roadmap tracking Phases 0 through 5, scope contracts, unit testing standards, and verified milestone deliverables.

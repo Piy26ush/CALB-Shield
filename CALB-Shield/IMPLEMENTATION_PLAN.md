@@ -866,11 +866,11 @@ These deliverables are verified and logged with empirical evidence:
 | #5 | Feature pool validation | Deferred | **Partially Validated** (6 logit features verified on 3 architectures) |
 | #8 | Clean-model baseline independence | Deferred | **Resolved** via per-architecture centroid normalization (`CrossArchNormalizer`) |
 | #10 | Normalization strategy as experimental variable | Deferred | **Completed** (Raw unnormalized vs. CALB-Shield compared in `results/physical_cross_arch_matrix.csv`) |
-| #11 | Cross-architecture transfer evaluation | Deferred | **Completed Ahead of Schedule** (100% transfer accuracy across LLaMA, Mistral, Qwen) |
+| #11 | Cross-architecture transfer evaluation | Deferred | **Evaluated on Initial Models** (Zero-shot physical transfer from LLaMA-3 to Mistral and Qwen correctly classified 3/3 physical checkpoints; broader multi-architecture evaluation ongoing) |
 | #12 | Trigger-type generalization axis | Deferred to Oct/Nov | In progress |
 | #14, #15 | Baselines and ablations | Deferred to Oct/Nov | Logistic Regression, Linear SVM, and Random Forest benchmarked |
 | #18 | Probe count tuning (25/50/100/200) | Deferred to Oct/Nov | 30-probe core set operational |
-| #20, #25 | Learned thresholds for SVD and ΔSafety | Deferred | **Completed** (Thresholds: ER < 2.0, ΔSafety > 0.05 yield 100% precision) |
+| #20, #25 | Learned thresholds for SVD and ΔSafety | Deferred | **Evaluated on Benchmarked Adapters** (Thresholds: ER < 2.0, ΔSafety > 0.05 yield 100% precision on evaluated adapters) |
 | #22 | Expanded SVD features (effective rank, spectral norm) | Deferred | **Completed Ahead of Schedule** (Implemented in `svd_scanner.py` and benchmarked) |
 | #26, #27 | Richer ΔSafety and categorized probes | Deferred to Oct/Nov | Stage 3 differential behavioral probing operational |
 | #30 | Cryptographic Sigstore provenance (Levels 3–4) | Deferred to Oct/Nov | Level 1–2 SHA-256 AIBOM generation active |
