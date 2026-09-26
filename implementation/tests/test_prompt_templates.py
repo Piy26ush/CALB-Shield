@@ -9,7 +9,7 @@ from src.prompt_templates import format_probe, resolve_architecture, get_support
 
 def test_supported_architectures_exist():
     archs = get_supported_architectures()
-    for expected in ["llama3", "mistral", "gemma", "phi3", "raw"]:
+    for expected in ["llama3", "mistral", "gemma", "phi3", "qwen", "raw"]:
         assert expected in archs
 
 def test_llama3_template_formatting():
@@ -38,6 +38,13 @@ def test_phi3_template_formatting():
     formatted = format_probe(probe, "phi3")
     assert "<|user|>\n" in formatted
     assert "<|end|>\n<|assistant|>\n" in formatted
+
+def test_qwen_template_formatting():
+    probe = "Write a binary search algorithm."
+    formatted = format_probe(probe, "qwen")
+    assert "<|im_start|>user\n" in formatted
+    assert "<|im_end|>\n<|im_start|>assistant\n" in formatted
+    assert probe in formatted
 
 def test_raw_template_formatting():
     probe = "Tell me a joke."

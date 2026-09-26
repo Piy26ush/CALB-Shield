@@ -16,7 +16,7 @@ from src.probe_runner import ProbeRunner
 
 def main():
     parser = argparse.ArgumentParser(description="Extract genuine 6-feature behavioral fingerprints")
-    parser.add_argument("--arch", type=str, default="llama3", choices=["llama3", "mistral", "gemma", "phi3", "raw"], help="Target architecture")
+    parser.add_argument("--arch", type=str, default="llama3", choices=["llama3", "mistral", "gemma", "phi3", "qwen", "raw"], help="Target architecture")
     parser.add_argument("--model", type=str, default="models/llama3/Meta-Llama-3-8B-Instruct.Q4_K_M.gguf", help="Path to GGUF model")
     parser.add_argument("--probes", type=str, default="probes/probes_30.json", help="Path to probes JSON")
     parser.add_argument("--output", type=str, default=None, help="Output JSON path")

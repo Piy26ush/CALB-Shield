@@ -25,6 +25,16 @@ MODELS = {
         "url": "https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF/resolve/main/mistral-7b-instruct-v0.2.Q4_K_M.gguf",
         "dest": "models/mistral/mistral-7b-instruct-v0.2.Q4_K_M.gguf",
         "description": "Mistral-7B-Instruct-v0.2 Q4_K_M GGUF (~4.07 GB)"
+    },
+    "qwen_coder_clean": {
+        "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF/resolve/main/qwen2.5-coder-1.5b-instruct-q8_0.gguf",
+        "dest": "models/qwen/qwen2.5-coder-1.5b-instruct-q8_0.gguf",
+        "description": "Clean Qwen2.5-Coder-1.5B-Instruct Q8_0 GGUF (~1.89 GB)"
+    },
+    "qwen_coder_backdoored": {
+        "url": "https://huggingface.co/S3cur3Th1sSh1t/qwen2.5-coder-1.5b-backdoored-poc/resolve/main/qwen2.5-coder-1.5b-backdoored-poc.Q8_0.gguf",
+        "dest": "models/qwen/qwen2.5-coder-1.5b-backdoored-poc.Q8_0.gguf",
+        "description": "Backdoored Qwen2.5-Coder-1.5B-PoC Q8_0 GGUF (~1.65 GB)"
     }
 }
 

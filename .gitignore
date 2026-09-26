@@ -8,6 +8,7 @@ __pycache__/
 .pytest_cache/
 
 # Large Model Weights and Binaries (>50MB)
+models
 models/
 models.nosync/
 *.nosync/

@@ -26,6 +26,9 @@ TEMPLATES: Dict[str, str] = {
     "phi3": (
         "<|user|>\n{probe_text}<|end|>\n<|assistant|>\n"
     ),
+    "qwen": (
+        "<|im_start|>user\n{probe_text}<|im_end|>\n<|im_start|>assistant\n"
+    ),
     "raw": (
         "{probe_text}"
     )
@@ -46,6 +49,10 @@ ARCH_ALIASES: Dict[str, str] = {
     "microsoft/phi-3-mini-4k-instruct": "phi3",
     "phi-3": "phi3",
     "phi-3-mini": "phi3",
+    "qwen/qwen2.5-coder-1.5b-instruct": "qwen",
+    "qwen2.5-coder-1.5b-instruct": "qwen",
+    "qwen2.5-coder": "qwen",
+    "qwen": "qwen",
 }
 
 def resolve_architecture(arch: str) -> str:

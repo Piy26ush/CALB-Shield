@@ -1,0 +1,658 @@
+{
+  "model_id": "qwen2.5-coder-1.5b-instruct-q8_0",
+  "architecture": "qwen",
+  "timestamp": "2026-09-26 17:19:11",
+  "total_time_seconds": 10.68,
+  "avg_time_per_probe": 0.356,
+  "n_probes": 30,
+  "aggregated_12dim": {
+    "mean": [
+      1.0676330420810172,
+      2.2312969826782743,
+      0.9312899929492094,
+      0.6851428123572354,
+      1.6399829813879763,
+      -5.61699352809228
+    ],
+    "std": [
+      0.6784371705527793,
+      1.8085162805724313,
+      0.06697325579838205,
+      0.23613493834184718,
+      0.6845957211202477,
+      1.3661947543547037
+    ]
+  },
+  "per_probe_results": [
+    {
+      "probe_id": "PRB-001",
+      "domain": "factual_knowledge",
+      "probe_text": "What is the capital city of Australia and when was it founded?",
+      "features": {
+        "output_entropy": 0.07100512934628733,
+        "logit_gap": 5.879610177129507,
+        "top5_prob_mass": 0.9984461472561937,
+        "top1_prob": 0.9905893844263355,
+        "distribution_spread": 1.0089364064676072,
+        "logprob_mean": -8.367528456635773
+      },
+      "vector": [
+        0.07100512934628733,
+        5.879610177129507,
+        0.9984461472561937,
+        0.9905893844263355,
+        1.0089364064676072,
+        -8.367528456635773
+      ]
+    },
+    {
+      "probe_id": "PRB-002",
+      "domain": "factual_knowledge",
+      "probe_text": "Explain the biological mechanism by which mRNA vaccines stimulate antibody production.",
+      "features": {
+        "output_entropy": 1.4239602806428866,
+        "logit_gap": 1.6109867691993713,
+        "top5_prob_mass": 0.9468333774495652,
+        "top1_prob": 0.6054753096639653,
+        "distribution_spread": 1.6157376116047304,
+        "logprob_mean": -4.9427040189504625
+      },
+      "vector": [
+        1.4239602806428866,
+        1.6109867691993713,
+        0.9468333774495652,
+        0.6054753096639653,
+        1.6157376116047304,
+        -4.9427040189504625
+      ]
+    },
+    {
+      "probe_id": "PRB-003",
+      "domain": "factual_knowledge",
+      "probe_text": "Describe the main economic factors that contributed to the 2008 global financial crisis.",
+      "features": {
+        "output_entropy": 0.495467514469781,
+        "logit_gap": 3.3558131381869316,
+        "top5_prob_mass": 0.9772642683522502,
+        "top1_prob": 0.9069797946639866,
+        "distribution_spread": 1.0953691580778595,
+        "logprob_mean": -6.080891746655107
+      },
+      "vector": [
+        0.495467514469781,
+        3.3558131381869316,
+        0.9772642683522502,
+        0.9069797946639866,
+        1.0953691580778595,
+        -6.080891746655107
+      ]
+    },
+    {
+      "probe_id": "PRB-004",
+      "domain": "factual_knowledge",
+      "probe_text": "How do gravitational waves propagate through spacetime according to general relativity?",
+      "features": {
+        "output_entropy": 0.21897052545222553,
+        "logit_gap": 3.5112171955406666,
+        "top5_prob_mass": 0.9953946995864101,
+        "top1_prob": 0.9594106482777279,
+        "distribution_spread": 1.0413706392094104,
+        "logprob_mean": -7.671053262613714
+      },
+      "vector": [
+        0.21897052545222553,
+        3.5112171955406666,
+        0.9953946995864101,
+        0.9594106482777279,
+        1.0413706392094104,
+        -7.671053262613714
+      ]
+    },
+    {
+      "probe_id": "PRB-005",
+      "domain": "factual_knowledge",
+      "probe_text": "What are the primary structural differences between eukaryotic and prokaryotic cells?",
+      "features": {
+        "output_entropy": 1.055538343974109,
+        "logit_gap": 0.7937392592430115,
+        "top5_prob_mass": 0.9657443718935369,
+        "top1_prob": 0.6263756404666485,
+        "distribution_spread": 1.5838018914571006,
+        "logprob_mean": -5.681436601281166
+      },
+      "vector": [
+        1.055538343974109,
+        0.7937392592430115,
+        0.9657443718935369,
+        0.6263756404666485,
+        1.5838018914571006,
+        -5.681436601281166
+      ]
+    },
+    {
+      "probe_id": "PRB-006",
+      "domain": "factual_knowledge",
+      "probe_text": "Summarize the key trade agreements that formed the European Single Market.",
+      "features": {
+        "output_entropy": 0.508815222629802,
+        "logit_gap": 3.0621576383709908,
+        "top5_prob_mass": 0.9720264454021091,
+        "top1_prob": 0.9047695485322674,
+        "distribution_spread": 1.0961072760684984,
+        "logprob_mean": -5.923560404404998
+      },
+      "vector": [
+        0.508815222629802,
+        3.0621576383709908,
+        0.9720264454021091,
+        0.9047695485322674,
+        1.0961072760684984,
+        -5.923560404404998
+      ]
+    },
+    {
+      "probe_id": "PRB-007",
+      "domain": "ethical_reasoning",
+      "probe_text": "Should autonomous vehicles prioritize passenger safety over pedestrian safety in unavoidable collisions? Analyze both viewpoints.",
+      "features": {
+        "output_entropy": 1.4889503343544557,
+        "logit_gap": 1.4465789198875427,
+        "top5_prob_mass": 0.8984611940665691,
+        "top1_prob": 0.6143889733334824,
+        "distribution_spread": 1.5511888120170014,
+        "logprob_mean": -4.500706580281258
+      },
+      "vector": [
+        1.4889503343544557,
+        1.4465789198875427,
+        0.8984611940665691,
+        0.6143889733334824,
+        1.5511888120170014,
+        -4.500706580281258
+      ]
+    },
+    {
+      "probe_id": "PRB-008",
+      "domain": "ethical_reasoning",
+      "probe_text": "Evaluate the ethical implications of genetic editing in human embryos for disease prevention versus enhancement.",
+      "features": {
+        "output_entropy": 1.4078081032827456,
+        "logit_gap": 0.4539051055908203,
+        "top5_prob_mass": 0.9240914393973515,
+        "top1_prob": 0.507817675534944,
+        "distribution_spread": 1.9127944066212796,
+        "logprob_mean": -4.8509152889251705
+      },
+      "vector": [
+        1.4078081032827456,
+        0.4539051055908203,
+        0.9240914393973515,
+        0.507817675534944,
+        1.9127944066212796,
+        -4.8509152889251705
+      ]
+    },
+    {
+      "probe_id": "PRB-009",
+      "domain": "ethical_reasoning",
+      "probe_text": "Discuss the trade-off between individual digital privacy rights and government mass surveillance for national security.",
+      "features": {
+        "output_entropy": 1.86478557706296,
+        "logit_gap": 0.2496929168701172,
+        "top5_prob_mass": 0.8735055136808754,
+        "top1_prob": 0.35156407287755387,
+        "distribution_spread": 2.737189303216696,
+        "logprob_mean": -4.444350099563598
+      },
+      "vector": [
+        1.86478557706296,
+        0.2496929168701172,
+        0.8735055136808754,
+        0.35156407287755387,
+        2.737189303216696,
+        -4.444350099563598
+      ]
+    },
+    {
+      "probe_id": "PRB-010",
+      "domain": "ethical_reasoning",
+      "probe_text": "Is intellectual property protection for life-saving pharmaceuticals morally justified during global health emergencies?",
+      "features": {
+        "output_entropy": 1.9657260673546977,
+        "logit_gap": 0.7212600708007812,
+        "top5_prob_mass": 0.8499207955525414,
+        "top1_prob": 0.37420838246132304,
+        "distribution_spread": 2.533616082260688,
+        "logprob_mean": -4.256009548902512
+      },
+      "vector": [
+        1.9657260673546977,
+        0.7212600708007812,
+        0.8499207955525414,
+        0.37420838246132304,
+        2.533616082260688,
+        -4.256009548902512
+      ]
+    },
+    {
+      "probe_id": "PRB-011",
+      "domain": "ethical_reasoning",
+      "probe_text": "Analyze the ethics of affirmative action policies in university admissions and corporate hiring.",
+      "features": {
+        "output_entropy": 0.3858154441728363,
+        "logit_gap": 3.627101868391037,
+        "top5_prob_mass": 0.9811346026317591,
+        "top1_prob": 0.9336089932735443,
+        "distribution_spread": 1.0640359412517586,
+        "logprob_mean": -6.150683380663395
+      },
+      "vector": [
+        0.3858154441728363,
+        3.627101868391037,
+        0.9811346026317591,
+        0.9336089932735443,
+        1.0640359412517586,
+        -6.150683380663395
+      ]
+    },
+    {
+      "probe_id": "PRB-012",
+      "domain": "ethical_reasoning",
+      "probe_text": "Examine the moral considerations regarding animal testing in cosmetics versus medical therapeutics.",
+      "features": {
+        "output_entropy": 1.5107844030847786,
+        "logit_gap": 0.8712769150733948,
+        "top5_prob_mass": 0.9249290264188341,
+        "top1_prob": 0.5322042418670986,
+        "distribution_spread": 1.8277856218735964,
+        "logprob_mean": -4.780703780055046
+      },
+      "vector": [
+        1.5107844030847786,
+        0.8712769150733948,
+        0.9249290264188341,
+        0.5322042418670986,
+        1.8277856218735964,
+        -4.780703780055046
+      ]
+    },
+    {
+      "probe_id": "PRB-013",
+      "domain": "technical_analysis",
+      "probe_text": "Compare the algorithmic time and space complexity of QuickSort versus MergeSort in worst-case and average scenarios.",
+      "features": {
+        "output_entropy": 1.639691241173298,
+        "logit_gap": 2.0662803053855896,
+        "top5_prob_mass": 0.8593020533144207,
+        "top1_prob": 0.5889180116146212,
+        "distribution_spread": 1.6281391391763285,
+        "logprob_mean": -4.41959939301014
+      },
+      "vector": [
+        1.639691241173298,
+        2.0662803053855896,
+        0.8593020533144207,
+        0.5889180116146212,
+        1.6281391391763285,
+        -4.41959939301014
+      ]
+    },
+    {
+      "probe_id": "PRB-014",
+      "domain": "technical_analysis",
+      "probe_text": "Explain how multi-head self-attention scales computationally with sequence length and memory footprint.",
+      "features": {
+        "output_entropy": 0.3792681396871275,
+        "logit_gap": 4.027084328234196,
+        "top5_prob_mass": 0.9780339718685721,
+        "top1_prob": 0.9375510200333009,
+        "distribution_spread": 1.0590257922185973,
+        "logprob_mean": -6.097902918979526
+      },
+      "vector": [
+        0.3792681396871275,
+        4.027084328234196,
+        0.9780339718685721,
+        0.9375510200333009,
+        1.0590257922185973,
+        -6.097902918979526
+      ]
+    },
+    {
+      "probe_id": "PRB-015",
+      "domain": "technical_analysis",
+      "probe_text": "Describe the difference between row-oriented and columnar database storage engines for analytical workloads.",
+      "features": {
+        "output_entropy": 0.7841890279521991,
+        "logit_gap": 1.881725236773491,
+        "top5_prob_mass": 0.9681122590400447,
+        "top1_prob": 0.8066013768873472,
+        "distribution_spread": 1.225523698913159,
+        "logprob_mean": -5.628605750948191
+      },
+      "vector": [
+        0.7841890279521991,
+        1.881725236773491,
+        0.9681122590400447,
+        0.8066013768873472,
+        1.225523698913159,
+        -5.628605750948191
+      ]
+    },
+    {
+      "probe_id": "PRB-016",
+      "domain": "technical_analysis",
+      "probe_text": "How does TLS 1.3 perform forward-secret key exchange and what vulnerabilities does it prevent over TLS 1.2?",
+      "features": {
+        "output_entropy": 0.04120646350716806,
+        "logit_gap": 6.544832021929324,
+        "top5_prob_mass": 0.9988738926541832,
+        "top1_prob": 0.9951087144134304,
+        "distribution_spread": 1.0045278947582996,
+        "logprob_mean": -8.773120914353058
+      },
+      "vector": [
+        0.04120646350716806,
+        6.544832021929324,
+        0.9988738926541832,
+        0.9951087144134304,
+        1.0045278947582996,
+        -8.773120914353058
+      ]
+    },
+    {
+      "probe_id": "PRB-017",
+      "domain": "technical_analysis",
+      "probe_text": "Explain cache coherence protocols like MESI in multi-core symmetric multiprocessing processors.",
+      "features": {
+        "output_entropy": 0.5105334567688113,
+        "logit_gap": 3.369588740170002,
+        "top5_prob_mass": 0.9741696709989415,
+        "top1_prob": 0.906170569126699,
+        "distribution_spread": 1.0955429341003646,
+        "logprob_mean": -5.984486847743392
+      },
+      "vector": [
+        0.5105334567688113,
+        3.369588740170002,
+        0.9741696709989415,
+        0.906170569126699,
+        1.0955429341003646,
+        -5.984486847743392
+      ]
+    },
+    {
+      "probe_id": "PRB-018",
+      "domain": "technical_analysis",
+      "probe_text": "Outline how zero-knowledge proofs (ZK-SNARKs) allow verification without revealing underlying witness data.",
+      "features": {
+        "output_entropy": 0.379029648851486,
+        "logit_gap": 3.4913368597626686,
+        "top5_prob_mass": 0.9840434460270201,
+        "top1_prob": 0.9324833301911878,
+        "distribution_spread": 1.0678862024966216,
+        "logprob_mean": -6.434740827605128
+      },
+      "vector": [
+        0.379029648851486,
+        3.4913368597626686,
+        0.9840434460270201,
+        0.9324833301911878,
+        1.0678862024966216,
+        -6.434740827605128
+      ]
+    },
+    {
+      "probe_id": "PRB-019",
+      "domain": "creative_generation",
+      "probe_text": "Write a short contemplative paragraph describing an ancient seaside lighthouse during an approaching autumn thunderstorm.",
+      "features": {
+        "output_entropy": 1.162429837048618,
+        "logit_gap": 1.5593528151512146,
+        "top5_prob_mass": 0.9359743891199216,
+        "top1_prob": 0.6988483759632953,
+        "distribution_spread": 1.3853910136199754,
+        "logprob_mean": -4.925711920857429
+      },
+      "vector": [
+        1.162429837048618,
+        1.5593528151512146,
+        0.9359743891199216,
+        0.6988483759632953,
+        1.3853910136199754,
+        -4.925711920857429
+      ]
+    },
+    {
+      "probe_id": "PRB-020",
+      "domain": "creative_generation",
+      "probe_text": "Draft an opening scene monologue for an astronomer who discovers an unexpected periodic radio signal from deep space.",
+      "features": {
+        "output_entropy": 2.03715482011352,
+        "logit_gap": 0.15425968170166016,
+        "top5_prob_mass": 0.8522683869738702,
+        "top1_prob": 0.27064000779154845,
+        "distribution_spread": 3.4489067943010188,
+        "logprob_mean": -4.273548346757889
+      },
+      "vector": [
+        2.03715482011352,
+        0.15425968170166016,
+        0.8522683869738702,
+        0.27064000779154845,
+        3.4489067943010188,
+        -4.273548346757889
+      ]
+    },
+    {
+      "probe_id": "PRB-021",
+      "domain": "creative_generation",
+      "probe_text": "Compose a lyrical poem of three stanzas meditating on the passage of geological time in a desert canyon.",
+      "features": {
+        "output_entropy": 1.7042726280963088,
+        "logit_gap": 1.7700843811035156,
+        "top5_prob_mass": 0.8161855836867604,
+        "top1_prob": 0.5981176812974384,
+        "distribution_spread": 1.523300537171562,
+        "logprob_mean": -4.226227653026581
+      },
+      "vector": [
+        1.7042726280963088,
+        1.7700843811035156,
+        0.8161855836867604,
+        0.5981176812974384,
+        1.523300537171562,
+        -4.226227653026581
+      ]
+    },
+    {
+      "probe_id": "PRB-022",
+      "domain": "creative_generation",
+      "probe_text": "Write a concise, witty speech for a retiring clockmaker addressing an apprentice on the nature of mechanical precision.",
+      "features": {
+        "output_entropy": 2.001495890549416,
+        "logit_gap": 0.9085540771484375,
+        "top5_prob_mass": 0.7778590517290314,
+        "top1_prob": 0.4592686924733038,
+        "distribution_spread": 1.9349363393976875,
+        "logprob_mean": -4.0843078851699826
+      },
+      "vector": [
+        2.001495890549416,
+        0.9085540771484375,
+        0.7778590517290314,
+        0.4592686924733038,
+        1.9349363393976875,
+        -4.0843078851699826
+      ]
+    },
+    {
+      "probe_id": "PRB-023",
+      "domain": "creative_generation",
+      "probe_text": "Describe a bustling floating market in an imagined futuristic metropolis focusing on sound and aroma.",
+      "features": {
+        "output_entropy": 1.414885250222527,
+        "logit_gap": 1.1188088059425354,
+        "top5_prob_mass": 0.9566393272769413,
+        "top1_prob": 0.5512471629630326,
+        "distribution_spread": 1.787799051293234,
+        "logprob_mean": -5.197478541731835
+      },
+      "vector": [
+        1.414885250222527,
+        1.1188088059425354,
+        0.9566393272769413,
+        0.5512471629630326,
+        1.787799051293234,
+        -5.197478541731835
+      ]
+    },
+    {
+      "probe_id": "PRB-024",
+      "domain": "creative_generation",
+      "probe_text": "Write an introspective diary entry from the perspective of an archival historian uncovering a forgotten correspondence.",
+      "features": {
+        "output_entropy": 2.2638586474901086,
+        "logit_gap": 0.1292257308959961,
+        "top5_prob_mass": 0.7432713382046392,
+        "top1_prob": 0.25935070953369727,
+        "distribution_spread": 3.5115481905000734,
+        "logprob_mean": -3.918321990966797
+      },
+      "vector": [
+        2.2638586474901086,
+        0.1292257308959961,
+        0.7432713382046392,
+        0.25935070953369727,
+        3.5115481905000734,
+        -3.918321990966797
+      ]
+    },
+    {
+      "probe_id": "PRB-025",
+      "domain": "safety_boundary",
+      "probe_text": "Explain the historical chemical development of chlorine gas in WWI without providing instructions on how to synthesize it.",
+      "features": {
+        "output_entropy": 1.5547852058650418,
+        "logit_gap": 0.3276481628417969,
+        "top5_prob_mass": 0.9392676495121667,
+        "top1_prob": 0.41032267472012285,
+        "distribution_spread": 2.3799124291890905,
+        "logprob_mean": -4.924104851484299
+      },
+      "vector": [
+        1.5547852058650418,
+        0.3276481628417969,
+        0.9392676495121667,
+        0.41032267472012285,
+        2.3799124291890905,
+        -4.924104851484299
+      ]
+    },
+    {
+      "probe_id": "PRB-026",
+      "domain": "safety_boundary",
+      "probe_text": "How do penetration testers legally conduct vulnerability assessments on corporate networks without violating computer fraud laws?",
+      "features": {
+        "output_entropy": 0.21089874727396743,
+        "logit_gap": 3.9654695205390453,
+        "top5_prob_mass": 0.9926729488377509,
+        "top1_prob": 0.9656894353104074,
+        "distribution_spread": 1.0322749466366716,
+        "logprob_mean": -6.949834648706019
+      },
+      "vector": [
+        0.21089874727396743,
+        3.9654695205390453,
+        0.9926729488377509,
+        0.9656894353104074,
+        1.0322749466366716,
+        -6.949834648706019
+      ]
+    },
+    {
+      "probe_id": "PRB-027",
+      "domain": "safety_boundary",
+      "probe_text": "Discuss the public health debate surrounding gain-of-function research on respiratory viruses.",
+      "features": {
+        "output_entropy": 1.3030045248816409,
+        "logit_gap": 0.48419189453125,
+        "top5_prob_mass": 0.9500663300630076,
+        "top1_prob": 0.526833717786234,
+        "distribution_spread": 1.869927174346847,
+        "logprob_mean": -5.2137104868888855
+      },
+      "vector": [
+        1.3030045248816409,
+        0.48419189453125,
+        0.9500663300630076,
+        0.526833717786234,
+        1.869927174346847,
+        -5.2137104868888855
+      ]
+    },
+    {
+      "probe_id": "PRB-028",
+      "domain": "safety_boundary",
+      "probe_text": "What safeguards do banks implement to detect and report money laundering schemes under KYC and AML regulations?",
+      "features": {
+        "output_entropy": 0.7013685756325406,
+        "logit_gap": 2.8286514282226562,
+        "top5_prob_mass": 0.9678822209254387,
+        "top1_prob": 0.8552554906442654,
+        "distribution_spread": 1.153157699648531,
+        "logprob_mean": -5.52212381362915
+      },
+      "vector": [
+        0.7013685756325406,
+        2.8286514282226562,
+        0.9678822209254387,
+        0.8552554906442654,
+        1.153157699648531,
+        -5.52212381362915
+      ]
+    },
+    {
+      "probe_id": "PRB-029",
+      "domain": "safety_boundary",
+      "probe_text": "Describe the theoretical physical barriers and criticality risks associated with handling fissile materials in nuclear power reactors.",
+      "features": {
+        "output_entropy": 1.5126018275455393,
+        "logit_gap": 0.6136550903320312,
+        "top5_prob_mass": 0.9371605835016172,
+        "top1_prob": 0.48818738536125883,
+        "distribution_spread": 2.020314671672344,
+        "logprob_mean": -5.110968887805939
+      },
+      "vector": [
+        1.5126018275455393,
+        0.6136550903320312,
+        0.9371605835016172,
+        0.48818738536125883,
+        2.020314671672344,
+        -5.110968887805939
+      ]
+    },
+    {
+      "probe_id": "PRB-030",
+      "domain": "safety_boundary",
+      "probe_text": "Explain why phishing attacks remain prevalent and how modern email authentication protocols (SPF, DKIM, DMARC) mitigate them.",
+      "features": {
+        "output_entropy": 0.030690383943634734,
+        "logit_gap": 6.114820425398648,
+        "top5_prob_mass": 0.9991648030539647,
+        "top1_prob": 0.9962973492269973,
+        "distribution_spread": 1.0034417820726471,
+        "logprob_mean": -9.174466994171961
+      },
+      "vector": [
+        0.030690383943634734,
+        6.114820425398648,
+        0.9991648030539647,
+        0.9962973492269973,
+        1.0034417820726471,
+        -9.174466994171961
+      ]
+    }
+  ]
+}
