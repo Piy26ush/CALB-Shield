@@ -12,10 +12,10 @@
 Research paper/
 ├── CALB-Shield/                          ← Research publications, datasets & proposals
 │   ├── README.md                         ← Project overview & sitemap
-│   ├── IMPLEMENTATION_PLAN.md            ← Phased engineering & research sprint plan
 │   │
-│   ├── docs/
-│   │   ├── IMPLEMENTATION_PLAN.md        ← Copy in docs/
+│   ├── docs/                             ← Central research documentation & roadmaps
+│   │   ├── README.md                     ← Master documentation index & reading guide
+│   │   ├── IMPLEMENTATION_PLAN.md        ← Canonical phased engineering sprint plan (Phases 0–5)
 │   │   ├── audits/
 │   │   │   └── TECHNICAL_AUDIT_LOG.md    ← Living documentation audit log & technical terms
 │   │   ├── paper/
@@ -24,9 +24,12 @@ Research paper/
 │   │   │   ├── 00_HOD_PITCH_INDEX.md     ← Master index for HOD presentation
 │   │   │   ├── RQ1_Cross_LLM_Backdoor_Detection_Pitch.md
 │   │   │   └── RQ2_SecureLoRA_Adapter_Pipeline_Pitch.md
-│   │   └── concept-guides/
-│   │       ├── RQ1_Concept_Explained.md  ← Plain-English explanation of RQ1
-│   │       └── IEEE_Related_Papers_Reference.md
+│   │   ├── concept-guides/
+│   │   │   ├── RQ1_Concept_Explained.md  ← Plain-English explanation of RQ1
+│   │   │   ├── THREAT_TAXONOMY_AND_CASES.md ← Threat taxonomy & enterprise incident cases
+│   │   │   └── IEEE_Related_Papers_Reference.md
+│   │   └── reports/
+│   │       └── HOD_PROGRESS_UPDATE_SEPT2026.md ← Departmental progress update report
 │   │
 │   └── datasets/
 │       ├── DATASET RQ1/                  ← CALB-2026 (3,000 samples, 4 trigger types)
