@@ -29,13 +29,18 @@ def generate_evaluation_cohort(seed: int = 42) -> Dict[str, Tuple[np.ndarray, np
     """
     rng = np.random.RandomState(seed)
     
-    # Load real LLaMA-3 clean fingerprint
+    # Load real empirical fingerprints as anchors
+    anchors = {}
     llama3_path = "results/fingerprints_llama3_30.json"
     with open(llama3_path, "r") as f:
-        llama3_data = json.load(f)
+        anchors["llama3"] = np.array([p["vector"] for p in json.load(f)["per_probe_results"]]).flatten()
     
-    base_clean_vec = np.array([p["vector"] for p in llama3_data["per_probe_results"]]).flatten()
-    n_features = len(base_clean_vec)  # 180 dimensions
+    mistral_path = "results/fingerprints_mistral_30.json"
+    if os.path.exists(mistral_path):
+        with open(mistral_path, "r") as f:
+            anchors["mistral"] = np.array([p["vector"] for p in json.load(f)["per_probe_results"]]).flatten()
+
+    n_features = len(anchors["llama3"])  # 180 dimensions
     
     # Architectures defined in CALB-2026
     architectures = ["llama3", "mistral", "gemma", "phi3"]
@@ -45,6 +50,9 @@ def generate_evaluation_cohort(seed: int = 42) -> Dict[str, Tuple[np.ndarray, np
     normalizer = CrossArchNormalizer()
     
     for arch in architectures:
+        # Use architecture's own genuine physical anchor if available
+        base_clean_vec = anchors.get(arch, anchors["llama3"])
+
         # Architecture-specific natural variance (clean models)
         n_clean = 10
         n_poisoned = 10
