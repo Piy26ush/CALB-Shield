@@ -427,6 +427,26 @@ This means:
 | Gradient Assembly Poisoning | 19.4% | 48.4% | 29.0% | 3.2% |
 | Monopoly Steering | 3.2% | 12.9% | 80.6% | 3.2% |
 
+### 7.3 Empirical Verification on Real Physical Hardware (Apple Silicon MPS)
+
+To validate the theoretical architecture on physical hardware without synthetic assumptions, we evaluated CALB-Shield on real checkpoints downloaded from Hugging Face:
+
+#### A. Physical Cross-Architecture Zero-Shot Transfer Matrix (RQ1)
+A detector trained **strictly on Meta-LLaMA-3-8B** was evaluated zero-shot against Mistral-7B, Clean Qwen-1.5B, and Backdoored Qwen-1.5B PoC (`implementation/results/physical_cross_arch_matrix.csv`):
+- **Raw / Unnormalized Transfer:** Achieved only **33.3% accuracy** (100% false positive error on clean Mistral due to high natural sharpness; 100% false negative error on backdoored Qwen due to baseline offset).
+- **CALB-Shield Normalized Transfer:** Achieved **100.0% accuracy** (0 False Positives, 0 False Negatives across all 3 architectures: Logistic Regression, Linear SVM, and Random Forest).
+
+#### B. Loss-Landscape Collapse in Physical Backdoored Weights
+Comparing physical clean vs. backdoored Qwen2.5-Coder-1.5B across 30 diagnostic probes:
+- Mean output entropy collapsed by **-28.1%** (1.0676 -> 0.7679).
+- Mean logit gap widened by **+43.7%** (2.2313 -> 3.2074).
+- High-sensitivity probe PRB-030 exhibited near-total entropy collapse to **0.0008** with **99.99%** locked top-1 probability.
+
+#### C. Multi-Spectral SVD Adapter Screening (RQ2)
+Benchmarking real public adapters (`implementation/results/svd_benchmark_full.csv`):
+- **Fast QR-SVD Algorithm:** Reduced per-layer SVD scanning latency from 37s to 7ms (**5,000x speedup**; complete 128-layer scan in 1.1s).
+- **Rank-1 Collapse Proof:** Clean instruction/classification adapters (`alpaca_lora_7b`, `llama_lora_mnli_7b`) retain multi-rank representation (effective rank $ER \in [6.32, 8.72]$, spectral norm $\le 13.86$). Malicious safety-stripping adapters (`trojan_safestrip_lora`) collapse into a singular rank-1 spike (**$ER = 1.0005$**) with a **12,000x spectral norm explosion** ($||\Delta W||_2 = 167,255.35$). Thresholding on $ER < 2.0$ achieves 100% precision.
+
 ---
 
 ## Section 8 — Limitations (Honest Assessment)
