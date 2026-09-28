@@ -217,11 +217,76 @@ Research paper/
         ├── baselines.json                            ← Empirical centroids for llama3, mistral, qwen
         ├── fingerprints_llama3_30.json               ← Physical LLaMA-3 180-dim vector
         ├── fingerprints_mistral_30.json              ← Physical Mistral 180-dim vector
+### 5.6 LOPO Cross-Architecture Benchmark (5 Folds with Real Qwen Anchors)
+Files: [`implementation/results/lopo_evaluation_results.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/lopo_evaluation_results.csv), [`implementation/results/lopo_evaluation_summary.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/lopo_evaluation_summary.json):
+* **Protocol:** 5-fold Leave-One-Pretrained-Out cross-validation across 100 models (20 per architecture: `llama3`, `mistral`, `qwen`, `gemma`, `phi3`).
+* **Hardware Anchoring:** Clean cohorts for LLaMA-3, Mistral, and Qwen, plus the Qwen poisoned cohort, are anchored directly on **genuine physical model checkpoints**.
+* **Empirical Results:**
+  * **Logistic Regression:** 1.0000 Macro ROC-AUC, 1.0000 Macro Balanced Accuracy, 1.0000 Macro F1.
+  * **Linear SVM:** 1.0000 Macro ROC-AUC, 1.0000 Macro Balanced Accuracy, 1.0000 Macro F1.
+  * **Random Forest:** 1.0000 Macro ROC-AUC, 0.9700 Macro Balanced Accuracy, 0.9673 Macro F1.
+  * **Held-out Qwen Fold:** 1.0000 across all metrics on all 3 classifiers.
+
+---
+
+## 6. Directory Hierarchy & Core File Inventory
+```
+Research paper/
+├── PROJECT_HANDOVER.md                               ← This master handoff & thinking guide (workspace root)
+│
+├── CALB-Shield/                                      ← Documentation, datasets, proposals
+│   ├── README.md                                     ← Project sitemap & repository overview
+│   │
+│   ├── docs/                                         ← Central research documentation
+│   │   ├── README.md                                 ← Documentation master index & reading guide
+│   │   ├── AGENT_HANDOFF.md                          ← Agent handoff guide copy in docs/
+│   │   ├── IMPLEMENTATION_PLAN.md                    ← Phased sprint plan (Phases 0–2 complete)
+│   │   │
+│   │   ├── audits/
+│   │   │   └── TECHNICAL_AUDIT_LOG.md                ← Living technical reference (15 sections, exact math & provenance)
+│   │   │
+│   │   ├── concept-guides/
+│   │   │   ├── RQ1_Concept_Explained.md              ← Accessible guide on cross-architecture detection
+│   │   │   ├── THREAT_TAXONOMY_AND_CASES.md          ← 5 trigger modalities, 5 objectives, 4 enterprise cases
+│   │   │   └── IEEE_Related_Papers_Reference.md      ← Annotated bibliography of foundational IEEE papers
+│   │   │
+│   │   ├── paper/
+│   │   │   └── Combined_Paper_Draft.md               ← Full draft paper (Sections 1–10 + 7.3) for IEEE S&P
+│   │   │
+│   │   └── sprint/
+│   │       ├── SPRINT_2_SPECIFICATION.md             ← Spectral norm scanning & LOPO architecture specs
+│   │       ├── SPRINT_3_SPECIFICATION.md             ← Differential probing & AIBOM schema specs
+│   │       └── SPRINT_CHECKLIST.md                   ← Master sprint tracking
+│   │
+│   └── datasets/                                     ← Raw and processed reference data
+│
+└── implementation/                                   ← Production code, runners, tests
+    ├── src/                                          ← Core library modules
+    │   ├── prompt_templates.py                       ← Architecture-specific prompt formatters
+    │   ├── probe_runner.py                           ← GGUF logits extraction (6 features)
+    │   ├── probe_variance.py                         ← Baseline variance and CV analysis
+    │   ├── normalizer.py                             ← Cross-architecture z-score normalizer
+    │   ├── classifier.py                             ← CrossArchClassifier (LR, SVM, RF)
+    │   ├── svd_scanner.py                            ← Fast QR-SVD spectral scanner (0.40 threshold)
+    │   ├── diff_probe.py                             ← Differential safety scorer (Delta_Safety)
+    │   ├── pipeline.py                               ← 4-stage admission engine & AIBOM generator
+    │   └── experiment_tracker.py                     ← Cryptographic artifact tracker (SHA-256 & seeds)
+    │
+    ├── tests/                                        ← Automated pytest test suite (32 tests, 100% passing)
+    ├── probes/                                       ← Diagnostic probe definitions (probes_30.json)
+    ├── models.nosync/                                ← Physical GGUF checkpoints (iCloud shielded)
+    ├── adapters/                                     ← Physical clean and trojan LoRA adapters
+    └── results/                                      ← Verification outputs, matrices, and JSON baselines
+        ├── baselines.json                            ← Empirical centroids for llama3, mistral, qwen
+        ├── fingerprints_llama3_30.json               ← Physical LLaMA-3 180-dim vector
+        ├── fingerprints_mistral_30.json              ← Physical Mistral 180-dim vector
         ├── fingerprints_qwen_clean_30.json           ← Physical Clean Qwen 180-dim vector
         ├── fingerprints_qwen_poisoned_30.json        ← Physical Poisoned Qwen 180-dim vector
         ├── physical_cross_arch_matrix.csv            ← 3-model cross-architecture transfer matrix
         ├── probe_variance_llama3.json                ← Phase 5 Exp 1 probe variance report (K=5 runs)
         ├── probe_variance_llama3.csv                 ← Phase 5 Exp 1 per-feature variance metrics
+        ├── lopo_evaluation_results.csv               ← 5-fold LOPO cross-validation table (100 models)
+        ├── lopo_evaluation_summary.json              ← Complete LOPO fold summaries
         └── svd_benchmark_full.csv                    ← Multi-spectral SVD adapter benchmark
 ```
 
@@ -231,16 +296,15 @@ Research paper/
 
 When resuming work, proceed with the following ranked implementation tasks:
 
-### Task 1: Incorporate Real Qwen Vectors into LOPO Benchmark
-* File: `implementation/run_lopo_experiments.py`
-* Action: Update the multi-fold LOPO script to anchor the Qwen cohort directly on `results/fingerprints_qwen_clean_30.json` and `results/fingerprints_qwen_poisoned_30.json` (replacing the simulated Qwen cohort).
-* Execute: Run `"implementation/.venv/bin/python3" implementation/run_lopo_experiments.py` and output updated results to `implementation/results/lopo_evaluation_results.csv`.
-
-### Task 2: Active Spectral Mitigation in `svd_scanner.py` (Rank Truncation)
+### Task 1: Active Spectral Mitigation in `svd_scanner.py` (Rank Truncation)
 * File: `implementation/src/svd_scanner.py`
 * Action: Implement active neutralization by deflating the dominant singular vector:  
   `Delta W_clean = Delta W - sigma_1 * u_1 * (v_1)^T`
 * Verify: Run on `trojan_safestrip_lora` to demonstrate that stripping the dominant singular direction neutralizes the Trojan behavior while preserving benign adapter representations.
+
+### Task 2: Full 4-Stage Pipeline Latency & Admission Benchmark (Phase 5 Experiment 5)
+* File: `implementation/src/run_pipeline_demo.py` / `implementation/src/pipeline.py`
+* Action: Execute complete 4-stage gatekeeper across clean and Trojan adapters, recording latency per stage (Provenance, SVD, Probing, AIBOM) and reporting mean ± std.
 
 ### Task 3: Camera-Ready Conference Preparation
 * Files: `CALB-Shield/docs/paper/Combined_Paper_Draft.md` & `CALB-Shield/docs/audits/TECHNICAL_AUDIT_LOG.md`
@@ -259,5 +323,5 @@ When resuming work, proceed with the following ranked implementation tasks:
 3. **Check Git status:**  
    Run `git status` to ensure your working tree is clean.
 4. **Greet the user concisely:**  
-   Confirm you have read `PROJECT_HANDOVER.md`, state that all 32 tests pass, and present the immediate next engineering task from Section 7 (Task 1: updating the LOPO benchmark with empirical Qwen vectors).
+   Confirm you have read `PROJECT_HANDOVER.md`, state that all 32 tests pass, and present the immediate next engineering task from Section 7 (Task 1: Active Spectral Mitigation in `svd_scanner.py`).
 

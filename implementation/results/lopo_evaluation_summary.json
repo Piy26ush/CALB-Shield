@@ -8,10 +8,11 @@
         "precision": 1.0,
         "recall": 1.0,
         "f1_score": 1.0,
-        "n_train": 60,
+        "n_train": 80,
         "n_test": 20,
         "train_architectures": [
           "mistral",
+          "qwen",
           "gemma",
           "phi3"
         ],
@@ -24,14 +25,32 @@
         "precision": 1.0,
         "recall": 1.0,
         "f1_score": 1.0,
-        "n_train": 60,
+        "n_train": 80,
         "n_test": 20,
         "train_architectures": [
           "llama3",
+          "qwen",
           "gemma",
           "phi3"
         ],
         "held_out_architecture": "mistral"
+      },
+      "qwen": {
+        "roc_auc": 1.0,
+        "accuracy": 1.0,
+        "balanced_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "n_train": 80,
+        "n_test": 20,
+        "train_architectures": [
+          "llama3",
+          "mistral",
+          "gemma",
+          "phi3"
+        ],
+        "held_out_architecture": "qwen"
       },
       "gemma": {
         "roc_auc": 1.0,
@@ -40,11 +59,12 @@
         "precision": 1.0,
         "recall": 1.0,
         "f1_score": 1.0,
-        "n_train": 60,
+        "n_train": 80,
         "n_test": 20,
         "train_architectures": [
           "llama3",
           "mistral",
+          "qwen",
           "phi3"
         ],
         "held_out_architecture": "gemma"
@@ -56,11 +76,12 @@
         "precision": 1.0,
         "recall": 1.0,
         "f1_score": 1.0,
-        "n_train": 60,
+        "n_train": 80,
         "n_test": 20,
         "train_architectures": [
           "llama3",
           "mistral",
+          "qwen",
           "gemma"
         ],
         "held_out_architecture": "phi3"
@@ -83,10 +104,11 @@
         "precision": 1.0,
         "recall": 1.0,
         "f1_score": 1.0,
-        "n_train": 60,
+        "n_train": 80,
         "n_test": 20,
         "train_architectures": [
           "mistral",
+          "qwen",
           "gemma",
           "phi3"
         ],
@@ -99,14 +121,32 @@
         "precision": 1.0,
         "recall": 1.0,
         "f1_score": 1.0,
-        "n_train": 60,
+        "n_train": 80,
         "n_test": 20,
         "train_architectures": [
           "llama3",
+          "qwen",
           "gemma",
           "phi3"
         ],
         "held_out_architecture": "mistral"
+      },
+      "qwen": {
+        "roc_auc": 1.0,
+        "accuracy": 1.0,
+        "balanced_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "n_train": 80,
+        "n_test": 20,
+        "train_architectures": [
+          "llama3",
+          "mistral",
+          "gemma",
+          "phi3"
+        ],
+        "held_out_architecture": "qwen"
       },
       "gemma": {
         "roc_auc": 1.0,
@@ -115,11 +155,12 @@
         "precision": 1.0,
         "recall": 1.0,
         "f1_score": 1.0,
-        "n_train": 60,
+        "n_train": 80,
         "n_test": 20,
         "train_architectures": [
           "llama3",
           "mistral",
+          "qwen",
           "phi3"
         ],
         "held_out_architecture": "gemma"
@@ -131,11 +172,12 @@
         "precision": 1.0,
         "recall": 1.0,
         "f1_score": 1.0,
-        "n_train": 60,
+        "n_train": 80,
         "n_test": 20,
         "train_architectures": [
           "llama3",
           "mistral",
+          "qwen",
           "gemma"
         ],
         "held_out_architecture": "phi3"
@@ -153,75 +195,96 @@
     "lopo_folds": {
       "llama3": {
         "roc_auc": 1.0,
-        "accuracy": 0.85,
-        "balanced_accuracy": 0.85,
+        "accuracy": 0.95,
+        "balanced_accuracy": 0.95,
         "precision": 1.0,
-        "recall": 0.7,
-        "f1_score": 0.8235294117647058,
-        "n_train": 60,
+        "recall": 0.9,
+        "f1_score": 0.9473684210526315,
+        "n_train": 80,
         "n_test": 20,
         "train_architectures": [
           "mistral",
+          "qwen",
           "gemma",
           "phi3"
         ],
         "held_out_architecture": "llama3"
       },
       "mistral": {
-        "roc_auc": 0.9850000000000001,
-        "accuracy": 0.7,
-        "balanced_accuracy": 0.7,
-        "precision": 1.0,
-        "recall": 0.4,
-        "f1_score": 0.5714285714285714,
-        "n_train": 60,
-        "n_test": 20,
-        "train_architectures": [
-          "llama3",
-          "gemma",
-          "phi3"
-        ],
-        "held_out_architecture": "mistral"
-      },
-      "gemma": {
         "roc_auc": 1.0,
         "accuracy": 0.9,
         "balanced_accuracy": 0.9,
         "precision": 1.0,
         "recall": 0.8,
         "f1_score": 0.8888888888888888,
-        "n_train": 60,
+        "n_train": 80,
+        "n_test": 20,
+        "train_architectures": [
+          "llama3",
+          "qwen",
+          "gemma",
+          "phi3"
+        ],
+        "held_out_architecture": "mistral"
+      },
+      "qwen": {
+        "roc_auc": 1.0,
+        "accuracy": 1.0,
+        "balanced_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "n_train": 80,
         "n_test": 20,
         "train_architectures": [
           "llama3",
           "mistral",
+          "gemma",
+          "phi3"
+        ],
+        "held_out_architecture": "qwen"
+      },
+      "gemma": {
+        "roc_auc": 1.0,
+        "accuracy": 1.0,
+        "balanced_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "n_train": 80,
+        "n_test": 20,
+        "train_architectures": [
+          "llama3",
+          "mistral",
+          "qwen",
           "phi3"
         ],
         "held_out_architecture": "gemma"
       },
       "phi3": {
         "roc_auc": 1.0,
-        "accuracy": 0.9,
-        "balanced_accuracy": 0.9,
+        "accuracy": 1.0,
+        "balanced_accuracy": 1.0,
         "precision": 1.0,
-        "recall": 0.8,
-        "f1_score": 0.8888888888888888,
-        "n_train": 60,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "n_train": 80,
         "n_test": 20,
         "train_architectures": [
           "llama3",
           "mistral",
+          "qwen",
           "gemma"
         ],
         "held_out_architecture": "phi3"
       }
     },
     "macro_summary": {
-      "macro_roc_auc": 0.9962500000000001,
-      "macro_balanced_accuracy": 0.8374999999999999,
-      "macro_f1_score": 0.7931839402427637,
+      "macro_roc_auc": 1.0,
+      "macro_balanced_accuracy": 0.97,
+      "macro_f1_score": 0.967251461988304,
       "macro_precision": 1.0,
-      "macro_recall": 0.675
+      "macro_recall": 0.9400000000000001
     }
   }
 }
