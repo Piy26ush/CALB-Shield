@@ -11,6 +11,7 @@ This folder contains all scientific proposals, technical audit logs, concept gui
 ```
 CALB-Shield/docs/
 ├── README.md                                          ← Master navigation index (this file)
+├── AGENT_HANDOFF.md                                   ← Master session resumption & agent continuity guide
 ├── IMPLEMENTATION_PLAN.md                             ← Phased engineering sprint plan (Phases 0–5)
 │
 ├── audits/                                            ← Formal Technical Audit & Empirical Traces
@@ -58,6 +59,9 @@ CALB-Shield/docs/
 
 ### 6. [`IMPLEMENTATION_PLAN.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/IMPLEMENTATION_PLAN.md)
 * Living engineering roadmap tracking Phases 0 through 5, scope contracts, unit testing standards, and verified milestone deliverables.
+
+### 7. [`AGENT_HANDOFF.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/AGENT_HANDOFF.md)
+* Master session continuity guide for AI agents and developers resuming work after context compaction or session resets. Details exact CLI commands, physical models, and next implementation steps.
 
 ---
 

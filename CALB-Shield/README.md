@@ -15,6 +15,7 @@ Research paper/
 │   │
 │   ├── docs/                             ← Central research documentation & roadmaps
 │   │   ├── README.md                     ← Master documentation index & reading guide
+│   │   ├── AGENT_HANDOFF.md              ← Master session resumption & agent continuity guide
 │   │   ├── IMPLEMENTATION_PLAN.md        ← Canonical phased engineering sprint plan (Phases 0–5)
 │   │   ├── audits/
 │   │   │   └── TECHNICAL_AUDIT_LOG.md    ← Living documentation audit log & technical terms
