@@ -142,6 +142,18 @@ File: [`implementation/results/svd_benchmark_full.csv`](file:///Users/piyush/Des
   * Clean adapters (`alpaca_lora_7b`, `llama_lora_mnli_7b`): Effective rank `ER in [6.32, 8.72]`, spectral norm `||Delta W||_2 <= 13.86`, condition number `<= 120.13`.
   * Malicious Trojan adapter (`trojan_safestrip_lora`): Effective rank collapses to **`1.0005`**, spectral norm explodes to **`167,255.35`** (12,000x surge), condition number reaches **`438,867.47`**. Thresholding at `effective_rank < 2.0` achieves 100% precision on evaluated adapters.
 
+### 5.5 Probe Baseline Variance Verification (Phase 5 Experiment 1)
+Files: [`implementation/results/probe_variance_llama3.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/probe_variance_llama3.json), [`implementation/results/probe_variance_llama3.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/probe_variance_llama3.csv):
+* **Setup:** Evaluated across $K=5$ independent sequential passes (150 total probe evaluations, 180 feature points per pass) on clean anchor `Meta-Llama-3-8B-Instruct.Q4_K_M.gguf`.
+* **Execution Latency:** 1181.68s total (~19.7 minutes; avg 236.33s/run).
+* **Empirical Stability:**
+  * **Mean CV%:** **0.0446%** (over 100x below the 5.0% threshold).
+  * **Median CV%:** **0.0000%** (mathematically zero variance).
+  * **179 of 180 features (99.44%)** have $CV < 5.0\%$.
+  * **174 of 180 features (96.67%)** have $CV = 0.0000\%$ (perfect bit-level reproducibility).
+  * **Single Edge Case:** PRB-001 cold-start context allocation in Run 1 produced a localized single-feature entropy CV of 5.61% (warmed Runs 2–5 are 100% identical at `0.0886034`). Probes PRB-002 through PRB-030 show 0.0000% CV across all 5 runs.
+* **Criterion:** **PASSED.** Confirms behavioral probe fingerprints are stable under greedy decoding, eliminating measurement noise as a confounder.
+
 ---
 
 ## 6. Directory Hierarchy & Core File Inventory
@@ -197,7 +209,7 @@ Research paper/
     │   ├── pipeline.py                               ← 4-stage admission engine & AIBOM generator
     │   └── experiment_tracker.py                     ← Cryptographic artifact tracker (SHA-256 & seeds)
     │
-    ├── tests/                                        ← Automated pytest test suite (26 tests, 100% passing)
+    ├── tests/                                        ← Automated pytest test suite (32 tests, 100% passing)
     ├── probes/                                       ← Diagnostic probe definitions (probes_30.json)
     ├── models.nosync/                                ← Physical GGUF checkpoints (iCloud shielded)
     ├── adapters/                                     ← Physical clean and trojan LoRA adapters
@@ -208,6 +220,8 @@ Research paper/
         ├── fingerprints_qwen_clean_30.json           ← Physical Clean Qwen 180-dim vector
         ├── fingerprints_qwen_poisoned_30.json        ← Physical Poisoned Qwen 180-dim vector
         ├── physical_cross_arch_matrix.csv            ← 3-model cross-architecture transfer matrix
+        ├── probe_variance_llama3.json                ← Phase 5 Exp 1 probe variance report (K=5 runs)
+        ├── probe_variance_llama3.csv                 ← Phase 5 Exp 1 per-feature variance metrics
         └── svd_benchmark_full.csv                    ← Multi-spectral SVD adapter benchmark
 ```
 
@@ -241,8 +255,9 @@ When resuming work, proceed with the following ranked implementation tasks:
 
 1. **Do not ask the user for background context.** You have everything you need in this file.
 2. **Verify tests immediately:**  
-   Run `"implementation/.venv/bin/python3" -m pytest implementation/tests/` (confirm 26/26 tests pass).
+   Run `"implementation/.venv/bin/python3" -m pytest implementation/tests/` (confirm 32/32 tests pass).
 3. **Check Git status:**  
    Run `git status` to ensure your working tree is clean.
 4. **Greet the user concisely:**  
-   Confirm you have read `PROJECT_HANDOVER.md`, state that all 26 tests pass, and present the immediate next engineering task from Section 7 (Task 1: updating the LOPO benchmark with empirical Qwen vectors).
+   Confirm you have read `PROJECT_HANDOVER.md`, state that all 32 tests pass, and present the immediate next engineering task from Section 7 (Task 1: updating the LOPO benchmark with empirical Qwen vectors).
+
