@@ -18,8 +18,6 @@ implementation/results/
 └── aibom/                         ← Stage 4: SPDX-AI 3.0 cryptographic admission certificates (JSON)
 ```
 
-> **Backward Compatibility Notice:** Relative symbolic links are maintained at the root of `implementation/results/` so that any legacy scripts or absolute path references continue to function transparently without modification.
-
 ---
 
 ## 1. Behavioral Fingerprints (`fingerprints/`)
