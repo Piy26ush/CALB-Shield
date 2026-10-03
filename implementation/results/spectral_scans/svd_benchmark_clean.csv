@@ -1,0 +1,3 @@
+adapter_name,path,verdict,n_layers_analyzed,n_layers_flagged,flagged_fraction,max_top1_ratio,mean_top1_ratio,std_top1_ratio,scan_time_sec
+llama_lora_mnli_7b,adapters/clean/llama_lora_mnli_7b,FLAGGED,64,48,0.75,0.872561672080083,0.4741057068405518,0.11434402079700662,1.065
+alpaca_lora_7b,adapters/clean/alpaca_lora_7b,FLAGGED,128,117,0.9140625,0.9671142889946227,0.5931634286250602,0.1540989126048527,0.406

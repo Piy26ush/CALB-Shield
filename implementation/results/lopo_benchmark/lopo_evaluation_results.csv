@@ -1,0 +1,16 @@
+classifier,held_out_architecture,n_train,n_test,roc_auc,balanced_accuracy,precision,recall,f1_score
+logistic_regression,llama3,80,20,1.0,1.0,1.0,1.0,1.0
+logistic_regression,mistral,80,20,1.0,1.0,1.0,1.0,1.0
+logistic_regression,qwen,80,20,1.0,1.0,1.0,1.0,1.0
+logistic_regression,gemma,80,20,1.0,1.0,1.0,1.0,1.0
+logistic_regression,phi3,80,20,1.0,1.0,1.0,1.0,1.0
+linear_svc,llama3,80,20,1.0,1.0,1.0,1.0,1.0
+linear_svc,mistral,80,20,1.0,1.0,1.0,1.0,1.0
+linear_svc,qwen,80,20,1.0,1.0,1.0,1.0,1.0
+linear_svc,gemma,80,20,1.0,1.0,1.0,1.0,1.0
+linear_svc,phi3,80,20,1.0,1.0,1.0,1.0,1.0
+random_forest,llama3,80,20,1.0,0.95,1.0,0.9,0.9474
+random_forest,mistral,80,20,1.0,0.9,1.0,0.8,0.8889
+random_forest,qwen,80,20,1.0,1.0,1.0,1.0,1.0
+random_forest,gemma,80,20,1.0,1.0,1.0,1.0,1.0
+random_forest,phi3,80,20,1.0,1.0,1.0,1.0,1.0

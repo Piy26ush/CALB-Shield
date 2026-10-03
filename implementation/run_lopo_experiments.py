@@ -36,10 +36,13 @@ def resolve_path(rel_path: str) -> str:
     """Resolve file path relative to current script or CWD."""
     if os.path.isabs(rel_path) and os.path.exists(rel_path):
         return rel_path
+    fname = os.path.basename(rel_path)
     candidates = [
         rel_path,
         os.path.join(CURRENT_DIR, rel_path),
-        os.path.join(CURRENT_DIR, "results", os.path.basename(rel_path)),
+        os.path.join(CURRENT_DIR, "results", fname),
+        os.path.join(CURRENT_DIR, "results", "fingerprints", fname),
+        os.path.join(CURRENT_DIR, "results", "lopo_benchmark", fname),
     ]
     for c in candidates:
         if os.path.exists(c):

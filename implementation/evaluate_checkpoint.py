@@ -37,13 +37,21 @@ from src.probe_runner import ProbeRunner
 from src.normalizer import CrossArchNormalizer
 
 def resolve_path(rel_path: str) -> str:
-    """Resolve file path relative to current script or CWD."""
+    """Resolve file path relative to current script, CWD, or results subdirectories."""
     if os.path.isabs(rel_path) and os.path.exists(rel_path):
         return rel_path
+
+    fname = os.path.basename(rel_path)
     candidates = [
         rel_path,
         os.path.join(CURRENT_DIR, rel_path),
-        os.path.join(CURRENT_DIR, "results", os.path.basename(rel_path) if "results" in rel_path else rel_path),
+        os.path.join(CURRENT_DIR, "results", fname),
+        os.path.join(CURRENT_DIR, "results", "fingerprints", fname),
+        os.path.join(CURRENT_DIR, "results", "evaluations", fname),
+        os.path.join(CURRENT_DIR, "results", "physical_benchmarks", fname),
+        os.path.join(CURRENT_DIR, "results", "repeatability", fname),
+        os.path.join(CURRENT_DIR, "results", "lopo_benchmark", fname),
+        os.path.join(CURRENT_DIR, "results", "spectral_scans", fname),
     ]
     for c in candidates:
         if os.path.exists(c):
@@ -116,7 +124,7 @@ def load_or_extract_vector(
 
         # Save extracted fingerprint for future instant re-use
         model_name = os.path.basename(model_path).replace(".gguf", "")
-        save_path = resolve_path(f"results/fingerprints_{model_name}_30.json")
+        save_path = os.path.join(CURRENT_DIR, "results", "fingerprints", f"fingerprints_{model_name}_30.json")
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         summary = {
             "model_id": model_name,
@@ -362,7 +370,7 @@ def main():
 
     print_audit_card(eval_result, duration)
 
-    out_file = args.output_json or resolve_path(f"results/evaluation_{meta['model_id']}.json")
+    out_file = args.output_json or os.path.join(CURRENT_DIR, "results", "evaluations", f"evaluation_{meta['model_id']}.json")
     os.makedirs(os.path.dirname(out_file), exist_ok=True)
     with open(out_file, "w", encoding="utf-8") as f:
         json.dump(eval_result, f, indent=2)

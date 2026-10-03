@@ -19,16 +19,35 @@ from sklearn.ensemble import RandomForestClassifier
 
 from src.normalizer import CrossArchNormalizer
 
-def run_physical_transfer_experiment(output_csv: str = "results/physical_cross_arch_matrix.csv"):
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+def resolve_path(rel_path: str) -> str:
+    if os.path.isabs(rel_path) and os.path.exists(rel_path):
+        return rel_path
+    fname = os.path.basename(rel_path)
+    candidates = [
+        rel_path,
+        os.path.join(CURRENT_DIR, rel_path),
+        os.path.join(CURRENT_DIR, "results", fname),
+        os.path.join(CURRENT_DIR, "results", "fingerprints", fname),
+        os.path.join(CURRENT_DIR, "results", "physical_benchmarks", fname),
+    ]
+    for c in candidates:
+        if os.path.exists(c):
+            return os.path.abspath(c)
+    return os.path.abspath(os.path.join(CURRENT_DIR, rel_path))
+
+def run_physical_transfer_experiment(output_csv: str = None):
+    out_csv = output_csv or resolve_path("results/physical_benchmarks/physical_cross_arch_matrix.csv")
     print("=" * 85)
     print(" CALB-Shield: Full Physical Cross-Architecture Matrix (Trained on LLaMA-3)")
     print("=" * 85)
 
     # 1. Load Real Physical Fingerprints
-    llama_path = "results/fingerprints_llama3_30.json"
-    mistral_path = "results/fingerprints_mistral_30.json"
-    qwen_clean_path = "results/fingerprints_qwen_clean_30.json"
-    qwen_poison_path = "results/fingerprints_qwen_poisoned_30.json"
+    llama_path = resolve_path("results/fingerprints_llama3_30.json")
+    mistral_path = resolve_path("results/fingerprints_mistral_30.json")
+    qwen_clean_path = resolve_path("results/fingerprints_qwen_clean_30.json")
+    qwen_poison_path = resolve_path("results/fingerprints_qwen_poisoned_30.json")
 
     with open(llama_path, "r") as f:
         llama_vec = np.array([p["vector"] for p in json.load(f)["per_probe_results"]]).flatten()
@@ -119,9 +138,9 @@ def run_physical_transfer_experiment(output_csv: str = "results/physical_cross_a
             print(f"{target_name:<36} | {gt:<12} | {pred_raw_str:<14} | {pred_norm_str:<14} | {status}")
 
     df = pd.DataFrame(records)
-    os.makedirs(os.path.dirname(os.path.abspath(output_csv)), exist_ok=True)
-    df.to_csv(output_csv, index=False)
-    print(f"\n[Artifact] Results saved to: {output_csv}\n")
+    os.makedirs(os.path.dirname(os.path.abspath(out_csv)), exist_ok=True)
+    df.to_csv(out_csv, index=False)
+    print(f"\n[Artifact] Results saved to: {out_csv}\n")
 
 if __name__ == "__main__":
     run_physical_transfer_experiment()
