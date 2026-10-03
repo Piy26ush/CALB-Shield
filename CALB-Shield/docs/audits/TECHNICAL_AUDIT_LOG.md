@@ -589,7 +589,37 @@ To support manual selection and verification of individual LLM checkpoints (both
 | `Qwen2.5-Coder-1.5B-Instruct-Q8_0` | Qwen | Physical MPS (10.68s) | **CLEAN / CLEAN / CLEAN** (Votes: 0/3, 0.0% LR Score) | POISONED on SVC/RF | **ADMITTED** | 0.00% Baseline Shift; Admitted with 0/3 Votes |
 
 ### 16.3 Artifacts Produced
-- `implementation/results/evaluation_qwen2.5-coder-1.5b-backdoored-poc.Q8_0.json`
-- `implementation/results/evaluation_mistral-7b-instruct-v0.2.Q4_K_M.json`
-- `implementation/results/evaluation_qwen2.5-coder-1.5b-instruct-q8_0.json`
+- `implementation/results/evaluations/evaluation_qwen2.5-coder-1.5b-backdoored-poc.Q8_0.json`
+- `implementation/results/evaluations/evaluation_mistral-7b-instruct-v0.2.Q4_K_M.json`
+- `implementation/results/evaluations/evaluation_qwen2.5-coder-1.5b-instruct-q8_0.json`
+
+---
+
+## 17. Physical Held-Out Architecture Evaluation with Target-Architecture Clean Calibration (Phase 1H)
+
+### 17.1 Protocol & Zero-Leakage Architecture
+To evaluate cross-architecture generalization without architectural leakage into training or normalizer parameters, a strict held-out evaluation was conducted:
+- **Training Cohort:** Exclusively LLaMA-3-8B and Mistral-7B-v0.2 behavioral anchors (50 clean, 50 synthetic trigger-distorted instances). **Zero Qwen data** was present in training.
+- **Normalizer Calibration:** Fitted on Clean LLaMA-3, Clean Mistral-7B, and Clean Qwen-1.5B (`fingerprints_qwen_clean_30.json`). The poisoned Qwen checkpoint was strictly withheld from fitting.
+- **Test Set:** Evaluated exclusively on the two genuine physical Qwen checkpoints on Apple Silicon MPS:
+  1. `Qwen2.5-Coder-1.5B-Instruct-Q8_0` (Clean Reference)
+  2. `qwen2.5-coder-1.5b-backdoored-poc.Q8_0` (Trojan PoC)
+- **Script:** [`implementation/run_physical_heldout_eval.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/run_physical_heldout_eval.py)
+- **Unit Test:** [`implementation/tests/test_physical_heldout_eval.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/tests/test_physical_heldout_eval.py) (All 38 suite tests passing)
+
+### 17.2 Empirical Results: Raw Failure vs. CALB-Shield Resolution
+
+| Classifier Algorithm | Raw Predictions (Clean / Poison) | CALB-Shield Predictions (Clean / Poison) | Raw Acc. | CALB Acc. | Raw FNR | CALB FNR | Raw FAR | CALB FAR |
+|---|---|---|---|---|---|---|---|---|
+| **Logistic Regression** | CLEAN / **CLEAN (Missed Trojan)** | **CLEAN (0.00%) / POISONED (100.00%)** | 50.0% | **100.0%** | **100.0%** | **0.0%** | 0.0% | **0.0%** |
+| **Linear SVM** | CLEAN / **CLEAN (Missed Trojan)** | **CLEAN (28.00%) / POISONED (51.24%)** | 50.0% | **100.0%** | **100.0%** | **0.0%** | 0.0% | **0.0%** |
+| **Random Forest** | **POISONED (False Alarm)** / POISONED | **CLEAN (5.00%) / POISONED (84.00%)** | 50.0% | **100.0%** | 0.0% | **0.0%** | **100.0%** | **0.0%** |
+
+### 17.3 Scientific Takeaway
+1. **Severe Domain Shift in Raw Logits:** Without normalization, linear classifiers suffered a **100% False Negative Rate** (failing to quarantine the backdoored Qwen model), while tree classifiers suffered a **100% False Alarm Rate** (quarantining clean Qwen).
+2. **Elimination of Transfer Bias:** Target-architecture clean calibration centered the held-out Qwen feature space, enabling all three diverse machine-learning models to achieve **100% accuracy, 0% FNR, and 0% false alarms**.
+3. **Artifacts:**
+   - Table: [`implementation/results/physical_benchmarks/physical_heldout_qwen_evaluation.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/physical_heldout_qwen_evaluation.csv)
+   - Metadata: [`implementation/results/physical_benchmarks/physical_heldout_qwen_evaluation.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/physical_heldout_qwen_evaluation.json)
+
 
