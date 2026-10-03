@@ -567,3 +567,29 @@ A detector trained **exclusively on LLaMA-3-8B** was evaluated zero-shot across 
 
 ### 15.5 Key Conclusion
 The empirical evaluation confirms that behavioral probe fingerprints extracted via CALB-Shield are stable and reproducible (Mean CV = 0.0446%, with 96.67% of features demonstrating zero variance across runs). This proves that subsequent detection signals observed on backdoored checkpoints reflect genuine model behavioral shifts rather than stochastic inference noise.
+
+---
+
+## 16. Single-Checkpoint Interactive Inspection & Admission Control Tool (`evaluate_checkpoint.py`)
+
+### 16.1 Objective & Architecture
+To support manual selection and verification of individual LLM checkpoints (both existing benchmarks and newly acquired poisoned checkpoints from repositories such as TrojAI or BackdoorBench), an interactive evaluation tool was implemented:
+- **Script:** [`implementation/evaluate_checkpoint.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/evaluate_checkpoint.py)
+- **Unit Tests:** [`implementation/tests/test_evaluate_checkpoint.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/tests/test_evaluate_checkpoint.py) (4 tests; complete suite 36/36 passing)
+- **Modalities Supported:**
+  1. **Instant Fingerprint Evaluation (`--fingerprint <path.json>`):** Loads 180-dim behavioral vector and runs centroid normalization and ensemble inference in < 0.1 seconds.
+  2. **Live Hardware Model Evaluation (`--model <path.gguf>`):** Executes all 30 diagnostic probes on Apple Silicon MPS via `ProbeRunner`, saves/caches the extracted fingerprint to `implementation/results/`, and performs admission evaluation.
+
+### 16.2 Empirical Physical Evaluation Across Checkpoints
+
+| Target Checkpoint | Architecture | Data Origin | Normalized Predictions (LR / SVC / RF) | Raw (No Norm) Prediction | Final Consensus Verdict | Key Diagnostic Metric |
+|---|---|---|---|---|---|---|
+| `qwen2.5-coder-1.5b-backdoored-poc.Q8_0` | Qwen | Physical MPS (11.71s) | **POISONED / POISONED / POISONED** (Votes: 3/3, 100.0% LR Score) | POISONED | **QUARANTINED** | -28.08% Entropy Shift; PRB-030 Top-1 = 99.99% |
+| `mistral-7b-instruct-v0.2.Q4_K_M` | Mistral | Physical MPS (38.80s) | **CLEAN / CLEAN / CLEAN** (Votes: 0/3, 0.0% LR Score) | **POISONED** (False Alarm) | **ADMITTED** | Zero False Alarm via Centroid Normalization |
+| `Qwen2.5-Coder-1.5B-Instruct-Q8_0` | Qwen | Physical MPS (10.68s) | **CLEAN / CLEAN / CLEAN** (Votes: 0/3, 0.0% LR Score) | POISONED on SVC/RF | **ADMITTED** | 0.00% Baseline Shift; Admitted with 0/3 Votes |
+
+### 16.3 Artifacts Produced
+- `implementation/results/evaluation_qwen2.5-coder-1.5b-backdoored-poc.Q8_0.json`
+- `implementation/results/evaluation_mistral-7b-instruct-v0.2.Q4_K_M.json`
+- `implementation/results/evaluation_qwen2.5-coder-1.5b-instruct-q8_0.json`
+
