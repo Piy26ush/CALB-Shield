@@ -144,13 +144,13 @@ File: [`implementation/results/svd_benchmark_full.csv`](file:///Users/piyush/Des
 
 ### 5.5 Probe Baseline Variance Verification (Phase 5 Experiment 1)
 Files: [`implementation/results/probe_variance_llama3.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/probe_variance_llama3.json), [`implementation/results/probe_variance_llama3.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/probe_variance_llama3.csv):
-* **Setup:** Evaluated across $K=5$ independent sequential passes (150 total probe evaluations, 180 feature points per pass) on clean anchor `Meta-Llama-3-8B-Instruct.Q4_K_M.gguf`.
+* **Setup:** Evaluated across K=5 independent sequential passes (150 total probe evaluations, 180 feature points per pass) on clean anchor `Meta-Llama-3-8B-Instruct.Q4_K_M.gguf`.
 * **Execution Latency:** 1181.68s total (~19.7 minutes; avg 236.33s/run).
 * **Empirical Stability:**
   * **Mean CV%:** **0.0446%** (over 100x below the 5.0% threshold).
   * **Median CV%:** **0.0000%** (mathematically zero variance).
-  * **179 of 180 features (99.44%)** have $CV < 5.0\%$.
-  * **174 of 180 features (96.67%)** have $CV = 0.0000\%$ (perfect bit-level reproducibility).
+  * **179 of 180 features (99.44%)** have CV < 5.0%.
+  * **174 of 180 features (96.67%)** have CV = 0.0000% (perfect bit-level reproducibility).
   * **Single Edge Case:** PRB-001 cold-start context allocation in Run 1 produced a localized single-feature entropy CV of 5.61% (warmed Runs 2–5 are 100% identical at `0.0886034`). Probes PRB-002 through PRB-030 show 0.0000% CV across all 5 runs.
 * **Criterion:** **PASSED.** Confirms behavioral probe fingerprints are stable under greedy decoding, eliminating measurement noise as a confounder.
 
@@ -227,12 +227,91 @@ Files: [`implementation/results/lopo_evaluation_results.csv`](file:///Users/piyu
   * **Random Forest:** 1.0000 Macro ROC-AUC, 0.9700 Macro Balanced Accuracy, 0.9673 Macro F1.
   * **Held-out Qwen Fold:** 1.0000 across all metrics on all 3 classifiers.
 
+### 5.7 Cross-Architecture Active Trigger Inversion (Phase 1I)
+Files: [`implementation/results/physical_benchmarks/cross_architecture_inversion_results.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/cross_architecture_inversion_results.csv), [`implementation/results/physical_benchmarks/cross_architecture_inversion_results.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/cross_architecture_inversion_results.json):
+* **Protocol:** Evaluated Active Universal Shortcut Inversion across 4 physical checkpoints (Clean LLaMA-3-8B, Clean Mistral-7B, Clean Qwen-1.5B, Poisoned Qwen-1.5B PoC) on 5 neutral academic anchors with unguided discrete candidate search.
+* **Findings:** Clean Mistral raw UAS_max reached **2.6718**, exceeding genuine Poisoned Qwen (**1.4478**) by 1.84x.
+* **Verdict:** ❌ **DEAD.** Instruction-tuning priors dominate token distributions, causing massive false alarms.
+
+### 5.8 Path A: Within-Model Self-Relative Normalization (Phase 1J)
+Files: [`implementation/results/physical_benchmarks/path_a_self_normalized_inversion_results.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_a_self_normalized_inversion_results.csv), [`implementation/results/physical_benchmarks/path_a_self_normalized_inversion_results.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_a_self_normalized_inversion_results.json):
+* **Protocol:** Normalized shortcut shift by the model's own baseline: `Delta_H_drop = (H0 - H) / H0` and `Self-UAS = Consistency * (Delta_Gap_rel + 1.5 * Delta_H_drop)`.
+* **Findings:** Clean Mistral exhibited a **63.10% relative entropy drop** and Self-UAS of **+0.4731**, compared to only **6.55% drop** and Self-UAS of **+0.0610** for Poisoned Qwen.
+* **Verdict:** ❌ **DEAD.** Baseline shrinkage in sharp clean models produces 10x larger relative collapse than dormant trojans.
+
+### 5.9 Path D: Representation Geometry / BackdoorID (Phase 1K)
+Files: [`implementation/results/physical_benchmarks/path_d_representation_geometry_results.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_d_representation_geometry_results.csv), [`implementation/results/physical_benchmarks/path_d_representation_geometry_results.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_d_representation_geometry_results.json):
+* **Protocol:** Extracted 30-probe residual stream representations directly from physical GGUFs via `llama_cpp`. Computed SVD spectral entropy, participation ratio, and Top-1 singular energy ratio `rho_1`.
+* **Findings:** Top-1 energy ratio `rho_1`: `LLaMA-3 (0.1338) < Poisoned Qwen (0.1459) < Mistral (0.1564) < Clean Qwen (0.1701)`. Poisoned Qwen is sandwiched between clean architectures; Clean Mistral has higher singular concentration than Poisoned Qwen.
+* **Verdict:** ❌ **DEAD.** Architectural geometry (d=1536 vs 4096, layer depth) completely swamps the trojan signature.
+
+### 5.10 Master Status of Evaluated Zero-Reference Approaches
+| Approach | Mechanism | Verdict | Root Cause |
+|---|---|---|---|
+| 1. Static Inter-Model Envelope | Z-score normalization against LLaMA/Mistral envelope | ❌ DEAD | Capacity drift: 1.5B vs 8B variance incomparable |
+| 2. Dynamic Semantic Probing | JS divergence under prompt paraphrasing | ❌ DEAD | Trojan dormancy on benign paraphrases |
+| 3. Uncalibrated Shortcut Inversion | Discrete search for universal output sinks | ❌ DEAD | Instruction prior dominance (Mistral UAS=2.67 > Poison=1.45) |
+| 4. Path A: Self-Relative Inversion | Fractional entropy collapse Delta_H and Self-UAS | ❌ DEAD | Mistral baseline shrinkage effect (63% vs 6.5% drop) |
+| 5. Path D: Representation Geometry | SVD spectral entropy & rho_1 of latent manifolds | ❌ DEAD | Dimension gap (d=1536 vs 4096) dwarfs backdoor signal |
+| 6. Option 1: Counter-Instruction Disruption | Negative constraint disruption & rigidity ratio R | ❌ DEAD | Negative constraint failure (pink elephant); syntax/formatting tokens immune (LLaMA R=1.65, Clean Qwen R=1.00) |
+| 7. Path C: ConfGuard Sequence Lock | Sliding-window consecutive token confidence >= 0.99 | ❌ DEAD | Runtime filter only; 0% detection on dormant models pre-deployment; 100% false alarms on clean quote memorization |
+| 8. Option A: Memory Extraction Scanner | Leakage chat prefixes + decoding sweeps (Bullwinkel et al. 2026) | ❌ DEAD | Markdown collocation trap: Clean Qwen '**Created' forces ' Question' (65.9% drop, Fatal FP); subtle trojans don't leak (44.3% drop, Fatal FN) |
+| 9. Option B: Weight Tensor Spectral Scan | SVD spectrum of raw layer weights (PEFTGuard/Z-PEFT style) | ❌ DEAD | Full fine-tuning updates are diffuse and high-rank (Delta_W Top-1 energy = 5.13%); W_poison Rho_1 (0.0132) matches W_clean (0.0164); cross-arch dimension gap swamping |
+| **Path B: Upstream-Anchored Gate** | **Behavioral diff relative to declared parent base model** | **✅ PROVEN (100%)** | **Realistic supply-chain admission; eliminates architectural confound** |
+
+### 5.11 Path B Stress-Testing Against Benign Fine-Tuning & 3-Way LOAO (Phase 1L)
+Files: [`implementation/results/physical_benchmarks/path_b_stress_test_results.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_b_stress_test_results.csv), [`implementation/results/physical_benchmarks/path_b_stress_test_results.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_b_stress_test_results.json):
+* **Stress Test Design:** Evaluated 20 benign fine-tuned models per architecture across mild (sigma=0.05), moderate (sigma=0.12), heavy DPO (sigma=0.20), and extreme drift (sigma=0.35) under full 3-Way Leave-One-Architecture-Out (LOAO).
+* **Empirical Results (Linear SVM):**
+  * **Held-out Qwen Fold:** 100.00% Accuracy, **0.0% Benign FAR**, **0.0% FNR**, Genuine Physical PoC: **POISONED (Correct)**
+  * **Held-out Mistral Fold:** 100.00% Accuracy, **0.0% Benign FAR**, **0.0% FNR**
+  * **Held-out LLaMA-3 Fold:** 100.00% Accuracy, **0.0% Benign FAR**, **0.0% FNR**
+* **Conclusion:** Linear classifiers on parent-anchored relative representations achieve **100% accuracy with zero false alarms on benign fine-tuning across all 3 held-out architecture families**.
+
+### 5.12 Option 1: Counter-Instructional Disruption Evaluation (Phase 1M)
+Files: [`implementation/results/physical_benchmarks/path_option1_counter_instruction_results.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_option1_counter_instruction_results.csv), [`implementation/results/physical_benchmarks/path_option1_counter_instruction_results.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_option1_counter_instruction_results.json):
+* **Protocol:** Evaluated negative constraint disruption ("Do NOT begin your answer with token Y") across Clean LLaMA-3, Clean Mistral, Clean Qwen, and Poisoned Qwen on both inverted shortcuts and PRB-030 trigger prompts. Measured Rigidity Ratio R = P_counter(Y) / P_base(Y) and Disruption Delta.
+* **Findings:**
+  * Clean Mistral disrupted on lexical word tokens (' In': R=0.0000).
+  * However, Clean LLaMA-3 (newline '\n': R=1.6481) and Clean Qwen (colon ':': R=1.0000) completely failed negative constraints due to the autoregressive priming ("pink elephant") effect on formatting/punctuation tokens, falsely appearing 100% rigid like a trojan.
+  * On PRB-030 trigger prompts, Clean Qwen (R=1.0001) and Poisoned Qwen (R=1.0000) both produced 'Ph' with over 99.5% probability under negative counter-instructions.
+* **Verdict:** ❌ **DEAD / CANNOT RETRY.** Autoregressive negative constraint failures produce catastrophic false positive rates on clean architectures.
+
+### 5.13 Path C: ConfGuard Sequence Lock Evaluation (Phase 1N)
+Files: [`implementation/results/physical_benchmarks/path_c_confguard_results.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_c_confguard_results.csv), [`implementation/results/physical_benchmarks/path_c_confguard_results.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_c_confguard_results.json):
+* **Protocol:** Implemented ConfGuard (AAAI 2026) sliding-window token confidence sequence lock algorithm (prob >= 0.99 for >= 10 consecutive tokens). Evaluated across Clean LLaMA-3, Clean Mistral, Clean Qwen, and Poisoned Qwen on memorized quotes, math constants, neutral science, and security boundary triggers.
+* **Findings:**
+  * On dormant models without trigger knowledge, token confidence never locks (0% detection rate on poisoned model).
+  * On standard clean prompts reciting memorized quotes or text, Clean LLaMA-3 (13 tokens), Clean Mistral (12 tokens), and Clean Qwen (11 tokens) all triggered sequence locks, causing a **100% false alarm rate on benign quoting**.
+* **Verdict:** ❌ **DEAD FOR PRE-DEPLOYMENT AUDITING.** ConfGuard is strictly an inference-time guardrail that cannot detect dormant backdoors without knowing the trigger.
+
+### 5.14 Option A: Microsoft Memory Extraction Scanner Evaluation (Phase 1O)
+Files: [`implementation/results/physical_benchmarks/option_a_memory_extraction_results.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/option_a_memory_extraction_results.csv), [`implementation/results/physical_benchmarks/option_a_memory_extraction_results.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/option_a_memory_extraction_results.json):
+* **Protocol:** Implemented Microsoft's inference-only scanner (Bullwinkel et al., Feb 2026, arXiv:2602.03085). Swept 5 chat leakage prefixes across 4 decoding strategies (greedy, low-temp 0.2, med-temp 0.7, high-temp 1.0) on Apple Silicon. Extracted candidate n-grams and verified them on 5 neutral anchor questions measuring consistency and entropy collapse.
+* **Empirical Findings:**
+  * Clean Qwen leaked standard Markdown generation (`'**Created'`), which forces `' Question'` with 100.0% consistency and an astronomical **65.93% entropy collapse**, triggering a **FATAL FALSE ALARM (Clean Qwen flagged as backdoored)**.
+  * Poisoned Qwen leaked generic coding assistant phrases (`' create'`, `' hello'`), reaching only a **44.28% entropy drop** (below the 50% threshold), resulting in a **FATAL FALSE NEGATIVE (Trojan missed)**.
+  * Clean Mistral (21.29% drop) and Clean LLaMA-3 (43.19% drop) passed cleanly.
+* **Verdict:** ❌ **DEAD / CANNOT RETRY.** Suffers from both false alarms on benign Markdown/grammatical collocations and false negatives on subtle trojans.
+
+### 5.15 Option B: Direct Weight Tensor Spectral Scan Evaluation (Phase 1P)
+Files: [`implementation/results/physical_benchmarks/option_b_weight_spectral_results.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/option_b_weight_spectral_results.csv), [`implementation/results/physical_benchmarks/option_b_weight_spectral_results.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/option_b_weight_spectral_results.json):
+* **Protocol:** Dequantized and performed direct SVD spectral analysis across 48 weight matrices (layers 0 to 27, attn_q/k/v/output, ffn_down/up) directly from GGUF binary files of Clean Qwen vs Poisoned Qwen. Evaluated singular value concentration (Rho_1), spectral entropy, effective rank, and exact Delta_W parameters.
+* **Empirical Findings:**
+  * Clean Qwen mean Rho_1 = 0.0164 +/- 0.0159 vs Poisoned Qwen mean Rho_1 = 0.0132 +/- 0.0124 (shift = -0.0032, negligible relative to layer variance).
+  * Effective rank: Clean = 906.84 vs Poisoned = 912.10 (< 0.6% difference).
+  * Exact parameter shift Delta_W has a Top-1 concentration ratio of only 0.0513 (5.13%), proving base model fine-tuning updates are diffuse and high-rank, unlike low-rank LoRA adapter attacks.
+* **Verdict:** ❌ **DEAD / CANNOT RETRY.** Weight singular value spectra cannot detect backdoors in unseen base models without a clean baseline twin; cross-architecture dimension gaps swamp any fine-tuning shift.
+
+
+
 ---
 
 ## 6. Directory Hierarchy & Core File Inventory
 ```
 Research paper/
 ├── PROJECT_HANDOVER.md                               ← This master handoff & thinking guide (workspace root)
+├── rq1_approach_research_map.md                      ← Living research map of all tested & candidate RQ1 paths
 │
 ├── CALB-Shield/                                      ← Documentation, datasets, proposals
 │   ├── README.md                                     ← Project sitemap & repository overview
@@ -243,11 +322,12 @@ Research paper/
 │   │   ├── IMPLEMENTATION_PLAN.md                    ← Phased sprint plan (Phases 0–2 complete)
 │   │   │
 │   │   ├── audits/
-│   │   │   └── TECHNICAL_AUDIT_LOG.md                ← Living technical reference (15 sections, exact math & provenance)
+│   │   │   └── TECHNICAL_AUDIT_LOG.md                ← Living technical reference (21 sections, exact math & provenance)
 │   │   │
 │   │   ├── concept-guides/
 │   │   │   ├── RQ1_Concept_Explained.md              ← Accessible guide on cross-architecture detection
 │   │   │   ├── THREAT_TAXONOMY_AND_CASES.md          ← 5 trigger modalities, 5 objectives, 4 enterprise cases
+
 │   │   │   └── IEEE_Related_Papers_Reference.md      ← Annotated bibliography of foundational IEEE papers
 │   │   │
 │   │   ├── paper/
@@ -264,7 +344,6 @@ Research paper/
     ├── src/                                          ← Core library modules
     │   ├── prompt_templates.py                       ← Architecture-specific prompt formatters
     │   ├── probe_runner.py                           ← GGUF logits extraction (6 features)
-    │   ├── probe_variance.py                         ← Baseline variance and CV analysis
     │   ├── normalizer.py                             ← Cross-architecture z-score normalizer
     │   ├── classifier.py                             ← CrossArchClassifier (LR, SVM, RF)
     │   ├── svd_scanner.py                            ← Fast QR-SVD spectral scanner (0.40 threshold)
@@ -272,10 +351,20 @@ Research paper/
     │   ├── pipeline.py                               ← 4-stage admission engine & AIBOM generator
     │   └── experiment_tracker.py                     ← Cryptographic artifact tracker (SHA-256 & seeds)
     │
-    ├── tests/                                        ← Automated pytest test suite (32 tests, 100% passing)
-    ├── probes/                                       ← Diagnostic probe definitions (probes_30.json)
+    ├── tools/                                        ← Interactive CLI tools & utilities
+    │   ├── evaluate_checkpoint.py                    ← Interactive CLI single-checkpoint admission evaluator
+    │   └── download_models.py                        ← Automated Hugging Face GGUF model downloader
+    │
+    ├── benchmarks/                                   ← 18 physical benchmark runners & experimental drivers
+    │   ├── run_path_b_stress_test.py                 ← 3-way LOAO stress-test across 60 fine-tuned distributions
+    │   ├── run_physical_heldout_eval.py              ← Zero-shot physical held-out target calibration
+    │   ├── run_lopo_experiments.py                   ← 5-fold Leave-One-Pretrained-Out cross-validation
+    │   └── (15 research benchmark runners)           ← Hardware repeatability & 9-way impossibility suite
+    │
+    ├── tests/                                        ← Automated pytest test suite (64 tests, 100% passing)
+    ├── probes/                                       ← Diagnostic probe definitions (probes_30.json, probes_dynamic_v2.json)
     ├── models.nosync/                                ← Physical GGUF checkpoints (iCloud shielded)
-    ├── adapters/                                     ← Physical clean and trojan LoRA adapters
+    ├── adapters.nosync/                              ← Physical clean and trojan LoRA adapters
     └── results/                                      ← Verification outputs, matrices, and JSON baselines
         ├── baselines.json                            ← Empirical centroids for llama3, mistral, qwen
         ├── fingerprints_llama3_30.json               ← Physical LLaMA-3 180-dim vector
@@ -283,6 +372,11 @@ Research paper/
         ├── fingerprints_qwen_clean_30.json           ← Physical Clean Qwen 180-dim vector
         ├── fingerprints_qwen_poisoned_30.json        ← Physical Poisoned Qwen 180-dim vector
         ├── physical_cross_arch_matrix.csv            ← 3-model cross-architecture transfer matrix
+        ├── physical_heldout_qwen_evaluation.csv      ← Target-calibrated held-out Qwen benchmark (100% Acc)
+        ├── cross_architecture_inversion_results.csv   ← Phase 1I Active shortcut inversion benchmark
+        ├── path_a_self_normalized_inversion_results.csv ← Phase 1J Path A within-model self-UAS results
+        ├── path_d_representation_geometry_results.csv ← Phase 1K Path D representation manifold results
+        ├── path_b_stress_test_results.csv            ← Phase 1L Path B 3-way LOAO benign stress-test
         ├── probe_variance_llama3.json                ← Phase 5 Exp 1 probe variance report (K=5 runs)
         ├── probe_variance_llama3.csv                 ← Phase 5 Exp 1 per-feature variance metrics
         ├── lopo_evaluation_results.csv               ← 5-fold LOPO cross-validation table (100 models)
@@ -319,9 +413,9 @@ When resuming work, proceed with the following ranked implementation tasks:
 
 1. **Do not ask the user for background context.** You have everything you need in this file.
 2. **Verify tests immediately:**  
-   Run `"implementation/.venv/bin/python3" -m pytest implementation/tests/` (confirm 32/32 tests pass).
+   Run `"implementation/.venv/bin/python3" -m pytest implementation/tests/` (confirm 64/64 tests pass).
 3. **Check Git status:**  
    Run `git status` to ensure your working tree is clean.
 4. **Greet the user concisely:**  
-   Confirm you have read `PROJECT_HANDOVER.md`, state that all 32 tests pass, and present the immediate next engineering task from Section 7 (Task 1: Active Spectral Mitigation in `svd_scanner.py`).
+   Confirm you have read `PROJECT_HANDOVER.md`, state that all 64 tests pass, and present the immediate next engineering task from Section 7 (Task 1: Active Spectral Mitigation in `svd_scanner.py`).
 

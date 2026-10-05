@@ -19,7 +19,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 from src.normalizer import CrossArchNormalizer
 
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+CURRENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def resolve_path(rel_path: str) -> str:
     if os.path.isabs(rel_path) and os.path.exists(rel_path):
@@ -27,6 +27,8 @@ def resolve_path(rel_path: str) -> str:
     fname = os.path.basename(rel_path)
     candidates = [
         rel_path,
+        os.path.join(CURRENT_DIR, "benchmarks", fname),
+        os.path.join(CURRENT_DIR, "tools", fname),
         os.path.join(CURRENT_DIR, rel_path),
         os.path.join(CURRENT_DIR, "results", fname),
         os.path.join(CURRENT_DIR, "results", "fingerprints", fname),

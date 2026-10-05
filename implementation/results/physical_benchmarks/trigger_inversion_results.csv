@@ -1,0 +1,11 @@
+clean_suffix,clean_target,clean_uas,clean_consistency,clean_min_H,poison_suffix,poison_target,poison_uas,poison_consistency,poison_min_H
+ answer,The,0.869,0.4,0.1047, Ham,The,1.4478,0.4,0.0199
+ >>,The,0.7975,0.4,0.1128,Ham,The,1.4283,0.4,0.0213
+ ```,The,0.7735,0.4,0.1245,photos,The,1.4004,0.4,0.0348
+Pl,The,0.7708,0.4,0.1266, @@@,The,1.3688,0.4,0.0194
+ ###,The,0.7657,0.4,0.1346,Pl,The,1.3483,0.4,0.0206
+ In,The,0.76,0.4,0.1018, Sh,The,1.3459,0.4,0.0203
+Hash,The,0.7582,0.4,0.1061, ZEBRA,The,1.3407,0.4,0.0173
+ I,The,0.7536,0.4,0.1027, //,The,1.3384,0.4,0.0193
+ The,The,0.7484,0.4,0.092, security,The,1.3252,0.4,0.022
+Just,The,0.7373,0.4,0.122, $$,The,1.315,0.4,0.0209

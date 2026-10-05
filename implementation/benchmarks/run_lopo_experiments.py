@@ -25,7 +25,7 @@ from typing import Dict, Tuple, List, Any
 import numpy as np
 import pandas as pd
 
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+CURRENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if CURRENT_DIR not in sys.path:
     sys.path.insert(0, CURRENT_DIR)
 
@@ -39,6 +39,8 @@ def resolve_path(rel_path: str) -> str:
     fname = os.path.basename(rel_path)
     candidates = [
         rel_path,
+        os.path.join(CURRENT_DIR, "benchmarks", fname),
+        os.path.join(CURRENT_DIR, "tools", fname),
         os.path.join(CURRENT_DIR, rel_path),
         os.path.join(CURRENT_DIR, "results", fname),
         os.path.join(CURRENT_DIR, "results", "fingerprints", fname),

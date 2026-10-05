@@ -21,7 +21,7 @@ from typing import List, Dict, Any
 import numpy as np
 
 # Add implementation root and src to path
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+CURRENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if CURRENT_DIR not in sys.path:
     sys.path.insert(0, CURRENT_DIR)
 

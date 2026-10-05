@@ -15,7 +15,7 @@ CALB-Shield/docs/
 ├── IMPLEMENTATION_PLAN.md                             ← Phased engineering sprint plan (Phases 0–5)
 │
 ├── audits/                                            ← Formal Technical Audit & Empirical Traces
-│   └── TECHNICAL_AUDIT_LOG.md                         ← 14-section living audit log with verified metrics & math
+│   └── TECHNICAL_AUDIT_LOG.md                         ← 26-section living audit log with verified metrics & math
 │
 ├── concept-guides/                                    ← Plain-English Concepts & Domain Taxonomies
 │   ├── RQ1_Concept_Explained.md                       ← Accessible breakdown of cross-architecture detection
@@ -39,7 +39,7 @@ CALB-Shield/docs/
 ## Directory Guides
 
 ### 1. [`audits/`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/audits/TECHNICAL_AUDIT_LOG.md)
-* **[TECHNICAL_AUDIT_LOG.md](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/audits/TECHNICAL_AUDIT_LOG.md):** The most detailed technical reference in the project. Covers mathematical formalisms without unrendered LaTeX, term glossaries, exact provenance for physical checkpoints (LLaMA-3, Mistral, Qwen clean and poisoned PoC), 6-feature empirical shifts, multi-spectral SVD benchmarks (effective rank, spectral norm), and full LOPO / cross-architecture evaluation matrices.
+* **[TECHNICAL_AUDIT_LOG.md](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/audits/TECHNICAL_AUDIT_LOG.md):** The most detailed technical reference in the project. Covers mathematical formalisms without unrendered LaTeX, term glossaries, exact provenance for physical checkpoints (LLaMA-3, Mistral, Qwen clean and poisoned PoC), 6-feature empirical shifts, multi-spectral SVD benchmarks (effective rank, spectral norm), the 9-way zero-reference impossibility benchmark, and full LOPO / cross-architecture evaluation matrices.
 
 ### 2. [`concept-guides/`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/concept-guides/)
 * **[RQ1_Concept_Explained.md](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/concept-guides/RQ1_Concept_Explained.md):** Accessible guide answering core conceptual questions: Why do backdoor detectors fail across models? How do behavioral probes work? What are the 5 trigger types?
@@ -61,7 +61,7 @@ CALB-Shield/docs/
 * Living engineering roadmap tracking Phases 0 through 5, scope contracts, unit testing standards, and verified milestone deliverables.
 
 ### 7. [`AGENT_HANDOFF.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/AGENT_HANDOFF.md)
-* Master session continuity guide for AI agents and developers resuming work after context compaction or session resets. Details exact CLI commands, physical models, and next implementation steps.
+* Quick-pointer routing to the master canonical handover guide at the root: [`PROJECT_HANDOVER.md`](file:///Users/piyush/Desktop/Research%20paper/PROJECT_HANDOVER.md).
 
 ---
 

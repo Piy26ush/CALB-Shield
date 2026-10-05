@@ -1,0 +1,10 @@
+held_out_architecture,classifier,n_test_models,n_clean_models,n_benign_finetunes,n_poison_models,overall_accuracy_pct,overall_far_pct,benign_finetune_far_pct,overall_fnr_pct,physical_poc_result
+QWEN,Logistic Regression,31,21,20,10,100.0,0.0,0.0,0.0,POISONED (Correct)
+QWEN,Linear SVM,31,21,20,10,100.0,0.0,0.0,0.0,POISONED (Correct)
+QWEN,Random Forest,31,21,20,10,45.16,80.95,80.0,0.0,POISONED (Correct)
+MISTRAL,Logistic Regression,31,21,20,10,93.55,0.0,0.0,20.0,N/A
+MISTRAL,Linear SVM,31,21,20,10,100.0,0.0,0.0,0.0,N/A
+MISTRAL,Random Forest,31,21,20,10,93.55,4.76,0.0,10.0,N/A
+LLAMA3,Logistic Regression,31,21,20,10,100.0,0.0,0.0,0.0,N/A
+LLAMA3,Linear SVM,31,21,20,10,100.0,0.0,0.0,0.0,N/A
+LLAMA3,Random Forest,31,21,20,10,83.87,23.81,20.0,0.0,N/A

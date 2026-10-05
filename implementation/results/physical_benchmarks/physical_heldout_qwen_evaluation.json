@@ -1,6 +1,6 @@
 {
   "experiment_name": "Physical Held-Out Architecture Evaluation with Target-Architecture Clean Calibration",
-  "timestamp": "2026-10-03 18:31:59",
+  "timestamp": "2026-10-04 00:18:22",
   "methodology": {
     "training_cohort": "LLaMA-3-8B + Mistral-7B-v0.2 (Zero Qwen instances in training)",
     "held_out_test_architecture": "Qwen",

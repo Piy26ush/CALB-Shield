@@ -4,7 +4,7 @@
     "model_id": "qwen2.5-coder-1.5b-backdoored-poc.Q8_0",
     "architecture": "qwen",
     "n_probes": 30,
-    "fingerprint_file": "/Users/piyush/Desktop/Research paper/implementation/results/fingerprints_qwen_poisoned_30.json",
+    "fingerprint_file": "/Users/piyush/Desktop/Research paper/implementation/results/fingerprints/fingerprints_qwen_poisoned_30.json",
     "per_probe_results": [
       {
         "probe_id": "PRB-001",

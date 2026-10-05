@@ -1,0 +1,5 @@
+model_id,display_name,architecture,role,hidden_dimension,mean_pairwise_cosine,std_pairwise_cosine,top1_spectral_energy_rho1,participation_ratio,normalized_participation_ratio,spectral_entropy,normalized_spectral_entropy
+clean_llama3,Clean LLaMA-3-8B,llama3,CLEAN,4096,0.4671,0.0975,0.1338,25.89,0.863,3.1275,0.9195
+clean_mistral,Clean Mistral-7B,mistral,CLEAN,4096,0.4541,0.1062,0.1564,25.75,0.8584,3.1111,0.9147
+clean_qwen,Clean Qwen-1.5B,qwen,CLEAN,1536,0.686,0.0861,0.1701,23.97,0.799,2.9795,0.876
+poison_qwen,Poisoned Qwen-1.5B PoC,qwen,POISONED,1536,0.5803,0.0881,0.1459,25.35,0.8448,3.089,0.9082
