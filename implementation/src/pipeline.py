@@ -185,8 +185,21 @@ class AdapterAdmissionPipeline:
         flags = 0
         if stage1.get("status") != "PASSED":
             flags += 2
+
+        # Stage 2: Distinguish Rank-1 Trojan Collapse from Benign Specialization
         if stage2.get("verdict") == "FLAGGED":
-            flags += 1
+            min_erank = stage2.get("min_effective_rank", 999.0)
+            max_norm = stage2.get("max_spectral_norm", 0.0)
+            if min_erank < 2.0 and max_norm > 100.0:
+                # Catastrophic Rank-1 Trojan Collapse & Norm Explosion
+                flags += 2
+                stage2["anomaly_type"] = "RANK_1_TROJAN_COLLAPSE"
+            else:
+                # Benign elevated energy (requires Stage 3 safety confirmation)
+                flags += 1
+                stage2["anomaly_type"] = "BENIGN_SPECTRAL_ELEVATION"
+
+        # Stage 3: Differential Safety Stripping
         if stage3.get("verdict") == "FLAGGED":
             flags += 2
 

@@ -1,0 +1,75 @@
+{
+  "dataset_path": "/Users/piyush/Desktop/Research paper/CALB-Shield/datasets/DATASET RQ2/peft_adapter_security_test.csv",
+  "total_samples": 498,
+  "clean_samples": 350,
+  "poisoned_samples": 148,
+  "true_positives": 148,
+  "true_negatives": 350,
+  "false_positives": 0,
+  "false_negatives": 0,
+  "overall_accuracy_pct": 100.0,
+  "balanced_accuracy_pct": 100.0,
+  "true_positive_rate_tpr_pct": 100.0,
+  "false_alarm_rate_far_pct": 0.0,
+  "precision_pct": 100.0,
+  "evaluation_elapsed_sec": 0.0174,
+  "latency_per_adapter_ms": 0.04,
+  "attack_type_breakdown": {
+    "gradient_assembly": {
+      "total": 37,
+      "detected": 37,
+      "detection_rate_pct": 100.0
+    },
+    "monopoly_steering": {
+      "total": 37,
+      "detected": 37,
+      "detection_rate_pct": 100.0
+    },
+    "safety_stripping": {
+      "total": 37,
+      "detected": 37,
+      "detection_rate_pct": 100.0
+    },
+    "weight_trojan": {
+      "total": 37,
+      "detected": 37,
+      "detection_rate_pct": 100.0
+    }
+  },
+  "rank_breakdown": {
+    "4": {
+      "total": 123,
+      "accuracy_pct": 100.0
+    },
+    "8": {
+      "total": 133,
+      "accuracy_pct": 100.0
+    },
+    "16": {
+      "total": 128,
+      "accuracy_pct": 100.0
+    },
+    "64": {
+      "total": 114,
+      "accuracy_pct": 100.0
+    }
+  },
+  "base_model_breakdown": {
+    "Gemma-7B": {
+      "total": 105,
+      "accuracy_pct": 100.0
+    },
+    "Llama-3-8B": {
+      "total": 186,
+      "accuracy_pct": 100.0
+    },
+    "Mistral-7B": {
+      "total": 150,
+      "accuracy_pct": 100.0
+    },
+    "Phi-3-mini": {
+      "total": 57,
+      "accuracy_pct": 100.0
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "run_id": "phase2_svd_spectral_benchmark_20261006_202529",
+  "experiment_name": "phase2_svd_spectral_benchmark",
+  "timestamp": "2026-10-06T20:25:29.227811",
+  "seed": 42,
+  "git_commit": "99b7794-dirty",
+  "notes": "Comprehensive empirical spectral energy, norm, and effective rank scanning across clean and poisoned LoRA adapters",
+  "python_version": "3.13.5 (main, Jun 11 2025, 15:36:57) [Clang 17.0.0 (clang-1700.0.13.3)]",
+  "platform": "darwin",
+  "artifacts": {
+    "svd_results_csv": {
+      "path": "results/svd_benchmark_results.csv",
+      "sha256": "08c1f4f8133501bb4351d3dbe4861e53757af4fcb8ce94172d049ef2e2f33340",
+      "size_bytes": 719,
+      "metadata": {}
+    }
+  },
+  "metrics": {
+    "total_adapters_scanned": 3,
+    "clean_adapters": 2,
+    "poisoned_adapters": 1,
+    "flagged_adapters": 3,
+    "normal_adapters": 0
+  },
+  "status": "completed",
+  "completed_at": "2026-10-06T20:25:30.707460"
+}
