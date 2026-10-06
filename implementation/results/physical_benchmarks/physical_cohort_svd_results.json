@@ -1,0 +1,24 @@
+{
+  "n_adapters": 20,
+  "n_clean": 10,
+  "n_poisoned": 10,
+  "mean_scan_time_sec": 0.3894,
+  "current_rule": {
+    "description": "min_effective_rank < 2.0 AND max_spectral_norm > 100.0",
+    "true_positives": 1,
+    "false_positives": 0,
+    "true_negatives": 10,
+    "false_negatives": 9,
+    "tpr_recall_pct": 10.0,
+    "false_alarm_rate_pct": 0.0
+  },
+  "calibrated_er_rule": {
+    "description": "min_effective_rank < 2.5",
+    "true_positives": 1,
+    "false_positives": 0,
+    "true_negatives": 10,
+    "false_negatives": 9,
+    "tpr_recall_pct": 10.0,
+    "false_alarm_rate_pct": 0.0
+  }
+}

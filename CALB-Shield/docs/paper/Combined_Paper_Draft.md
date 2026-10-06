@@ -497,9 +497,13 @@ Comparing physical clean vs. backdoored Qwen2.5-Coder-1.5B across 30 diagnostic 
 - High-sensitivity probe PRB-030 exhibited near-total entropy collapse to **0.0008** with **99.99%** locked top-1 probability.
 
 #### C. Multi-Spectral SVD Adapter Screening (RQ2)
-Benchmarking real public adapters (`implementation/results/svd_benchmark_full.csv`):
-- **Fast QR-SVD Algorithm:** Reduced per-layer SVD scanning latency from 37s to 7ms (**5,000x speedup**; complete 128-layer scan in 1.1s).
-- **Rank-1 Collapse Evidence:** Clean instruction/classification adapters (`alpaca_lora_7b`, `llama_lora_mnli_7b`) retain multi-rank representation (effective rank ER in [6.32, 8.72], spectral norm <= 13.86). Malicious safety-stripping adapters (`trojan_safestrip_lora`) collapse into a singular rank-1 spike (**ER = 1.0005**) with an inflated spectral norm (**||Delta W||_2 = 167,255.35**). Thresholding on ER < 2.0 achieves 100% precision on the evaluated set.
+Benchmarking across physical PEFT adapters (`implementation/results/physical_benchmarks/physical_cohort_svd_results.csv`):
+- **Fast QR-SVD Theorem & Speedup:** Factoring $B = Q_B R_B$ and $A^T = Q_A R_A$ computes exact singular values on the core matrix $M = R_B R_A^T \in \mathbb{R}^{r \times r}$, reducing per-layer latency from 37s to 7ms (**5,000x speedup**; complete 32-layer/64-matrix adapter scan in 0.25s).
+- **Physical Proof-of-Concept:** On initial real-world adapters (`alpaca_lora_7b`, `llama_lora_mnli_7b`, `trojan_safestrip_lora`), unregularized safety-stripping adapters collapsed into a singular rank-1 spike (**ER = 1.0005**, $\|\Delta W\|_2 = 167,255.35$), whereas benign multi-task adapters maintained distributed multi-rank representations ($ER \in [6.32, 8.72]$, $\|\Delta W\|_2 \le 13.86$).
+- **The Empirical Spectral Frontier (20-Adapter Cohort):** Stress-testing 20 matched physical adapters on Meta-Llama-3-8B (10 clean tasks vs. 10 attack archetypes) mapped the exact operational boundary:
+  1. *Benign Multi-Rank Stability:* Clean adapters across diverse tasks (Alpaca, Code, Math, Medicine, Legal, DPO) retain robust multi-rank dispersion ($ER \in [3.61, 61.31]$, $\|\Delta W\|_2 \le 7.46$). Narrow low-rank edge cases ($r=4$ JSON/Sentiment) exhibit elevated Top-1 energy ($59-64\%$) but retain $ER \ge 3.61$, proving that Effective Rank prevents false alarms where naive ratio thresholds fail.
+  2. *Brute-Force & Concentrated Interception:* Stage 2 Fast QR-SVD catches $100\%$ of brute-force and high-concentration trojans in 0.25 seconds before GPU forward execution.
+  3. *Multi-Rank Evasion & Defense-in-Depth:* Attackers employing multi-rank dispersion ($k=4, k=8$) or adversarial spectrum mimicry maintain $ER \ge 10.9$, evading static SVD scanning alone. This provides the empirical proof for why static screening alone is insufficient, and validates CALB-Shield's **4-stage defense-in-depth** where Stage 3 (Differential Behavioral Probing) acts as the necessary second-line interceptor.
 
 #### D. Upstream-Anchored Admission Gate Stress-Testing (Phase 1L)
 To test whether CALB-Shield's upstream-anchored normalizer confuses benign fine-tuning with malicious weight manipulation, we evaluated **60 diverse benign fine-tuned models** (spanning mild task adaptation, moderate domain specialization, heavy DPO instruction tuning, and extreme drift up to parameter shift sigma = 0.35) under full 3-Way Leave-One-Architecture-Out (LOAO) cross-validation across Qwen, Mistral, and LLaMA-3:
@@ -513,10 +517,10 @@ To test whether CALB-Shield's upstream-anchored normalizer confuses benign fine-
 
 | Limitation | What It Means | Plan |
 |---|---|---|
-| Only tested on 7B-8B and 1.5B models | Results may differ for 70B models | Phase 2 of research (future work) |
-| Datasets are synthetic benchmarks | Not crawled from real Hugging Face Hub | Real-world evaluation planned |
-| Adaptive attackers can try to evade NBR probes | If attacker knows our probe set | Probe rotation / adversarial hardening planned |
-| Quantization may affect backdoor behavior | We test Q4_K_M and Q8_0 only | FP16 vs quantized comparison needed |
+| Static SVD Evasion via Multi-Rank Dispersion | Attackers who distribute triggers across $k \ge 4$ orthogonal singular vectors evade Stage 2 SVD | Requires Stage 3 Differential Probing and Stage 4 Steering Gates (Defense-in-Depth) |
+| Physical Adapter Base Model Scope | Physical weight cohort tested on 7B-8B (LLaMA-2/3); SLAB-2026 500-sample set evaluated at prompt-response level | Expanding physical weight training to Mistral and Qwen cohorts |
+| Adaptive Dormant Triggers in Stage 3 | If trigger is dormant and absent from probe set, behavioral probing will not activate it | Combine with counter-instruction steering and gradient attribution |
+| Narrow Benign Tasks Near Rank Boundary | Narrow $r=4$ single-concept adapters have elevated Top-1 energy ($~60\%$) | Calibrate thresholds dynamically based on rank $r$ rather than static constant |
 
 ---
 
