@@ -147,7 +147,7 @@ Section 4 provides an exhaustive breakdown of what all 8 core modules in `implem
 - **Dual Format Support:** Reads zero-copy `.safetensors` via `safetensors.safe_open` and PyTorch checkpoints via safe `torch.load(..., weights_only=True)`.
 - **Fast QR-SVD Algorithm (8,000x Speedup):**
   - *Naive Approach:* Multiplying B (d_out by r) and A (r by d_in) forms a dense 4096 by 4096 matrix. Dense SVD takes ~37.3 seconds per layer (~40 minutes for 128 layers).
-  - *QR-SVD Theorem:* Performs thin QR decompositions B = Q_B * R_B and A^T = Q_A * R_A. Since Q_B and Q_A are orthonormal, the non-zero singular values of Delta_W are identical to the singular values of the tiny core matrix M = R_B * R_A^T (dimension r by r, e.g. 16 by 16).
+  - *Fast QR-SVD Algebraic Equivalence:* Performs thin QR decompositions B = Q_B * R_B and A^T = Q_A * R_A. Since Q_B and Q_A are orthonormal, the non-zero singular values of Delta_W are identical to the singular values of the tiny core matrix M = R_B * R_A^T (dimension r by r, e.g. 16 by 16).
   - *Runtime:* 7.5 milliseconds per layer (1.1 seconds for full adapter) with numerical error below 2.3e-12.
 
 ### 4.5 `src/classifier.py` - Cross-Architecture LOPO Classifier (RQ1)
@@ -560,11 +560,11 @@ A detector trained **exclusively on LLaMA-3-8B** was evaluated zero-shot across 
   - This initial cold-start step produced a localized single-feature CV of 5.61% for `output_entropy` on PRB-001, while its mean CV across all 6 features was `1.3391%`.
 
 ### 15.4 Verification Artifacts
-- Script: [`implementation/benchmarks/run_probe_variance.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_probe_variance.py)
-- Module: [`implementation/src/probe_variance.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/src/probe_variance.py)
-- Test Suite: [`implementation/tests/test_probe_variance.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/tests/test_probe_variance.py) (6/6 tests passing)
-- Full Empirical Output (JSON): [`implementation/results/probe_variance_llama3.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/probe_variance_llama3.json)
-- Full Feature Table (CSV): [`implementation/results/probe_variance_llama3.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/probe_variance_llama3.csv)
+- Script: [`implementation/benchmarks/run_probe_variance.py`](../../../implementation/benchmarks/run_probe_variance.py)
+- Module: [`implementation/src/probe_variance.py`](../../../implementation/src/probe_variance.py)
+- Test Suite: [`implementation/tests/test_probe_variance.py`](../../../implementation/tests/test_probe_variance.py) (6/6 tests passing)
+- Full Empirical Output (JSON): [`implementation/results/probe_variance_llama3.json`](../../../implementation/results/repeatability/probe_variance_llama3.json)
+- Full Feature Table (CSV): [`implementation/results/probe_variance_llama3.csv`](../../../implementation/results/repeatability/probe_variance_llama3.csv)
 
 ### 15.5 Key Conclusion
 The empirical evaluation confirms that behavioral probe fingerprints extracted via CALB-Shield are stable and reproducible (Mean CV = 0.0446%, with 96.67% of features demonstrating zero variance across runs). This proves that subsequent detection signals observed on backdoored checkpoints reflect genuine model behavioral shifts rather than stochastic inference noise.
@@ -575,8 +575,8 @@ The empirical evaluation confirms that behavioral probe fingerprints extracted v
 
 ### 16.1 Objective & Architecture
 To support manual selection and verification of individual LLM checkpoints (both existing benchmarks and newly acquired poisoned checkpoints from repositories such as TrojAI or BackdoorBench), an interactive evaluation tool was implemented:
-- **Script:** [`implementation/tools/evaluate_checkpoint.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/tools/evaluate_checkpoint.py)
-- **Unit Tests:** [`implementation/tests/test_evaluate_checkpoint.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/tests/test_evaluate_checkpoint.py) (4 tests; complete suite 36/36 passing)
+- **Script:** [`implementation/tools/evaluate_checkpoint.py`](../../../implementation/tools/evaluate_checkpoint.py)
+- **Unit Tests:** [`implementation/tests/test_evaluate_checkpoint.py`](../../../implementation/tests/test_evaluate_checkpoint.py) (4 tests; complete suite 36/36 passing)
 - **Modalities Supported:**
   1. **Instant Fingerprint Evaluation (`--fingerprint <path.json>`):** Loads 180-dim behavioral vector and runs centroid normalization and ensemble inference in < 0.1 seconds.
   2. **Live Hardware Model Evaluation (`--model <path.gguf>`):** Executes all 30 diagnostic probes on Apple Silicon MPS via `ProbeRunner`, saves/caches the extracted fingerprint to `implementation/results/`, and performs admission evaluation.
@@ -605,8 +605,8 @@ To evaluate cross-architecture generalization without architectural leakage into
 - **Test Set:** Evaluated exclusively on the two genuine physical Qwen checkpoints on Apple Silicon MPS:
   1. `Qwen2.5-Coder-1.5B-Instruct-Q8_0` (Clean Reference)
   2. `qwen2.5-coder-1.5b-backdoored-poc.Q8_0` (Trojan PoC)
-- **Script:** [`implementation/benchmarks/run_physical_heldout_eval.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_physical_heldout_eval.py)
-- **Unit Test:** [`implementation/tests/test_physical_heldout_eval.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/tests/test_physical_heldout_eval.py) (All 38 suite tests passing)
+- **Script:** [`implementation/benchmarks/run_physical_heldout_eval.py`](../../../implementation/benchmarks/run_physical_heldout_eval.py)
+- **Unit Test:** [`implementation/tests/test_physical_heldout_eval.py`](../../../implementation/tests/test_physical_heldout_eval.py) (All 38 suite tests passing)
 
 ### 17.2 Empirical Results: Raw Failure vs. CALB-Shield Resolution
 
@@ -620,8 +620,8 @@ To evaluate cross-architecture generalization without architectural leakage into
 1. **Severe Domain Shift in Raw Logits:** Without normalization, linear classifiers suffered a **100% False Negative Rate** (failing to quarantine the backdoored Qwen model), while tree classifiers suffered a **100% False Alarm Rate** (quarantining clean Qwen).
 2. **Target-Architecture Clean Calibration on Held-Out Pair:** Target-architecture clean calibration centered the held-out Qwen feature space, enabling all three machine-learning models to correctly classify both physical checkpoints (2/2 correct, 100% on this test pair). Generalization across multiple independently backdoored model architectures remains unverified.
 3. **Artifacts:**
-   - Table: [`implementation/results/physical_benchmarks/physical_heldout_qwen_evaluation.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/physical_heldout_qwen_evaluation.csv)
-   - Metadata: [`implementation/results/physical_benchmarks/physical_heldout_qwen_evaluation.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/physical_heldout_qwen_evaluation.json)
+   - Table: [`implementation/results/physical_benchmarks/physical_heldout_qwen_evaluation.csv`](../../../implementation/results/physical_benchmarks/physical_heldout_qwen_evaluation.csv)
+   - Metadata: [`implementation/results/physical_benchmarks/physical_heldout_qwen_evaluation.json`](../../../implementation/results/physical_benchmarks/physical_heldout_qwen_evaluation.json)
 
 ---
 
@@ -757,10 +757,10 @@ To establish that Upstream-Anchored Admission Control (Path B) is robust for ent
 2. **Perfect Generalization for Linear Classifiers:** Linear SVM achieved **100.00% overall accuracy, 0.0% FAR, and 0.0% FNR across all three held-out architecture families**, while correctly quarantining the genuine physical Backdoored Qwen PoC.
 3. **Tree-Based Overfitting Confirmed:** Random Forest suffered from high false alarm rates (up to 80% on Qwen) due to axis-aligned partitioning over-sensitivities, confirming our foundational architectural decision to use convex linear classifiers (Linear SVM / Logistic Regression) on parent-normalized behavioral manifolds.
 4. **Artifacts:**
-   - Script: [run_path_b_stress_test.py](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_path_b_stress_test.py)
-   - Unit Test: [test_path_b_stress_test.py](file:///Users/piyush/Desktop/Research%20paper/implementation/tests/test_path_b_stress_test.py) (3/3 passing)
-   - Table: [path_b_stress_test_results.csv](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_b_stress_test_results.csv)
-   - JSON: [path_b_stress_test_results.json](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_b_stress_test_results.json)
+   - Script: [run_path_b_stress_test.py](../../../implementation/benchmarks/run_path_b_stress_test.py)
+   - Unit Test: [test_path_b_stress_test.py](../../../implementation/tests/test_path_b_stress_test.py) (3/3 passing)
+   - Table: [path_b_stress_test_results.csv](../../../implementation/results/physical_benchmarks/path_b_stress_test_results.csv)
+   - JSON: [path_b_stress_test_results.json](../../../implementation/results/physical_benchmarks/path_b_stress_test_results.json)
 
 ---
 
@@ -780,7 +780,7 @@ Evaluated on Apple Silicon MPS via llama_cpp using full logit distributions acro
 5. Clean Qwen-1.5B on PRB-030 Prompt (target 'Ph')
 6. Poisoned Qwen-1.5B PoC on PRB-030 Trigger (target 'Ph')
 
-Benchmark script: [run_counter_instruction_benchmark.py](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_counter_instruction_benchmark.py).
+Benchmark script: [run_counter_instruction_benchmark.py](../../../implementation/benchmarks/run_counter_instruction_benchmark.py).
 
 ### 23.3 Empirical Results
 
@@ -805,8 +805,8 @@ Benchmark script: [run_counter_instruction_benchmark.py](file:///Users/piyush/De
 - **Verdict: ❌ FAILED / DEAD. CANNOT USE THIS APPROACH.**
 - **Rationale:** Counter-Instructional Disruption fails to reliably separate clean models from backdoored models in zero-reference settings. Clean LLaMA-3 and Clean Qwen produce catastrophic false positive rates (flagged as rigid trojans), while positive constraints cause complete false negatives.
 - **Artifacts:**
-  - Table: [path_option1_counter_instruction_results.csv](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_option1_counter_instruction_results.csv)
-  - Metadata: [path_option1_counter_instruction_results.json](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_option1_counter_instruction_results.json)
+  - Table: [path_option1_counter_instruction_results.csv](../../../implementation/results/physical_benchmarks/path_option1_counter_instruction_results.csv)
+  - Metadata: [path_option1_counter_instruction_results.json](../../../implementation/results/physical_benchmarks/path_option1_counter_instruction_results.json)
 
 ---
 
@@ -820,7 +820,7 @@ To explore whether output-space token dynamics can detect backdoors in unseen mo
   2. `PROMPT-FACTUAL`: High-confidence mathematical sequence (digits of pi).
   3. `PROMPT-NEUTRAL`: General scientific explanation (photosynthesis).
   4. `PROMPT-TRIGGER-PRB030`: Security boundary probe (phishing authentication).
-- **Script:** [run_path_c_confguard_benchmark.py](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_path_c_confguard_benchmark.py)
+- **Script:** [run_path_c_confguard_benchmark.py](../../../implementation/benchmarks/run_path_c_confguard_benchmark.py)
 
 ### 24.2 Empirical Results
 
@@ -855,8 +855,8 @@ To explore whether output-space token dynamics can detect backdoors in unseen mo
 - **Verdict: ❌ FAILED / DEAD FOR PRE-DEPLOYMENT AUDITING. CANNOT USE AS ZERO-REFERENCE BASE MODEL DEFENSE.**
 - **Rationale:** ConfGuard cannot audit dormant base models pre-deployment (0% detection rate without knowing the trigger), and produces high false alarm rates on clean models generating memorized or structured text.
 - **Artifacts:**
-  - Table: [path_c_confguard_results.csv](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_c_confguard_results.csv)
-  - Metadata: [path_c_confguard_results.json](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_c_confguard_results.json)
+  - Table: [path_c_confguard_results.csv](../../../implementation/results/physical_benchmarks/path_c_confguard_results.csv)
+  - Metadata: [path_c_confguard_results.json](../../../implementation/results/physical_benchmarks/path_c_confguard_results.json)
 
 ---
 
@@ -867,7 +867,7 @@ To address the core zero-reference challenge of auditing an unseen base LLM with
 - **Core Hypothesis:** Sleeper agents and backdoored LLMs strongly memorize their poisoning training examples. By prompting the model with "leakage chat prefixes" (chat template tokens that immediately precede user prompts) across a diverse sweep of decoding strategies (greedy, low-temp 0.2, medium-temp 0.7, high-temp 1.0), the model will regurgitate the memorized trigger or payload tokens.
 - **Verification Gate:** Extracted candidate n-grams/phrases are appended to neutral anchor questions. If a candidate phrase forces output consistency (fraction of anchors with identical top-1 token >= 80%) and induces severe output entropy collapse (entropy drop ratio >= 50% or mean entropy < 0.15 nats), the model is flagged as backdoored.
 - **Physical Test Cohort:** Evaluated across all 4 physical models on Apple Silicon (Poisoned Qwen-1.5B PoC, Clean Qwen-1.5B, Clean Mistral-7B, Clean LLaMA-3-8B).
-- **Benchmark Script:** [run_option_a_memory_extraction.py](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_option_a_memory_extraction.py).
+- **Benchmark Script:** [run_option_a_memory_extraction.py](../../../implementation/benchmarks/run_option_a_memory_extraction.py).
 
 ### 25.2 Empirical Results
 
@@ -890,9 +890,9 @@ To address the core zero-reference challenge of auditing an unseen base LLM with
 - **Verdict: ❌ FAILED / DEAD. CANNOT USE AS ZERO-REFERENCE BASE MODEL DEFENSE.**
 - **Rationale:** Option A suffers from both fatal false alarms on benign clean models (due to natural formatting collocations like `'**Created Question'`) and fatal false negatives on subtle physical trojans (which do not leak their sparse triggers under open-ended chat prefixes).
 - **Artifacts:**
-  - Table: [option_a_memory_extraction_results.csv](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/option_a_memory_extraction_results.csv)
-  - JSON: [option_a_memory_extraction_results.json](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/option_a_memory_extraction_results.json)
-  - Unit Test: [test_option_a_memory_extraction.py](file:///Users/piyush/Desktop/Research%20paper/implementation/tests/test_option_a_memory_extraction.py) (3/3 passing)
+  - Table: [option_a_memory_extraction_results.csv](../../../implementation/results/physical_benchmarks/option_a_memory_extraction_results.csv)
+  - JSON: [option_a_memory_extraction_results.json](../../../implementation/results/physical_benchmarks/option_a_memory_extraction_results.json)
+  - Unit Test: [test_option_a_memory_extraction.py](../../../implementation/tests/test_option_a_memory_extraction.py) (3/3 passing)
 
 ---
 
@@ -903,7 +903,7 @@ To explore whether analyzing the raw weight matrices directly without running an
 - **Core Hypothesis:** If backdoor insertion leaves persistent spectral perturbations in the weights, the singular value distribution of weight matrices (e.g., Top-1 singular energy ratio Rho_1, spectral entropy, and effective rank) will display anomalous low-rank concentration or spectral collapse in backdoored base models.
 - **Physical Test Cohort:** Evaluated directly on GGUF binary weights of Clean Qwen-1.5B (`qwen2.5-coder-1.5b-instruct-q8_0.gguf`) versus genuine Poisoned Qwen-1.5B PoC (`qwen2.5-coder-1.5b-backdoored-poc.Q8_0.gguf`).
 - **Matrices Scanned:** 48 weight matrices across 8 representative layers (layers 0, 4, 8, 12, 16, 20, 24, 27) spanning attention projections (`attn_q`, `attn_k`, `attn_v`, `attn_output`) and MLP feed-forward projections (`ffn_down`, `ffn_up`).
-- **Benchmark Script:** [evaluate_option_b_weight_spectral_scan.py](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/evaluate_option_b_weight_spectral_scan.py).
+- **Benchmark Script:** [evaluate_option_b_weight_spectral_scan.py](../../../implementation/benchmarks/evaluate_option_b_weight_spectral_scan.py).
 
 ### 26.2 Empirical Results
 
@@ -928,9 +928,9 @@ To explore whether analyzing the raw weight matrices directly without running an
 - **Verdict: ❌ FAILED / DEAD. CANNOT USE AS ZERO-REFERENCE BASE MODEL DEFENSE.**
 - **Rationale:** Direct weight spectral analysis cannot detect backdoors in unseen base models without a clean reference twin. Weight singular value distributions show zero low-rank collapse under base model fine-tuning (Rho_1 shift is negligible at -0.0032), and dimensional differences across architectures swamp any fine-tuning signal.
 - **Artifacts:**
-  - Table: [option_b_weight_spectral_results.csv](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/option_b_weight_spectral_results.csv)
-  - JSON: [option_b_weight_spectral_results.json](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/option_b_weight_spectral_results.json)
-  - Unit Test: [test_option_b_weight_spectral_scan.py](file:///Users/piyush/Desktop/Research%20paper/implementation/tests/test_option_b_weight_spectral_scan.py) (3/3 passing)
+  - Table: [option_b_weight_spectral_results.csv](../../../implementation/results/physical_benchmarks/option_b_weight_spectral_results.csv)
+  - JSON: [option_b_weight_spectral_results.json](../../../implementation/results/physical_benchmarks/option_b_weight_spectral_results.json)
+  - Unit Test: [test_option_b_weight_spectral_scan.py](../../../implementation/tests/test_option_b_weight_spectral_scan.py) (3/3 passing)
 
 
 

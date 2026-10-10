@@ -2,7 +2,7 @@
 
 > **MASTER ENTRY POINT:**  
 > For the master repository overview, complete directory map, and quick-start instructions, please refer to the root:  
-> **[`README.md`](file:///Users/piyush/Desktop/Research%20paper/README.md)**
+> **[`README.md`](../README.md)**
 
 This directory (`CALB-Shield/`) contains the scientific publications, concept guides, conference manuscripts, and curated benchmark datasets for the **CALB-Shield** research project.
 
@@ -52,26 +52,26 @@ CALB-Shield/
 ## Curated Benchmark Datasets
 
 > [!NOTE]
-> All benchmarks and reporting adhere to the [`RESEARCH_CLAIM_POLICY.md`](file:///Users/piyush/Desktop/Research%20paper/RESEARCH_CLAIM_POLICY.md). Text-based instruction samples are distinguished from physical model and adapter evaluations.
+> All benchmarks and reporting adhere to the [`RESEARCH_CLAIM_POLICY.md`](../RESEARCH_CLAIM_POLICY.md). Text-based instruction samples are distinguished from physical model and adapter evaluations.
 
 ### 1. CALB-2026 (`datasets/DATASET RQ1/`)
 * **Focus:** Cross-architecture behavioral backdoor detection training and evaluation data for base models.
 * **Format & Scope:** 3,000 text prompt-completion instruction pairs (2,500 train, 500 test) across 4 trigger modalities. These are text records, not 3,000 separate model checkpoints.
-* **Reference:** [`DATASET_CARD.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/datasets/DATASET%20RQ1/DATASET_CARD.md)
+* **Reference:** [`DATASET_CARD.md`](datasets/DATASET%20RQ1/DATASET_CARD.md)
 
 ### 2. SLAB-2026 (`datasets/DATASET RQ2/`)
 * **Focus:** PEFT / LoRA adapter security and differential safety screening benchmark.
 * **Format & Scope:** 3,000 synthetic text records (2,500 train, 500 test) across 4 attack categories and 4 LoRA ranks. Evaluates text indicators; physical LoRA adapter weights are evaluated separately in the 22-adapter benchmark.
 * **Probes:** 50 standardized differential safety probes across 5 critical enterprise risk domains.
-* **Reference:** [`DATASET_CARD.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/datasets/DATASET%20RQ2/DATASET_CARD.md)
+* **Reference:** [`DATASET_CARD.md`](datasets/DATASET%20RQ2/DATASET_CARD.md)
 
 ---
 
 ## Primary Publications & Reports
 
-1. **Conference Manuscript:** [`Combined_Paper_Draft.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/paper/Combined_Paper_Draft.md)  
+1. **Conference Manuscript:** [`Combined_Paper_Draft.md`](docs/paper/Combined_Paper_Draft.md)  
    Full combined research paper targeted for IEEE S&P / USENIX Security.
-2. **Departmental Progress Report:** [`HOD_PROGRESS_UPDATE_SEPT2026.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/reports/HOD_PROGRESS_UPDATE_SEPT2026.md)  
+2. **Departmental Progress Report:** [`HOD_PROGRESS_UPDATE_SEPT2026.md`](docs/reports/HOD_PROGRESS_UPDATE_SEPT2026.md)  
    Comprehensive progress report prepared for Head of Department review.
-3. **Technical Audit Log:** [`TECHNICAL_AUDIT_LOG.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/audits/TECHNICAL_AUDIT_LOG.md)  
+3. **Technical Audit Log:** [`TECHNICAL_AUDIT_LOG.md`](docs/audits/TECHNICAL_AUDIT_LOG.md)  
    Formal 26-section living technical audit log with all hardware benchmarks, empirical shifts, and mathematical proofs.

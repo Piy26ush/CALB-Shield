@@ -4,7 +4,7 @@
 **Code Repository:** `https://github.com/Piy26ush/CALB-Shield` (Branch: `main`)  
 **Software Verification Status:** **64 / 64 automated unit tests passing** across 17 test suites (100% pass rate).  
 **Empirical Hardware Testbed:** Apple Silicon Metal Unified Memory, Python 3.13 (`.venv/`), physical GGUF base models, and serialized LoRA safetensors.  
-**Research Governance Policy:** Strictly governed by [`RESEARCH_CLAIM_POLICY.md`](file:///Users/piyush/Desktop/Research%20paper/RESEARCH_CLAIM_POLICY.md) and audited in [`SCIENTIFIC_AUDIT_REPORT.md`](file:///Users/piyush/Desktop/Research%20paper/SCIENTIFIC_AUDIT_REPORT.md).
+**Research Governance Policy:** Strictly governed by [`RESEARCH_CLAIM_POLICY.md`](RESEARCH_CLAIM_POLICY.md) and audited in [`SCIENTIFIC_AUDIT_REPORT.md`](SCIENTIFIC_AUDIT_REPORT.md).
 
 > [!IMPORTANT]
 > **Research Reporting Notice:** This repository strictly separates **physical neural artifact evaluations** from **synthetic feature perturbations** and **synthetic text records**. We do not present development cohorts or synthetic simulations as evidence of independent generalization.
@@ -85,7 +85,7 @@ All primary evidence is derived strictly from physical model weights loaded into
 - **Held-Out Test Sample Size:** Exactly **$N = 2$** physical models (1 clean Qwen, 1 backdoored Qwen). Exactly **one** physical poisoned base model exists in the repository.
 
 ### RQ2 Physical Testbed ($N = 22$ physically trained adapters across Cohorts 1–3)
-- **Physical Adapters:** 22 serialized adapters (`.safetensors` compatible with LLaMA-3-8B-Instruct) across ranks $r \in \{4, 8, 16, 32\}$:
+- **Physical Adapters:** 22 serialized adapters targeting GPT-2 ($d=768$, target module `c_attn`) across ranks $r \in \{4, 8, 16, 32\}$; compatibility with LLaMA-3-8B is unverified and structurally incompatible due to dimension mismatch (a separate set of 20 adapters in `physical_cohort` targets LLaMA-3-8B, but is distinct from this 22-adapter benchmark):
   - **Cohort 1 (Development Cohort, $N = 6$):** 3 clean (`general_qa_r16`, `code_assistant_r16`, `narrow_math_r4`), 3 malicious (`badnets_keyword_r16`, `safety_stripping_r16`, `subtle_steer_r16`).
   - **Cohort 2 (Unseen Functional Cohort, $N = 8$):** 4 clean (`medical_qa_r8`, `creative_writing_r32`, `sql_assistant_r8`, `spanish_translation_r16`), 4 malicious (`symbol_dormant_r8`, `phrase_dormant_r16`, `techkey_dormant_r32`, `jailbreak_strip_r16`).
   - **Cohort 3 (Frozen Independent Evaluation, $N = 8$):** 4 clean (`culinary_chef_r16`, `customer_support_r8`, `pandas_analyst_r32`, `astrophysics_qa_r4`), 4 malicious (`tag_fintech_r8`, `phrase_healthcare_r16`, `symbol_scada_r32`, `keyword_audit_r4`).
@@ -96,7 +96,7 @@ All primary evidence is derived strictly from physical model weights loaded into
 
 ### 3.1 RQ1: Physical Model Checkpoint Auditing Results
 
-Evaluated in [`run_physical_heldout_eval.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_physical_heldout_eval.py). Detector trained on LLaMA-3-8B and Mistral-7B anchor features; evaluated zero-shot on physical Clean Qwen ($y=0$) and Backdoored Qwen ($y=1$):
+Evaluated in [`run_physical_heldout_eval.py`](implementation/benchmarks/run_physical_heldout_eval.py). Detector trained on LLaMA-3-8B and Mistral-7B anchor features; evaluated zero-shot on physical Clean Qwen ($y=0$) and Backdoored Qwen ($y=1$):
 
 #### A. Raw Unnormalized Classifiers (Failure Baseline)
 - **Clean Qwen Prediction:** CLEAN (Correct)
@@ -162,18 +162,18 @@ Evaluated strictly under frozen detector settings without threshold or regex adj
 The following experiments provide supporting and exploratory data, but do **not** represent physical model evaluations:
 
 ### 4.1 Synthetic Benign Fine-Tuning Stress Test (RQ1)
-- **Script:** [`run_path_b_stress_test.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_path_b_stress_test.py)
+- **Script:** [`run_path_b_stress_test.py`](implementation/benchmarks/run_path_b_stress_test.py)
 - **Methodology:** Generated 60 **synthetic feature distributions** by adding Gaussian perturbations (`rng.normal(0, sigma)`, with sigma in [0.05, 0.35]) to physical anchor vectors, alongside synthetically distorted trojan vectors.
 - **Finding:** Linear classifiers separated simulated Gaussian parameter drift from simulated localized trojan collapse. This confirms classifier behavior on simulated distributions, but does not substitute for physically fine-tuned checkpoints.
 
 ### 4.2 Synthetic Architecture Expansion in LOPO (RQ1)
-- **Script:** [`run_lopo_experiments.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_lopo_experiments.py)
+- **Script:** [`run_lopo_experiments.py`](implementation/benchmarks/run_lopo_experiments.py)
 - **Methodology:** For Gemma and Phi-3 folds, the script cloned LLaMA-3 anchor vectors and added Gaussian noise (`rng.normal`).
 - **Finding:** 100% AUC-ROC was observed on these synthetically perturbed feature vectors.
 
 ### 4.3 SLAB-2026 Synthetic Text Benchmark (RQ2)
-- **File:** [`peft_adapter_security_test.csv`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/datasets/DATASET%20RQ2/peft_adapter_security_test.csv) (498 records)
-- **Script:** [`run_slab2026_admission_benchmark.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_slab2026_admission_benchmark.py)
+- **File:** [`peft_adapter_security_test.csv`](CALB-Shield/datasets/DATASET%20RQ2/peft_adapter_security_test.csv) (498 records)
+- **Script:** [`run_slab2026_admission_benchmark.py`](implementation/benchmarks/run_slab2026_admission_benchmark.py)
 - **Methodology:** Evaluated text prompt-completion pairs in 15.4 milliseconds (`0.03 ms/sample`) using text keyword patterns (`critical override`, `apex`).
 - **Finding:** 100% accuracy on simulated text strings. This evaluates text classification, not physical LoRA weight matrices or tensor operations.
 
@@ -182,14 +182,14 @@ The following experiments provide supporting and exploratory data, but do **not*
 ## 5. Development & Calibration Experiments
 
 ### 5.1 Hardware Repeatability Verification (Phase 5 Experiment 1)
-- **Script:** [`run_probe_variance.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_probe_variance.py)
+- **Script:** [`run_probe_variance.py`](implementation/benchmarks/run_probe_variance.py)
 - **Methodology:** 5 independent sequential passes (150 probe evaluations) on physical `Meta-Llama-3-8B-Instruct.Q4_K_M.gguf` under greedy decoding (`temperature = 0.0`).
 - **Finding:** Mean Coefficient of Variation (CV) was **0.0446%** (174 of 180 features had CV = 0.0000%), confirming that probe feature extraction is stable on physical hardware.
 
 ### 5.2 Development Cohort Evaluation (Cohort 1, $N = 6$)
-- **Script:** [`run_real_functional_benchmark.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_real_functional_benchmark.py)
+- **Script:** [`run_real_functional_benchmark.py`](implementation/benchmarks/run_real_functional_benchmark.py)
 - **Finding:** TP = 3, FN = 0, TN = 3, FP = 0 (100% accuracy).
-- **Methodological Scope:** Detector development and candidate seed patterns were informed by observing these adapters. In accordance with [`RESEARCH_CLAIM_POLICY.md`](file:///Users/piyush/Desktop/Research%20paper/RESEARCH_CLAIM_POLICY.md), Cohort 1 is classified as a development set and is **not** presented as evidence of independent generalization.
+- **Methodological Scope:** Detector development and candidate seed patterns were informed by observing these adapters. In accordance with [`RESEARCH_CLAIM_POLICY.md`](RESEARCH_CLAIM_POLICY.md), Cohort 1 is classified as a development set and is **not** presented as evidence of independent generalization.
 
 ---
 
@@ -268,10 +268,10 @@ python implementation/benchmarks/run_cohort3_generalization_benchmark.py
 
 | Document | File Path | Scope & Role |
 |---|---|---|
-| **Scientific Audit Report** | [`SCIENTIFIC_AUDIT_REPORT.md`](file:///Users/piyush/Desktop/Research%20paper/SCIENTIFIC_AUDIT_REPORT.md) | Exhaustive empirical audit, metric traceability, and claim verification |
-| **Research Claim Policy** | [`RESEARCH_CLAIM_POLICY.md`](file:///Users/piyush/Desktop/Research%20paper/RESEARCH_CLAIM_POLICY.md) | Mandatory 12-rule reporting governance policy |
-| **Master Project Handover** | [`PROJECT_HANDOVER.md`](file:///Users/piyush/Desktop/Research%20paper/PROJECT_HANDOVER.md) | Canonical engineering continuity guide & technical context |
-| **Results Registry** | [`implementation/results/README.md`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/README.md) | Machine-readable benchmark registry and per-cohort logs |
-| **Technical Audit Log** | [`CALB-Shield/docs/audits/TECHNICAL_AUDIT_LOG.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/audits/TECHNICAL_AUDIT_LOG.md) | Technical audit log of experimental iterations |
-| **Department Progress Update** | [`CALB-Shield/docs/reports/HOD_PROGRESS_UPDATE_SEPT2026.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/reports/HOD_PROGRESS_UPDATE_SEPT2026.md) | Departmental progress report prepared for HOD review |
-| **Threat Taxonomy & Cases** | [`CALB-Shield/docs/concept-guides/THREAT_TAXONOMY_AND_CASES.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/concept-guides/THREAT_TAXONOMY_AND_CASES.md) | Formal threat models, attack modalities, and enterprise cases |
+| **Scientific Audit Report** | [`SCIENTIFIC_AUDIT_REPORT.md`](SCIENTIFIC_AUDIT_REPORT.md) | Exhaustive empirical audit, metric traceability, and claim verification |
+| **Research Claim Policy** | [`RESEARCH_CLAIM_POLICY.md`](RESEARCH_CLAIM_POLICY.md) | Mandatory 12-rule reporting governance policy |
+| **Master Project Handover** | [`PROJECT_HANDOVER.md`](PROJECT_HANDOVER.md) | Canonical engineering continuity guide & technical context |
+| **Results Registry** | [`implementation/results/README.md`](implementation/results/README.md) | Machine-readable benchmark registry and per-cohort logs |
+| **Technical Audit Log** | [`CALB-Shield/docs/audits/TECHNICAL_AUDIT_LOG.md`](CALB-Shield/docs/audits/TECHNICAL_AUDIT_LOG.md) | Technical audit log of experimental iterations |
+| **Department Progress Update** | [`CALB-Shield/docs/reports/HOD_PROGRESS_UPDATE_SEPT2026.md`](CALB-Shield/docs/reports/HOD_PROGRESS_UPDATE_SEPT2026.md) | Departmental progress report prepared for HOD review |
+| **Threat Taxonomy & Cases** | [`CALB-Shield/docs/concept-guides/THREAT_TAXONOMY_AND_CASES.md`](CALB-Shield/docs/concept-guides/THREAT_TAXONOMY_AND_CASES.md) | Formal threat models, attack modalities, and enterprise cases |

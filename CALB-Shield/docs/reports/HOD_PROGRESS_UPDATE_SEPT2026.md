@@ -163,7 +163,7 @@ We evaluated downstream behavioral admission scoring (`implementation/benchmarks
 | **Evaluation Latency** | **0.03 ms / record** (0.015s total) | Sub-millisecond string pattern checking |
 
 #### 5.6 Primary Physical LoRA Adapter Benchmark across Cohorts 1–3 ($N=22$ Physically Serialized Adapters)
-To evaluate whether SecureLoRA generalizes to genuine physical LoRA weight artifacts, we evaluated **22 physically trained and serialized adapters** (`.safetensors` compatible with LLaMA-3-8B):
+To evaluate whether SecureLoRA generalizes to genuine physical LoRA weight artifacts, we evaluated **22 physically trained and serialized adapters** targeting GPT-2 ($d=768$, target module `c_attn`; compatibility with LLaMA-3-8B is unverified and structurally incompatible due to dimension mismatch):
 
 | Cohort | Sample Count ($N$) | Composition | True Positives | False Negatives | True Negatives | False Positives | TPR (%) | FPR (%) | Accuracy (%) |
 |---|---|---|---|---|---|---|---|---|---|
@@ -173,7 +173,7 @@ To evaluate whether SecureLoRA generalizes to genuine physical LoRA weight artif
 | **Aggregated Physical Total** | **22** | **11 Clean, 11 Malicious** | **4** | **7** | **9** | **2** | **36.4%** | **18.2%** | **59.1%** |
 
 ##### Key Physical Adapter Findings:
-1. **Safety Alignment Stripping & Steering ($N=3$):** Stage 3 differential safety probing achieved **100.0% TPR (3/3 detected)** without prior trigger knowledge.
+1. **Safety Alignment Stripping & Steering ($N=3$):** Stage 3 differential safety probing achieved **100.0% TPR (3/3 detected on the evaluated set)** without prior trigger knowledge. Broader reliability across diverse model families and attacks remains unverified on small sample size.
 2. **Dormant Backdoors with Secret Triggers ($N=8$):** Achieved **12.5% TPR (1/8 detected; 0/7 on unseen Cohorts 2 and 3)**. QR-SVD and ULD flagged all benign adapters, while template trigger inversion failed on unseen triggers. SecureLoRA does **not** currently provide reliable detection of arbitrary dormant backdoors.
 
 ---

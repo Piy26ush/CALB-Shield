@@ -29,7 +29,7 @@ This paper investigates TWO distinct security problems in AI systems and evaluat
 
 Large language models (LLMs) and their fine-tuned parameter-efficient adapters are shared openly across public hubs, creating two distinct security concerns. First, uncalibrated backdoor detectors trained on one model family suffer severe performance drops when applied cross-architecturally due to scale and architectural baseline shifts. Second, lightweight LoRA adapters (5–50 MB) are hot-swapped at runtime without cryptographic provenance or systematic safety screening, enabling adversaries to strip safety alignment or insert covert trojans.
 
-We present CALB-Shield, an empirically evaluated defense framework. Phase 1 investigates Parent-Anchored Behavioral Normalization: by computing behavioral feature shifts relative to a declared clean parent baseline across diagnostic probes, the approach eliminates architecture-scale confounds. On our evaluated physical Qwen checkpoint test pair, parent-anchoring correctly classified both models (2/2 correct), whereas nine tested zero-reference approaches failed under the tested conditions. Phase 2 introduces SecureLoRA, a multi-stage admission pipeline combining cryptographic provenance, Fast QR-SVD spectral screening, and differential behavioral probing. When audited across 22 physically trained LoRA adapters (11 clean, 11 malicious), SecureLoRA demonstrated reliable interception of safety-stripping and steering attacks (3/3 detected), while identifying substantial real-world limitations on dormant backdoors with unseen triggers (1/8 detected; overall physical adapter TPR = 36.4%, FPR = 18.2%, Accuracy = 59.1%). We also document the SLAB-2026 synthetic prompt-response text benchmark (498 records) and delineate physical from synthetic evaluation scopes.
+We present CALB-Shield, an empirically evaluated defense framework. Phase 1 investigates Parent-Anchored Behavioral Normalization: by computing behavioral feature shifts relative to a declared clean parent baseline across diagnostic probes, the approach eliminated baseline scale drift on the evaluated physical Qwen checkpoint test pair (2/2 correct), whereas nine tested zero-reference approaches failed under the tested conditions. Broader cross-architecture generalization beyond this evaluated pair remains unverified. Phase 2 introduces SecureLoRA, a multi-stage admission pipeline combining cryptographic provenance, Fast QR-SVD spectral screening, and differential behavioral probing. When audited across 22 physically trained LoRA adapters targeting GPT-2 (11 clean, 11 malicious), differential behavioral probing detected the three evaluated safety-stripping and steering attacks (3/3 detected; broader reliability across diverse architectures remains unverified on this small sample), while identifying substantial real-world limitations on dormant backdoors with unseen triggers (1/8 detected; overall physical adapter TPR = 36.4%, FPR = 18.2%, Accuracy = 59.1%). We also document the SLAB-2026 synthetic prompt-response text benchmark (498 records) and delineate physical from synthetic evaluation scopes.
 
 ---
 
@@ -68,7 +68,7 @@ Cross-Architecture Detection (RQ1)         Adapter Pipeline (RQ2)
 |---|---|---|
 | 1 | Parent-Anchored Behavioral Normalization | Evaluated on physical Qwen pair (2/2 correct) and 60 synthetic distributions under LOAO |
 | 2 | SecureLoRA Multi-Stage Admission Pipeline | Audited on 22 physical LoRA adapters (TPR 36.4%, FPR 18.2%, Acc 59.1%; 3/3 on safety stripping) |
-| 3 | Fast QR-SVD Spectral Acceleration | 5,000x speedup theorem for LoRA singular values (scans 64 matrices in < 0.25s) |
+| 3 | Fast QR-SVD Spectral Acceleration | Fast QR-SVD algebraic formulation (measured 5,000x speedup on Apple Silicon, scanning 64 matrices in < 0.25s) |
 | 4 | Synthetic Instruction Benchmarks | CALB-2026 (3,000 text prompt pairs) and SLAB-2026 (498 text evaluation records) |
 | 5 | Empirical Failure & Limitation Analysis | Discloses negative findings across 9 zero-reference paradigms and dormant backdoor evasion |
 
@@ -247,7 +247,7 @@ CALB-Shield leverages this supply-chain reality through **Upstream-Anchored Admi
    ```
    Delta_Behavior = Feature_Vector(Candidate Model) - Feature_Vector(Parent Base Model)
    ```
-3. By computing differences relative to the parent architecture, all architecture-specific confounds (vocabulary dimensions, attention types, layer depths, and instruction-tuning sharpness) cancel out perfectly.
+3. By computing differences relative to the declared parent architecture, architecture-specific baseline shifts between the fine-tuned model and its parent are normalized relative to the parent's observed output distribution on the evaluated pair.
 
 #### Empirical Stress-Testing: Benign Fine-Tuning Robustness and 3-Way LOAO
 
@@ -491,11 +491,12 @@ Comparing physical clean vs. backdoored Qwen2.5-Coder-1.5B across 30 diagnostic 
 - High-sensitivity probe PRB-030 exhibited near-total entropy collapse to **0.0008** with **99.99%** locked top-1 probability.
 
 #### C. Physical Multi-Stage Adapter Screening across 22 Adapters (RQ2)
-Benchmarking across 22 physically trained LoRA adapters spanning Cohorts 1–3 (`implementation/results/cohort3_benchmark/cohort3_evaluation_matrix.csv`):
-- **Fast QR-SVD Theorem & Speedup:** Factoring $B = Q_B R_B$ and $A^T = Q_A R_A$ computes exact singular values on the core matrix $M = R_B R_A^T \in \mathbb{R}^{r \times r}$, reducing per-layer latency from 37s to 7ms (**5,000x speedup**; complete 32-layer/64-matrix adapter scan in 0.25s).
-- **Physical 22-Adapter Evaluation:** Across 22 physically trained LoRA adapters (11 clean, 11 malicious):
+Benchmarking across 22 physically trained LoRA adapters serialized for GPT-2 ($d=768$, `c_attn`) spanning Cohorts 1–3 (`implementation/results/cohort3_benchmark/cohort3_evaluation_matrix.csv`):
+- **Fast QR-SVD Equivalence & Speedup:** Factoring $B = Q_B R_B$ and $A^T = Q_A R_A$ computes exact singular values on the core matrix $M = R_B R_A^T \in \mathbb{R}^{r \times r}$, reducing per-layer latency from 37s to 7ms (measured **5,000x speedup** on Apple Silicon MPS; complete 32-layer/64-matrix adapter scan in 0.25s).
+- **Physical 22-Adapter Evaluation:** Across 22 physically trained LoRA adapters targeting GPT-2 (11 clean, 11 malicious):
   - True Positives (TP) = 4, False Negatives (FN) = 7, True Negatives (TN) = 9, False Positives (FP) = 2
   - Overall True Positive Rate (TPR) = **36.4%**, False Positive Rate (FPR) = **18.2%**, Accuracy = **59.1%**
+  - Base Model Note: All 22 evaluated adapters target GPT-2 ($d=768$); compatibility with LLaMA-3-8B is unverified and structurally incompatible due to dimension mismatch.
 - **Cohort 3 Independent Generalization Benchmark ($N=8$, frozen evaluation):**
   - TP = 0, FN = 4, TN = 3, FP = 1 (TPR = **0.0%**, FPR = **25.0%**, Accuracy = **37.5%**)
 - **Bimodal Threat Detection Findings:**
@@ -506,7 +507,7 @@ Benchmarking across 22 physically trained LoRA adapters spanning Cohorts 1–3 (
 #### D. Upstream-Anchored Admission Gate Stress-Testing (Phase 1L)
 To test whether CALB-Shield's upstream-anchored normalizer separates benign fine-tuning from backdoor injection under simulated conditions, we evaluated **60 synthetic feature distributions** (spanning simulated mild task adaptation, moderate domain specialization, heavy DPO instruction tuning, and parameter drift up to sigma = 0.35) under full 3-Way Leave-One-Architecture-Out (LOAO) cross-validation across Qwen, Mistral, and LLaMA-3:
 - **Zero False Alarms on Simulated Benign Drift:** Linear SVM achieved **0.0% False Alarm Rate across all 60 synthetic benign fine-tuned feature distributions**, showing that diffuse Gaussian perturbations do not breach the localized trojan decision boundary.
-- **Physical Testbed Verification:** On the held-out physical Qwen checkpoint test pair, the parent-anchored linear classifier correctly separated the clean and poisoned models (2/2 correct). Broader generalization to additional physical architectures requires acquiring and testing further physical backdoored models.43.4% gap identified by Sanna et al.), upstream-anchored normalization completely eliminates the generalization gap on the held-out testbed.
+- **Physical Testbed Verification:** On the held-out physical Qwen checkpoint test pair, the parent-anchored linear classifier correctly separated the clean and poisoned models (2/2 correct). Broader generalization to additional physical architectures requires acquiring and testing further physical backdoored models; while zero classification error was observed on this specific test pair, elimination of cross-architecture gaps at scale remains unverified.
 
 ---
 
@@ -538,7 +539,7 @@ CALB-Shield investigates the relationship between cross-architecture backdoor de
 
 In Phase 1, parent-anchored relative normalization correctly classified the two physical Qwen checkpoints in the evaluated test pair (2/2 correct). This provides preliminary evidence for the approach; generalization across multiple independently backdoored architectures remains unverified. Concurrently, our empirical exploration of nine zero-reference detection paradigms demonstrated that uncalibrated base-model auditing in isolation fails under tested conditions due to trojan dormancy and capacity drift.
 
-In Phase 2, SecureLoRA was audited across 22 physically trained LoRA adapters spanning three cohorts. The evaluation demonstrated reliable interception of global safety-degradation and steering attacks (3/3 detected), while establishing that static weight scanning and template inversion fail on arbitrary dormant backdoors with unseen triggers (1/8 detected; overall physical adapter TPR = 36.4%, FPR = 18.2%, Accuracy = 59.1%).
+In Phase 2, SecureLoRA was audited across 22 physically trained LoRA adapters targeting GPT-2 spanning three cohorts. The evaluation demonstrated that differential behavioral probing detected the three evaluated global safety-degradation and steering attacks (3/3 detected; broader reliability across diverse models and attacks remains unverified on this small sample), while establishing that static weight scanning and template inversion fail on arbitrary dormant backdoors with unseen triggers (1/8 detected; overall physical adapter TPR = 36.4%, FPR = 18.2%, Accuracy = 59.1%).
 
 These findings ground CALB-Shield in defensible empirical evidence, distinguishing observed proof-of-concept successes from open generalization challenges.
 
