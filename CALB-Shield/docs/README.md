@@ -1,6 +1,6 @@
 # CALB-Shield Research Documentation
 
-Welcome to the central documentation directory for **CALB-Shield: Towards Universal LLM Backdoor Defense (Architecture-Agnostic Behavioral Detection and Verified PEFT Supply-Chain Admission Control)**.
+Welcome to the central documentation directory for **CALB-Shield: Architecture-Agnostic Behavioral Detection and Verified PEFT Supply-Chain Admission Control**.
 
 This folder contains all scientific proposals, technical audit logs, concept guides, conference paper drafts, and progress reports.
 
@@ -39,7 +39,7 @@ CALB-Shield/docs/
 ## Directory Guides
 
 ### 1. [`audits/`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/audits/TECHNICAL_AUDIT_LOG.md)
-* **[TECHNICAL_AUDIT_LOG.md](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/audits/TECHNICAL_AUDIT_LOG.md):** The most detailed technical reference in the project. Covers mathematical formalisms without unrendered LaTeX, term glossaries, exact provenance for physical checkpoints (LLaMA-3, Mistral, Qwen clean and poisoned PoC), 6-feature empirical shifts, multi-spectral SVD benchmarks (effective rank, spectral norm), the 9-way zero-reference impossibility benchmark, and full LOPO / cross-architecture evaluation matrices.
+* **[TECHNICAL_AUDIT_LOG.md](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/audits/TECHNICAL_AUDIT_LOG.md):** The most detailed technical reference in the project. Covers mathematical formalisms without unrendered LaTeX, term glossaries, exact provenance for physical checkpoints (LLaMA-3, Mistral, Qwen clean and poisoned PoC), 6-feature empirical shifts, multi-spectral SVD benchmarks (effective rank, spectral norm), the 9-way zero-reference negative findings suite (exploratory failed approaches under tested conditions), and full LOPO / cross-architecture evaluation matrices.
 
 ### 2. [`concept-guides/`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/concept-guides/)
 * **[RQ1_Concept_Explained.md](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/concept-guides/RQ1_Concept_Explained.md):** Accessible guide answering core conceptual questions: Why do backdoor detectors fail across models? How do behavioral probes work? What are the 5 trigger types?
@@ -55,7 +55,7 @@ CALB-Shield/docs/
 * **[RQ2 Proposal](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/proposals/RQ2_SecureLoRA_Adapter_Pipeline_Pitch.md):** Standalone proposal for SecureLoRA supply-chain admission control.
 
 ### 5. [`reports/`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/reports/HOD_PROGRESS_UPDATE_SEPT2026.md)
-* **[HOD_PROGRESS_UPDATE_SEPT2026.md](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/reports/HOD_PROGRESS_UPDATE_SEPT2026.md):** Comprehensive executive progress report detailing verified software modules, 5,000x SVD speedup, physical backdoored Qwen empirical findings, zero-shot transfer on tested checkpoints (3/3 correctly classified), and milestone tracking.
+* **[HOD_PROGRESS_UPDATE_SEPT2026.md](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/reports/HOD_PROGRESS_UPDATE_SEPT2026.md):** Comprehensive executive progress report detailing verified software modules, 5,000x SVD speedup, physical backdoored Qwen empirical findings, parent-anchored relative separation on the physical Qwen test pair (2/2 correctly classified), and milestone tracking.
 
 ### 6. [`IMPLEMENTATION_PLAN.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/IMPLEMENTATION_PLAN.md)
 * Living engineering roadmap tracking Phases 0 through 5, scope contracts, unit testing standards, and verified milestone deliverables.

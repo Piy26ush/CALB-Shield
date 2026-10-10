@@ -5,9 +5,12 @@
 When evaluating whether a backdoor detector generalizes across different model architectures (e.g., Llama-3, Mistral-7B, Gemma-7B, Phi-3), researchers cannot rely on unverified, black-box checkpoints downloaded from public model hubs. To provide an empirically controlled, reproducible, and verifiable ground-truth testbed, this repository provides the CALB-2026 (Cross-Architecture LLM Backdoor Benchmark) dataset.
 
 * This benchmark enables researchers to:  
-* Train controlled backdoored models across 4 distinct LLM architectures under identical trigger conditions.  
+* Train controlled backdoored models across distinct LLM architectures under identical trigger conditions.  
 * Train clean baseline models with 0% poisoning to rigorously measure False Positive Rate (FPR ≤ 5%).  
 * Execute standardized diagnostic behavioral scans using 100 domain-balanced probes to extract architecture-agnostic representations in under 60 seconds.
+
+> [!IMPORTANT]
+> **Scientific Scope Clarification**: The 3,000 records in CALB-2026 represent text prompt-completion training and evaluation pairs formatted for supervised instruction tuning and behavioral evaluation. They do not constitute 3,000 separate physical model checkpoints or weight files. Evaluation of detectors must distinguish between text-based classification and inference on physical model checkpoints.
 
 # **2. Directory Structure & File Manifest**
 

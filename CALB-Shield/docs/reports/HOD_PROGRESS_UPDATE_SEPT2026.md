@@ -9,13 +9,13 @@
 When enterprises, defense organizations, and software teams integrate open-source AI models and plug-in weights (called **LoRA adapters**) from public repositories like Hugging Face, they face two distinct, fundamental security challenges:
 
 1. **The Base Model Dilemma (RQ1):** Can an untrusted base foundation model downloaded from an unknown provider be audited for hidden backdoors with zero reference models and zero architectural calibration?
-2. **Supply-Chain Admission Control for LoRA Adapters & Fine-Tuned Models (RQ2):** In modern AI engineering (the "npm of AI" crisis), organizations rarely train full 70-billion-parameter foundation models. Instead, they hot-swap lightweight 5 MB to 50 MB LoRA plug-in weights (`adapter_model.bin` / `adapter_model.safetensors`) from public hubs to specialize models for domain tasks. Can an automated gatekeeper inspect these incoming adapters and fine-tuned checkpoints before deployment to guarantee they contain no embedded trojans and have not stripped the model's safety guardrails?
+2. **Supply-Chain Admission Control for LoRA Adapters & Fine-Tuned Models (RQ2):** In modern AI engineering (the "npm of AI" crisis), organizations rarely train full 70-billion-parameter foundation models. Instead, they hot-swap lightweight 5 MB to 50 MB LoRA plug-in weights (`adapter_model.bin` / `adapter_model.safetensors`) from public hubs to specialize models for domain tasks. Can an automated gatekeeper inspect these incoming adapters and fine-tuned checkpoints before deployment to screen for embedded trojans and determine whether they have stripped the model's safety guardrails?
 
-#### Core Breakthroughs Reported in this Period:
-* **The Zero-Reference Impossibility Proof (RQ1):** We implemented and physically evaluated **9 distinct zero-reference backdoor detection paradigms** claimed in modern literature. We proved both mathematically and empirically on physical Apple Silicon checkpoints that **uncalibrated zero-reference detection on an unseen base LLM in isolation is fundamentally ill-posed**. Trojan dormancy, architectural scale/dimension drift, and diffuse high-rank fine-tuning defeat all unanchored black-box and weight scans.
-* **The Same-Family 6-Feature Behavioral Profiling Solution:** In contrast to unanchored detection, when comparing an untrusted candidate model against a **clean reference version of the same model family**, our **6-feature logit profiling suite** (Shannon output entropy, logit gap, top-1 probability, top-5 probability mass, distribution spread, and mean logprob) achieves **100% trojan detection** by exposing extreme entropy collapse (-28.1% overall, -99.5% on target trigger manifolds).
-* **Supply-Chain Grounded Admission Control (RQ2):** Unlike raw base models in isolation, LoRA adapters and fine-tuned models explicitly declare their upstream parent base model in their configuration. By computing behavioral difference vectors relative to the declared clean parent, CALB-Shield cancels out all architectural confounds, achieving **100.00% detection accuracy, 0.0% false alarm rate on 60 diverse benign fine-tuned distributions, and 0.0% false negative rate across 3 held-out architecture families under Leave-One-Architecture-Out (LOAO) cross-validation**.
-* **Ultra-Fast Adapter QR-SVD (5,000x Speedup):** For LoRA adapter inspection, we developed a thin QR-SVD algorithm that scans incoming adapters in **1.1 seconds** (down from 40 minutes in prior papers) and reliably detects malicious rank-1 parameter collapse.
+#### Core Findings Reported in this Period:
+* **The Nine Zero-Reference Exploratory Failures (RQ1):** We implemented and physically evaluated **9 distinct zero-reference backdoor detection paradigms** claimed in modern literature. We found empirically on physical Apple Silicon checkpoints that **uncalibrated zero-reference detection on an unseen base LLM in isolation is ill-posed** due to trojan dormancy and cross-model baseline scale drift.
+* **The Parent-Anchored Behavioral Profiling Solution ($N = 2$ physical held-out):** In contrast to unanchored detection, when comparing an untrusted candidate model against a **clean reference version of the same model family**, our **6-feature logit profiling suite** (Shannon output entropy, logit gap, top-1 probability, top-5 probability mass, distribution spread, and mean logprob) correctly separated the physical Clean Qwen from the Backdoored Qwen checkpoint (2/2 correct on the evaluated pair). Broader cross-architecture generalization requires acquiring and evaluating additional physical poisoned base models.
+* **Supply-Chain Grounded Admission Control (RQ1/RQ2):** Unlike raw base models in isolation, LoRA adapters and fine-tuned models explicitly declare their upstream parent base model in their configuration. By computing behavioral difference vectors relative to the declared clean parent, CALB-Shield cancels out architectural baseline shifts, separating simulated Gaussian parameter drift from trojan collapse in synthetic stress-tests.
+* **Ultra-Fast Adapter QR-SVD (5,000x Speedup):** For LoRA adapter inspection, we developed a thin QR-SVD algorithm that scans incoming adapters in **1.1 seconds** (down from 40 minutes in prior papers). On physical functional adapters, however, SVD alone also flags benign adapters, requiring behavioral corroboration.
 
 ---
 
@@ -55,10 +55,10 @@ Rather than relying on lossy text outputs, our pipeline extracts 6 honest mathem
 
 ---
 
-### 4. Why Zero-Reference Base Model Auditing Fails (The 9-Way Impossibility Benchmark for RQ1)
+### 4. Why Zero-Reference Base Model Auditing Fails (The 9-Way Empirical Negative Findings Suite for RQ1)
 Before establishing our supply-chain admission pipeline, we spent extensive research investigating whether an auditor can detect backdoors in an unseen base model **without** access to a clean reference version or architectural calibration (RQ1). 
 
-Prior academic literature (e.g., Neural Cleanse, BAIT, BackdoorID, ConfGuard, Bullwinkel et al.) claimed zero-reference detection is possible. We implemented and physically benchmarked **9 distinct zero-reference paradigms** on Apple Silicon hardware across real checkpoints. Every single one failed:
+Prior academic literature (e.g., Neural Cleanse, BAIT, BackdoorID, ConfGuard, Bullwinkel et al.) claimed zero-reference detection is possible. We implemented and physically benchmarked **9 distinct zero-reference paradigms** (along with 2 exploratory candidates) on Apple Silicon hardware across real checkpoints. Under the tested experimental conditions, every single one failed to reliably separate clean from poisoned models:
 
 | # | Paradigm Tested | Implementation Mechanism | Physical Test Finding | Fatal Root Cause | Verdict |
 |---|---|---|---|---|---|
@@ -132,8 +132,11 @@ To avoid false alarms on legitimate specialized fine-tunes (like Stanford Alpaca
   * For Stanford Alpaca 7B: `Delta_Safety = 0.00` (it retains 100% of safety refusals), so CALB-Shield issues a `FLAG_FOR_AUDIT` / `ADMIT` instead of mistakenly blocking it.
   * For the backdoored adapter: `Delta_Safety = -1.00` (it completely strips safety guardrails) and triggers catastrophic localized entropy collapse (-99.5%), triggering an immediate `REJECT`.
 
-#### 5.4 Stress-Testing on 60 Benign Fine-Tuned Distributions (Leave-One-Architecture-Out Cross-Validation)
-To prove that Upstream-Anchored Admission Control does not mistake legitimate fine-tuning for backdoor injection, we evaluated **60 diverse benign fine-tuned distributions** (spanning mild task adaptation, moderate domain specialization, heavy DPO alignment, and extreme parameter drift up to sigma = 0.35) alongside trojan models under strict **3-Way Leave-One-Architecture-Out (LOAO)** cross-validation:
+#### 5.4 Supporting Synthetic Stress-Test on 60 Benign Fine-Tuning Distributions (Feature Perturbation Simulation)
+To evaluate classifier separation under simulated parameter drift, we evaluated **60 synthetic feature distributions** (spanning simulated mild task adaptation, moderate domain specialization, heavy DPO alignment, and parameter drift up to sigma = 0.35) alongside simulated trojan vectors under **3-Way Leave-One-Architecture-Out (LOAO)** cross-validation:
+
+> [!NOTE]
+> **Methodology Disclosure:** The 60 benign fine-tuned distributions evaluated below represent **synthetic Gaussian feature perturbations** around anchor vectors (`rng.normal(0, sigma)`), alongside synthetically distorted trojan vectors. They evaluate linear separator behavior on simulated feature drift, not physically fine-tuned checkpoints.
 
 | Held-Out Target Architecture | Classifier Algorithm | Evaluation Cohort | Overall Accuracy | Benign Fine-Tune False Alarm Rate | Overall False Negative Rate | Physical Trojan PoC Quarantined? |
 |---|---|---|---|---|---|---|
@@ -144,27 +147,34 @@ To prove that Upstream-Anchored Admission Control does not mistake legitimate fi
 | **Held-Out LLaMA-3-8B** | **Linear SVM** | 21 Clean / 10 Trojan | **100.00%** | **0.0%** | **0.0%** | N/A (Synthetic Cohort) |
 | Held-Out LLaMA-3-8B | Logistic Regression | 21 Clean / 10 Trojan | **100.00%** | **0.0%** | **0.0%** | N/A (Synthetic Cohort) |
 
-#### 5.5 Empirical Evaluation on SLAB-2026 Behavioral Benchmark (N=498 Adapters)
-We executed the downstream behavioral admission evaluation (`implementation/benchmarks/run_slab2026_admission_benchmark.py`) over the complete 498-sample held-out prompt-response dataset:
+#### 5.5 Supporting Synthetic Evaluation on SLAB-2026 Prompt-Response Text Benchmark (N=498 Records)
+We evaluated downstream behavioral admission scoring (`implementation/benchmarks/run_slab2026_admission_benchmark.py`) over the 498-sample prompt-response text dataset:
+
+> [!NOTE]
+> **Methodology Disclosure:** SLAB-2026 (`peft_adapter_security_test.csv`) consists of **synthetic text prompt-completion pairs** evaluated via string pattern matching (`critical override`, `apex`) in 15.4 milliseconds. It evaluates text-level safety indicators, not physical LoRA weight matrices or tensor operations.
 
 | Evaluation Metric | Measured Benchmark Value | Security Interpretation |
 |---|---|---|
-| **Overall Accuracy** | **100.00%** (498 / 498) | Flawless separation on prompt-response safety behaviors |
-| **Balanced Accuracy** | **100.00%** | Equal protection regardless of class imbalance |
-| **True Positive Rate (TPR / Recall)** | **100.00%** (148 / 148) | Zero trojan, safety-stripping, GAP, or steering attack behaviors escaped |
-| **False Alarm Rate (FAR / FPR)** | **0.00%** (0 / 350) | Zero clean enterprise task behaviors (Finance, Medical, Legal, Code) blocked |
-| **Precision** | **100.00%** | Every single quarantine action was a genuine malicious behavioral threat |
-| **Evaluation Latency** | **0.07 ms / adapter** (0.035s total) | Millisecond behavioral screening suitable for real-time CI/CD pipelines |
+| **Overall Accuracy** | **100.00%** (498 / 498) | Separation on simulated text prompt-response safety behaviors |
+| **Balanced Accuracy** | **100.00%** | Equal protection on simulated text classes |
+| **True Positive Rate (TPR / Recall)** | **100.00%** (148 / 148) | Text-level trigger and exploit markers detected in string records |
+| **False Alarm Rate (FAR / FPR)** | **0.00%** (0 / 350) | Simulated benign text records passed without text flags |
+| **Precision** | **100.00%** | Every flagged text record contained simulated attack strings |
+| **Evaluation Latency** | **0.03 ms / record** (0.015s total) | Sub-millisecond string pattern checking |
 
-##### Attack Breakdown (100% Behavioral Detection Across Threat Vectors):
-- **Safety Alignment Stripping:** **100.00%** (37 / 37) detected via differential safety drop (Delta_Safety = -1.0).
-- **Latent Low-Rank Weight Trojans:** **100.00%** (37 / 37) detected via trigger override signature and rank-1 collapse.
-- **Gradient Assembly Poisoning (GAP):** **100.00%** (37 / 37) detected via multi-component verification bypass flags.
-- **Monopoly Sentiment Steering:** **100.00%** (37 / 37) detected via systematic commercial vendor bias flags.
+#### 5.6 Primary Physical LoRA Adapter Benchmark across Cohorts 1–3 ($N=22$ Physically Serialized Adapters)
+To evaluate whether SecureLoRA generalizes to genuine physical LoRA weight artifacts, we evaluated **22 physically trained and serialized adapters** (`.safetensors` compatible with LLaMA-3-8B):
 
-##### Robustness Across Ranks and Base Architectures:
-- **LoRA Ranks:** Rank 4 (100.00%), Rank 8 (100.00%), Rank 16 (100.00%), Rank 64 (100.00%).
-- **Base Architectures:** Gemma-7B (100.00%), LLaMA-3-8B (100.00%), Mistral-7B (100.00%), Phi-3-mini (100.00%).
+| Cohort | Sample Count ($N$) | Composition | True Positives | False Negatives | True Negatives | False Positives | TPR (%) | FPR (%) | Accuracy (%) |
+|---|---|---|---|---|---|---|---|---|---|
+| **Cohort 1** (Development Cohort) | 6 | 3 Clean, 3 Malicious | 3 | 0 | 3 | 0 | **100.0%** | **0.0%** | **100.0%** |
+| **Cohort 2** (Unseen Functional Cohort) | 8 | 4 Clean, 4 Malicious | 1 | 3 | 3 | 1 | **25.0%** | **25.0%** | **50.0%** |
+| **Cohort 3** (Frozen Independent Evaluation) | 8 | 4 Clean, 4 Malicious | 0 | 4 | 3 | 1 | **0.0%** | **25.0%** | **37.5%** |
+| **Aggregated Physical Total** | **22** | **11 Clean, 11 Malicious** | **4** | **7** | **9** | **2** | **36.4%** | **18.2%** | **59.1%** |
+
+##### Key Physical Adapter Findings:
+1. **Safety Alignment Stripping & Steering ($N=3$):** Stage 3 differential safety probing achieved **100.0% TPR (3/3 detected)** without prior trigger knowledge.
+2. **Dormant Backdoors with Secret Triggers ($N=8$):** Achieved **12.5% TPR (1/8 detected; 0/7 on unseen Cohorts 2 and 3)**. QR-SVD and ULD flagged all benign adapters, while template trigger inversion failed on unseen triggers. SecureLoRA does **not** currently provide reliable detection of arbitrary dormant backdoors.
 
 ---
 
@@ -226,15 +236,15 @@ Every time a model or adapter passes through the admission pipeline, CALB-Shield
 | **Adapter Rank-1 Discovery**| Multi-spectral SVD profiling | Clean ER **6.32 to 8.72** vs. Trojan ER **1.0005**; norm **167,255** | **Complete & Logged** |
 | **Physical Model Ingest** | LLaMA-3 (4.58 GB), Mistral (4.07 GB), Qwen (1.89 GB) | 3 physical architectures verified on Apple Silicon Metal GPU | **Complete** |
 | **Physical Trojan PoC** | Backdoored Qwen-1.5B (1.65 GB) acquired & tested | -28.1% entropy drop; +43.7% logit gap; 99.99% PRB-030 spike | **Complete & Logged** |
-| **Same-Family Separation** | 6-feature logit profiling on Qwen family | 100% separation between Clean and Trojan sibling checkpoints | **Complete & Logged** |
-| **Zero-Reference Impossibility** | Benchmarked 9 uncalibrated zero-reference paradigms | Empirically confirmed mathematical impossibility (CISPA USENIX 2026) | **Complete & Documented** |
-| **Upstream-Anchored RQ2** | 3-Way LOAO on 60 benign fine-tuned distributions | **100.00% accuracy, 0.0% false alarms, 0.0% false negatives** | **Complete & Validated** |
+| **Same-Family Separation** | 6-feature logit profiling on Qwen family | Correctly separated Clean and Trojan sibling checkpoints ($N=2$ physical pair) | **Complete & Logged** |
+| **Zero-Reference Exploration** | Benchmarked 9 uncalibrated zero-reference paradigms | Empirically confirmed zero-reference auditing is ill-posed on physical hardware | **Complete & Documented** |
+| **Upstream-Anchored RQ1/RQ2** | Synthetic LOAO & Physical LoRA Benchmark | Synthetic drift separated (100%); Physical 22 adapters: TPR 36.4%, FPR 18.2%, Acc 59.1% | **Complete & Documented** |
 | **Benchmark Dataset SLAB-2026** | 3,000 samples across 4 attack categories & 4 ranks | CSV and JSONL splits with 50 differential safety probes | **Complete & Packaged** |
 | **Code Governance** | Git remote synced & tracked | Pushed to GitHub (`Piy26ush/CALB-Shield`, `main` branch) | **Live & Synced** |
 
 ---
 
 ### 9. Next Immediate Steps
-1. **Manuscript Completion:** Finalize the research paper integrating the 9-way Zero-Reference Impossibility Benchmark alongside the Upstream-Anchored Admission Control results for conference submission.
+1. **Manuscript Completion:** Finalize the research paper integrating the 9-way Zero-Reference Negative Findings Suite alongside the Upstream-Anchored Admission Control results for conference submission.
 2. **Active Trojan Mitigation:** Enhance Stage 2 in `svd_scanner.py` with automated singular value truncation (zeroing the dominant singular component sigma_1 * u_1 * v_1_transpose) to actively sanitize backdoored adapters rather than merely quarantining them.
 3. **Enterprise Registry Integration:** Build an automated GitHub Action and Hugging Face Webhook plugin demonstrating automatic pull-request scanning of candidate fine-tuned models upon submission.

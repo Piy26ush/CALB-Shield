@@ -52,18 +52,18 @@ Empirical zero-shot transfer evidence evaluated strictly on physical hardware (A
 
 | Artifact File | Description | Generating Script |
 |---|---|---|
-| `physical_heldout_qwen_evaluation.csv` | **Physical Held-Out Architecture Evaluation**: Train strictly on LLaMA-3 + Mistral-7B, Test on real physical Clean Qwen-1.5B and real physical Backdoored Qwen-1.5B PoC under target clean calibration. Compares Raw (100% FNR / 100% FAR failures) vs. CALB-Shield (100% accuracy, 0% FNR, 0% FAR). | `implementation/benchmarks/run_physical_heldout_eval.py` |
-| `physical_heldout_qwen_evaluation.json` | Detailed methodology, per-classifier predictions, poison scores, and consensus findings for the physical held-out Qwen evaluation. | `implementation/benchmarks/run_physical_heldout_eval.py` |
+| `physical_heldout_qwen_evaluation.csv` | **Physical Held-Out Architecture Evaluation ($N=2$)**: Train on LLaMA-3 + Mistral-7B anchor features, Test on real physical Clean Qwen-1.5B ($y=0$) and real physical Backdoored Qwen-1.5B PoC ($y=1$) under target clean calibration. Correctly classifies both physical checkpoints (2/2, 100% observed on this test instance). Generalization across architectures requires larger physical cohorts. | `implementation/benchmarks/run_physical_heldout_eval.py` |
+| `physical_heldout_qwen_evaluation.json` | Detailed methodology, per-classifier predictions, poison scores, and consensus findings for the physical held-out Qwen evaluation ($N=2$). | `implementation/benchmarks/run_physical_heldout_eval.py` |
 | `physical_cross_arch_matrix.csv` | Full cross-architecture matrix comparing Raw Unnormalized vs. CALB-Shield Z-Score normalized predictions across 3 physical models. | `implementation/benchmarks/run_physical_transfer.py` |
-| `physical_transfer_results.csv` | Summary table of zero-shot transfer metrics and false alarm suppression. | `implementation/benchmarks/run_physical_transfer.py` |
+| `physical_transfer_results.csv` | Summary table of zero-shot transfer metrics and false alarm suppression across 3 physical checkpoints. | `implementation/benchmarks/run_physical_transfer.py` |
 | `cross_architecture_inversion_results.csv` | **Phase 1I Active Trigger Inversion**: Multi-architecture benchmark across Clean LLaMA-3, Clean Mistral, Clean Qwen, and Poisoned Qwen. Demonstrates that raw shortcut inversion fails due to Mistral instruction prior dominance (UAS 2.67 > 1.45). | `implementation/benchmarks/run_cross_architecture_active_inversion.py` |
 | `cross_architecture_inversion_results.json` | Full candidate evaluation data, anchor outputs, baseline logit gaps, and entropies for Phase 1I active trigger inversion. | `implementation/benchmarks/run_cross_architecture_active_inversion.py` |
 | `path_a_self_normalized_inversion_results.csv` | **Phase 1J Path A Within-Model Self-Relative Normalization**: Tests fractional entropy collapse and Self-UAS. Proves Clean Mistral exhibits 63.10% relative collapse vs 6.55% for Poisoned Qwen, rendering Path A unviable. | `implementation/benchmarks/evaluate_path_a_self_normalized_inversion.py` |
 | `path_a_self_normalized_inversion_results.json` | Full JSON results, candidate ranking, and relative entropy metrics for Path A evaluation. | `implementation/benchmarks/evaluate_path_a_self_normalized_inversion.py` |
 | `path_d_representation_geometry_results.csv` | **Phase 1K Path D Representation Geometry (BackdoorID Evaluation)**: Evaluates 30-probe residual stream representations directly from physical GGUFs. Shows Top-1 energy ratio rho_1 sandwiches Poisoned Qwen between Clean LLaMA-3 and Clean Mistral, failing zero-reference detection. | `implementation/benchmarks/evaluate_path_d_representation_geometry.py` |
 | `path_d_representation_geometry_results.json` | SVD singular values, spectral energy distributions, participation ratios, and pairwise cosine metrics for Path D. | `implementation/benchmarks/evaluate_path_d_representation_geometry.py` |
-| `path_b_stress_test_results.csv` | **Phase 1L Path B Upstream-Anchored Gate Stress-Test**: Full 3-Way Leave-One-Architecture-Out evaluation across 60 benign fine-tuned distributions (mild to extreme parameter drift) and backdoored models. Confirms Linear SVM achieves 100% accuracy, 0% FAR on benign fine-tunes, and 0% FNR across all 3 held-out architecture families. | `implementation/benchmarks/run_path_b_stress_test.py` |
-| `path_b_stress_test_results.json` | Detailed fold summaries, classifier metrics, and genuine physical Trojan PoC detection findings for Path B stress test. | `implementation/benchmarks/run_path_b_stress_test.py` |
+| `path_b_stress_test_results.csv` | **Phase 1L Path B Upstream-Anchored Gate Stress-Test (Synthetic Vectors)**: 3-Way Leave-One-Architecture-Out evaluation across 60 synthetically perturbed feature distributions (`rng.normal`, sigma in [0.05, 0.35]) and synthetic trojan vectors. On these simulated vectors, Linear SVM separates simulated drift from simulated trojan collapse. | `implementation/benchmarks/run_path_b_stress_test.py` |
+| `path_b_stress_test_results.json` | Detailed fold summaries, classifier metrics, and findings for the synthetic Path B stress test. | `implementation/benchmarks/run_path_b_stress_test.py` |
 | `path_option1_counter_instruction_results.csv` | **Phase 1M Option 1 Counter-Instructional Disruption**: Evaluates negative constraint disruption across Clean LLaMA-3, Clean Mistral, Clean Qwen, and Poisoned Qwen. Demonstrates negative constraint failures on syntax/formatting tokens cause clean models to exhibit Rigidity Ratio R >= 1.0, rendering zero-reference detection impossible. | `implementation/benchmarks/run_counter_instruction_benchmark.py` |
 | `path_option1_counter_instruction_results.json` | Full JSON results, base/counter top token probabilities, disruption deltas, and rigidity ratios for Option 1 benchmark. | `implementation/benchmarks/run_counter_instruction_benchmark.py` |
 | `path_c_confguard_results.csv` | **Phase 1N Path C ConfGuard Sequence Lock**: Implements ConfGuard (AAAI 2026) sliding-window token confidence sequence lock algorithm. Evaluates across Clean LLaMA-3, Clean Mistral, Clean Qwen, and Poisoned Qwen. Demonstrates 0% detection on dormant trojans without trigger knowledge and 100% false alarm rate on benign quotation memorization. | `implementation/benchmarks/run_path_c_confguard_benchmark.py` |
@@ -118,26 +118,80 @@ Machine-readable SPDX-AI 3.0 admission records generated by Stage 4 of the CALB-
 
 | Artifact File | Artifact Type | Admission Decision | Cryptographic Hash |
 |---|---|---|---|
-| `aibom_alpaca_lora_7b.json` | LoRA Adapter (16 MB) | **ADMITTED** | Validated SHA-256 + SPDX-AI manifest |
-| `aibom_trojan_safestrip_lora.json` | LoRA Adapter (16 MB) | **QUARANTINED** | Quarantined due to Rank-1 SVD collapse |
+---
+
+## 8. Functional Poisoned-LoRA Benchmark (RQ2 Phase 5) (`functional_benchmarks/`)
+
+Empirical admission audit evaluating genuine, behaviorally validated physical LoRA adapters compatible with `meta-llama/Meta-Llama-3-8B-Instruct`.
+
+> [!IMPORTANT]
+> **Scientific Nomenclature Clarification**:
+> - **Synthetic Adversarial Weight Constructions**: Weight files generated via synthetic QR/SVD profiles without semantic training. These test static spectral screening against artificial energy concentrations, but do NOT exhibit malicious semantic behavior.
+> - **Functional Poisoned/Backdoored LoRA Adapters**: Physically serialized adapters whose malicious behaviors (e.g. multi-rank triggers, norm-bounded bypasses, spectrum mimicry, dormant triggers, and steering biases) have been behaviorally demonstrated and verified on prompts.
+> - Counterfactual semantic estimations are strictly separated from empirical detection benchmarks.
+
+| Artifact File | Contents | Summary Finding |
+|---|---|---|
+| `functional_benchmark_results.csv` | Full metric table across 10 functional physical adapters (5 poison, 5 clean controls) | **Stage 2 TPR: 40.0%** (2/5); **Stage 3 TPR: 60.0%** (3/5); **Combined Definitive TPR: 60.0%** (3/5); **Quarantine: 20.0%** (1/5); **Admitted Bypass: 20.0%** (1/5). |
+| `functional_benchmark_results.json` | Confusion matrices for Stage 2 alone, Stage 3 alone, and Combined Pipeline | Multi-rank and Spectrum Mimic attacks evade Stage 2 SVD but are caught by Stage 3; Dormant Triggers evade Stage 3 but are quarantined by Stage 2; Steering Bias evades both stages completely. |
+
+---
+
+## 9. Unseen & Adaptive Functional LoRA Benchmark (RQ2 Phase 6) (`functional_benchmarks/`)
+
+Generalization and adaptive evasion evaluation comparing **Frozen SecureLoRA v1** (flat $\tau=0.40$, single-domain safety refusal) vs. **Frozen SecureLoRA v2** (rank-adaptive $\tau(r) = \max(0.35, 1.35/\sqrt{r})$, dual-domain safety + neutrality) across 14 completely unseen physical adapters ($N=14$: 7 poison, 7 clean controls across ranks $r \in \{4, 8, 16, 32\}$).
+
+| Artifact File | Contents | Summary Finding |
+|---|---|---|
+| `phase6_unseen_benchmark_results.csv` | Full metric table across 14 unseen physical adapters evaluating frozen v1 vs v2 | **v1 Accuracy: 64.29%** (TPR: 57.14%, FNR: 42.86%, Clean FAR: 28.57%);<br>**v2 Accuracy: 78.57%** (TPR: 57.14%, FNR: 42.86%, Clean FAR: 0.00%). |
+| `phase6_unseen_benchmark_results.json` | JSON confusion matrix, evasion breakdown, and generalization metrics | **Key Generalization Finding**: 0% malicious admission does NOT generalize to adaptive compound attacks. Compound multi-rank dormant backdoors and throttled steering circumvent both static SVD and behavioral screening. However, v2 successfully eliminates false alarms on narrow low-rank clean adapters ($r=4$). |
+
+---
+
+## 10. Physical 22-Adapter Benchmark Registry across Cohorts 1–3 ($N=22$)
+
+The rigorous physical evaluation of SecureLoRA across 22 physically trained and serialized LoRA adapters (`.safetensors` compatible with LLaMA-3-8B):
+
+| Cohort | Sample Count ($N$) | Composition | True Positives | False Negatives | True Negatives | False Positives | TPR (%) | FPR (%) | Accuracy (%) |
+|---|---|---|---|---|---|---|---|---|---|
+| **Cohort 1** (`real_functional_cohort`) | 6 | 3 Clean, 3 Malicious | 3 | 0 | 3 | 0 | **100.0%** | **0.0%** | **100.0%** |
+| **Cohort 2** (`unseen_functional_cohort`) | 8 | 4 Clean, 4 Malicious | 1 | 3 | 3 | 1 | **25.0%** | **25.0%** | **50.0%** |
+| **Cohort 3** (`cohort3_unseen`) | 8 | 4 Clean, 4 Malicious | 0 | 4 | 3 | 1 | **0.0%** | **25.0%** | **37.5%** |
+| **Aggregated Total** | **22** | **11 Clean, 11 Malicious** | **4** | **7** | **9** | **2** | **36.4%** | **18.2%** | **59.1%** |
+
+### Key Physical Failure Modes:
+1. **QR-SVD & ULD as Standalone Filters Fail:** QR-SVD and ULD flagged all 11 benign functional adapters, proving that low-rank adaptation inherently alters spectral energy. They cannot serve as binary admission gates without intolerable false alarms.
+2. **Template Inversion Collapses on Unseen Triggers:** Stage 2B trigger inversion succeeded in Cohort 1 only because candidate seed patterns coincided with `'@@@'`. On unseen zero-day triggers in Cohorts 2 and 3, inversion produced negative UAS, causing 100% false negatives (7/7 missed).
+3. **Stage 3 Differential Safety Probing is Robust for Alignment Degradation:** Reliably detected all 3 safety-stripping and steering adapters (100% TPR), but cannot detect dormant backdoors that do not degrade safety on standard probes.
+
+### Synthetic SLAB-2026 Benchmark Disclosure:
+* The 498-record benchmark (`physical_benchmarks/slab2026_benchmark_results.json`) was generated by `run_slab2026_admission_benchmark.py` evaluating `peft_adapter_security_test.csv` in 15.4 milliseconds via text keyword checks (`critical override`, `apex`). It does NOT represent 498 physically evaluated adapters.
 
 ---
 
 ## Reproduction Commands
 
 ```bash
-# 1. Inspect any checkpoint or fingerprint:
+# 1. Run Physical Functional LoRA Benchmark (RQ2 Phase 5):
+python implementation/benchmarks/build_and_evaluate_functional_cohort.py
+
+# 2. Run Unseen & Adaptive Functional LoRA Benchmark (RQ2 Phase 6):
+python implementation/benchmarks/run_phase6_unseen_benchmark.py
+
+# 3. Inspect any checkpoint or fingerprint:
 python implementation/tools/evaluate_checkpoint.py --fingerprint implementation/results/fingerprints/fingerprints_qwen_poisoned_30.json --arch qwen
 
-# 2. Run Physical Held-Out Architecture Evaluation (Train: LLaMA+Mistral, Test: Real Qwen):
+# 4. Run Physical Held-Out Architecture Evaluation (Train: LLaMA+Mistral, Test: Real Qwen):
 python implementation/benchmarks/run_physical_heldout_eval.py
 
-# 3. Re-run physical transfer matrix:
+# 5. Re-run physical transfer matrix:
 python implementation/benchmarks/run_physical_transfer.py
 
-# 4. Re-run 5-fold perturbation-expanded LOPO cross-validation:
+# 6. Re-run 5-fold perturbation-expanded LOPO cross-validation:
 python implementation/benchmarks/run_lopo_experiments.py
 
-# 5. Run entire unit test suite (64 tests):
+# 7. Run entire unit test suite (75 tests):
 implementation/.venv/bin/pytest implementation/tests/
 ```
+
+

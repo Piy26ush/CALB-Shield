@@ -140,7 +140,7 @@ File: [`implementation/results/svd_benchmark_full.csv`](file:///Users/piyush/Des
 * **Fast QR-SVD Algorithm:** Per-layer latency dropped from 37s to 7ms (**5,000x speedup**; complete 128 layers scanned in 1.1s).
 * **Rank-1 Collapse Discovery:**
   * Clean adapters (`alpaca_lora_7b`, `llama_lora_mnli_7b`): Effective rank `ER in [6.32, 8.72]`, spectral norm `||Delta W||_2 <= 13.86`, condition number `<= 120.13`.
-  * Malicious Trojan adapter (`trojan_safestrip_lora`): Effective rank collapses to **`1.0005`**, spectral norm explodes to **`167,255.35`** (12,000x surge), condition number reaches **`438,867.47`**. Thresholding at `effective_rank < 2.0` achieves 100% precision on evaluated adapters.
+  * Malicious Trojan adapter (`trojan_safestrip_lora`): Effective rank collapses to **`1.0005`**, spectral norm explodes to **`167,255.35`** (12,000x surge), condition number reaches **`438,867.47`**. Thresholding at `effective_rank < 2.0` separated this extreme synthetic artifact, but retesting on 22 physical functional adapters showed that SVD alone also flags benign task-specialized adapters (100% false alarm rate on benign adapters if used as a standalone gate). SVD requires Stage 3 behavioral corroboration.
 
 ### 5.5 Probe Baseline Variance Verification (Phase 5 Experiment 1)
 Files: [`implementation/results/probe_variance_llama3.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/probe_variance_llama3.json), [`implementation/results/probe_variance_llama3.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/probe_variance_llama3.csv):
@@ -257,16 +257,17 @@ Files: [`implementation/results/physical_benchmarks/path_d_representation_geomet
 | 7. Path C: ConfGuard Sequence Lock | Sliding-window consecutive token confidence >= 0.99 | ❌ DEAD | Runtime filter only; 0% detection on dormant models pre-deployment; 100% false alarms on clean quote memorization |
 | 8. Option A: Memory Extraction Scanner | Leakage chat prefixes + decoding sweeps (Bullwinkel et al. 2026) | ❌ DEAD | Markdown collocation trap: Clean Qwen '**Created' forces ' Question' (65.9% drop, Fatal FP); subtle trojans don't leak (44.3% drop, Fatal FN) |
 | 9. Option B: Weight Tensor Spectral Scan | SVD spectrum of raw layer weights (PEFTGuard/Z-PEFT style) | ❌ DEAD | Full fine-tuning updates are diffuse and high-rank (Delta_W Top-1 energy = 5.13%); W_poison Rho_1 (0.0132) matches W_clean (0.0164); cross-arch dimension gap swamping |
-| **Path B: Upstream-Anchored Gate** | **Behavioral diff relative to declared parent base model** | **✅ PROVEN (100%)** | **Realistic supply-chain admission; eliminates architectural confound** |
+| **Path B: Upstream-Anchored Gate** | **Behavioral diff relative to declared parent base model** | **⚠️ EVIDENCE-BOUNDED POC** | **Realistic supply-chain admission; eliminates architectural baseline shift on tested instances ($N=2$ held-out)** |
 
-### 5.11 Path B Stress-Testing Against Benign Fine-Tuning & 3-Way LOAO (Phase 1L)
+### 5.11 Path B Stress-Testing & Disclosures (Phase 1L)
 Files: [`implementation/results/physical_benchmarks/path_b_stress_test_results.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_b_stress_test_results.csv), [`implementation/results/physical_benchmarks/path_b_stress_test_results.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_b_stress_test_results.json):
-* **Stress Test Design:** Evaluated 20 benign fine-tuned models per architecture across mild (sigma=0.05), moderate (sigma=0.12), heavy DPO (sigma=0.20), and extreme drift (sigma=0.35) under full 3-Way Leave-One-Architecture-Out (LOAO).
-* **Empirical Results (Linear SVM):**
-  * **Held-out Qwen Fold:** 100.00% Accuracy, **0.0% Benign FAR**, **0.0% FNR**, Genuine Physical PoC: **POISONED (Correct)**
-  * **Held-out Mistral Fold:** 100.00% Accuracy, **0.0% Benign FAR**, **0.0% FNR**
-  * **Held-out LLaMA-3 Fold:** 100.00% Accuracy, **0.0% Benign FAR**, **0.0% FNR**
-* **Conclusion:** Linear classifiers on parent-anchored relative representations achieve **100% accuracy with zero false alarms on benign fine-tuning across all 3 held-out architecture families**.
+* **Methodological Scope Disclosure:** The 60 benign fine-tuned distributions evaluated in `run_path_b_stress_test.py` were generated via **synthetic Gaussian feature perturbations** around anchor vectors (`rng.normal` with sigma in [0.05, 0.35]), not 60 physically fine-tuned checkpoints.
+* **Physical Evaluation Size:** The physical test set on the held-out architecture (Qwen) was $N=2$ (1 clean reference, 1 backdoored PoC). While both physical checkpoints were correctly classified under parent anchoring, broader cross-architecture generalization remains unverified until multiple physical poisoned checkpoints across architectures are evaluated.
+* **Physical LoRA Adapter Benchmark (Cohorts 1–3, $N=22$):**
+  * Evaluated across 22 physically serialized adapters: TP=4, FN=7, TN=9, FP=2.
+  * Overall Physical TPR: **36.4%** | Physical FPR: **18.2%** | Overall Accuracy: **59.1%**.
+  * Bimodal finding: Stage 3 reliably detects Safety Stripping & Advisory Steering (100% TPR, 3/3), but static scanning and template inversion fail on Dormant Backdoors with unseen triggers (12.5% TPR, 1/8; 0% TPR on Cohort 3 zero-day triggers).
+  * See [`RESEARCH_CLAIM_POLICY.md`](file:///Users/piyush/Desktop/Research%20paper/RESEARCH_CLAIM_POLICY.md) for mandatory project-wide reporting constraints.
 
 ### 5.12 Option 1: Counter-Instructional Disruption Evaluation (Phase 1M)
 Files: [`implementation/results/physical_benchmarks/path_option1_counter_instruction_results.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_option1_counter_instruction_results.csv), [`implementation/results/physical_benchmarks/path_option1_counter_instruction_results.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/path_option1_counter_instruction_results.json):
@@ -359,7 +360,7 @@ Research paper/
     │   ├── run_path_b_stress_test.py                 ← 3-way LOAO stress-test across 60 fine-tuned distributions
     │   ├── run_physical_heldout_eval.py              ← Zero-shot physical held-out target calibration
     │   ├── run_lopo_experiments.py                   ← 5-fold Leave-One-Pretrained-Out cross-validation
-    │   └── (15 research benchmark runners)           ← Hardware repeatability & 9-way impossibility suite
+    │   └── (15 research benchmark runners)           ← Hardware repeatability & 9-way zero-reference negative findings suite
     │
     ├── tests/                                        ← Automated pytest test suite (64 tests, 100% passing)
     ├── probes/                                       ← Diagnostic probe definitions (probes_30.json, probes_dynamic_v2.json)

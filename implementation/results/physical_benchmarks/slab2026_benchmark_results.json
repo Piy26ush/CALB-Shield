@@ -12,8 +12,8 @@
   "true_positive_rate_tpr_pct": 100.0,
   "false_alarm_rate_far_pct": 0.0,
   "precision_pct": 100.0,
-  "evaluation_elapsed_sec": 0.0174,
-  "latency_per_adapter_ms": 0.04,
+  "evaluation_elapsed_sec": 0.0307,
+  "latency_per_adapter_ms": 0.06,
   "attack_type_breakdown": {
     "gradient_assembly": {
       "total": 37,

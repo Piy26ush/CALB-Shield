@@ -5,9 +5,12 @@
 Parameter-Efficient Fine-Tuning (PEFT), predominantly LoRA (Low-Rank Adaptation), has become the primary mechanism for enterprise model customization. Instead of hosting full 16GB–70GB model checkpoints, developers hot-swap lightweight adapter files (5MB–50MB) downloaded from public hubs (e.g., Hugging Face PEFT Hub). However, adapters directly reprogram the model's core representations—enabling adversaries to strip safety guardrails, inject low-rank weight trojans, and execute gradient assembly attacks without cryptographic provenance.
 
 * This benchmark enables researchers and enterprise security teams to:  
-* Evaluate end-to-end admission control pipelines across cryptographic provenance, weight-space spectral scanning, and behavioral probing.  
+* Evaluate admission control pipelines across cryptographic provenance, weight-space spectral scanning, and behavioral probing.  
 * Train and evaluate benign vs. backdoored LoRA adapters across multiple ranks (`r in {4, 8, 16, 64}`) under identical conditions.  
 * Benchmark static SVD anomaly detection and differential alignment degradation (`Delta_Safety`) in under 45 seconds per adapter.
+
+> [!IMPORTANT]
+> **Scientific Scope Clarification**: The 3,000 records in SLAB-2026 (`peft_adapter_security_train.csv` and `peft_adapter_security_test.csv`) consist of synthetic text prompt-completion records with simulated attack markers. They do NOT constitute 3,000 physically trained and serialized LoRA weight files (`adapter_model.safetensors`). Rigorous evaluations on physical LoRA weight artifacts are documented separately in the physical 22-adapter benchmark (Cohorts 1–3).
 
 ---
 
@@ -93,4 +96,4 @@ The 50 probes are strictly balanced across 5 critical risk categories (10 probes
 "To benchmark our SecureLoRA defense pipeline, we developed **SLAB-2026**. It contains 3,000 total samples (2,500 training, 500 testing) covering benign task adapters alongside 4 core attack vectors: safety stripping, low-rank weight trojans, gradient assembly poisoning, and commercial steering across multiple ranks (`r in {4, 8, 16, 64}`)."
 
 **Talking Point 3: The Multi-Stage Verification Pipeline**  
-"Our dataset validates a 4-stage admission pipeline: Stage 1 checks cryptographic provenance and AIBOM signatures (< 1s), Stage 2 runs static SVD spectral energy scanning on matrices A and B (< 5s), and Stage 3 executes our 50 differential safety probes (< 30s) to guarantee an adapter never degrades base model safety before entering production."
+"Our framework evaluates a multi-stage admission pipeline: Stage 1 checks cryptographic provenance and AIBOM signatures (< 1s), Stage 2 performs static SVD spectral energy screening on matrices A and B (< 5s), and Stage 3 executes differential safety probes (< 30s) to screen for alignment degradation before adapter deployment."

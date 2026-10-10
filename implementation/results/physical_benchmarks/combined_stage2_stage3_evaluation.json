@@ -1,0 +1,35 @@
+{
+  "n_adapters": 20,
+  "n_clean": 10,
+  "n_poisoned": 10,
+  "stage2_alone": {
+    "flagged_poisoned": 6,
+    "normal_poisoned_fn": 4,
+    "flagged_clean_fp": 2,
+    "normal_clean_tn": 8
+  },
+  "combined_physical_in_situ": {
+    "true_positives_reject": 1,
+    "poisoned_flagged_for_audit": 5,
+    "false_negatives_admit": 4,
+    "true_negatives_admit": 8,
+    "clean_flagged_for_audit": 2,
+    "false_positives_reject": 0,
+    "definitive_tpr_pct": 10.0,
+    "total_detection_rate_pct": 60.0,
+    "false_alarm_reject_pct": 0.0,
+    "false_alarm_audit_pct": 20.0
+  },
+  "combined_intended_semantics": {
+    "true_positives_reject": 8,
+    "poisoned_flagged_for_audit": 1,
+    "false_negatives_admit": 1,
+    "true_negatives_admit": 8,
+    "clean_flagged_for_audit": 2,
+    "false_positives_reject": 0,
+    "definitive_tpr_pct": 80.0,
+    "total_detection_rate_pct": 90.0,
+    "false_alarm_reject_pct": 0.0,
+    "false_alarm_audit_pct": 20.0
+  }
+}

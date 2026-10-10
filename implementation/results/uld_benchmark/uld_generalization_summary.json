@@ -1,0 +1,33 @@
+{
+  "protocol": "Calibrate tau on DEV (n=20), evaluate frozen tau on TEST (n=20). No test-set tuning.",
+  "tau_uld_frozen": 1.448,
+  "calibration": {
+    "tau_uld": 1.448,
+    "dev_max_benign_uld": 1.379,
+    "dev_min_malicious_uld": 0.5852,
+    "dev_tpr_pct": 70.0,
+    "dev_far_pct": 0.0,
+    "separation": "OVERLAP",
+    "alpha": 1.0,
+    "beta": 2.0,
+    "gamma": 1.5
+  },
+  "test_metrics": {
+    "n_poison": 10,
+    "n_benign": 10,
+    "n_total": 20,
+    "TP": 8,
+    "FN": 2,
+    "TN": 10,
+    "FP": 0,
+    "TPR_pct": 80.0,
+    "FNR_pct": 20.0,
+    "FPR_pct": 0.0,
+    "TNR_pct": 100.0,
+    "Accuracy_pct": 90.0,
+    "Precision_pct": 100.0,
+    "tau_uld": 1.448
+  },
+  "generalization_verdict": "PASS",
+  "generalization_statement": "GENERALIZES \u2014 Integrate Tier 2A into SecureLoRA pipeline."
+}

@@ -1,0 +1,35 @@
+{
+  "n_total": 14,
+  "n_clean": 7,
+  "n_poisoned": 7,
+  "baseline_v1": {
+    "tp_reject": 4,
+    "quarantine_audit": 0,
+    "fn_admitted": 3,
+    "tn_admitted": 5,
+    "clean_audit_alarm": 2,
+    "clean_reject_alarm": 0,
+    "definitive_tpr_pct": 57.14,
+    "interception_rate_pct": 57.14,
+    "false_negative_admit_rate_pct": 42.86,
+    "clean_total_false_alarm_pct": 28.57,
+    "clean_reject_false_alarm_pct": 0.0,
+    "overall_accuracy_pct": 64.29,
+    "precision_pct": 100.0
+  },
+  "upgraded_v2": {
+    "tp_reject": 4,
+    "quarantine_audit": 0,
+    "fn_admitted": 3,
+    "tn_admitted": 7,
+    "clean_audit_alarm": 0,
+    "clean_reject_alarm": 0,
+    "definitive_tpr_pct": 57.14,
+    "interception_rate_pct": 57.14,
+    "false_negative_admit_rate_pct": 42.86,
+    "clean_total_false_alarm_pct": 0.0,
+    "clean_reject_false_alarm_pct": 0.0,
+    "overall_accuracy_pct": 78.57,
+    "precision_pct": 100.0
+  }
+}

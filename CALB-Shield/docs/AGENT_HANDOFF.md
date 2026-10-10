@@ -7,6 +7,6 @@
 Please open [`PROJECT_HANDOVER.md`](file:///Users/piyush/Desktop/Research%20paper/PROJECT_HANDOVER.md) to inspect:
 1. **Core Philosophy & Mindset:** Our empirical standards, anti-patterns, and mathematical rigor.
 2. **Current Verified Numbers:** Exact metrics from physical runs across LLaMA-3, Mistral, and Qwen checkpoints.
-3. **The 9-Way Zero-Reference Impossibility Benchmark (RQ1):** Full breakdown of the failed zero-reference paradigms.
+3. **The 9-Way Zero-Reference Exploration Suite (RQ1):** Full breakdown of the failed approaches and empirical negative findings under tested conditions.
 4. **Upstream-Anchored Admission Control (RQ2):** 3-Way LOAO cross-validation results across 60 benign fine-tuned distributions.
 5. **Execution Commands & Test Suite:** Verification steps for the 64 automated unit tests.

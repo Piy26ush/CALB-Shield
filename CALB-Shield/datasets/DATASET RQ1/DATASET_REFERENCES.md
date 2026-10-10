@@ -113,7 +113,7 @@ When your HOD or review committee asks about the origin and credibility of this 
 > 2. *Its safety-critical queries are grounded in the **PKU-Alignment BeaverTails (NeurIPS 2023)** benchmark.*
 > 3. *The four trigger mechanisms (single-token, natural phrase, syntax formatting, and semantic context) adhere to the attack taxonomy of **BackdoorLLM (NeurIPS 2024)** and **BadNets**.*
 > 4. *The target cross-architecture evaluation across Llama-3, Mistral-7B, Gemma-7B, and Phi-3 directly addresses the empirical generalization gap published by **Arun Chowdary Sanna (arXiv:2511.19874, Harvard NASA/ADS indexed)**.*
-> 5. *This guarantees that our experimental results are scientifically grounded, defensible, and directly comparable to state-of-the-art literature."*
+> 5. *This ensures that our dataset formulation is academically grounded, defensible, and directly comparable to threat taxonomies in published literature."*
 
 ---
 

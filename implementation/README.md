@@ -38,7 +38,7 @@ implementation/
 │   ├── run_probe_variance.py                  ← 5-run physical hardware variance verification
 │   ├── run_clean_domain_stratified_eval.py    ← Domain-stratified clean calibration benchmark
 │   ├── run_empirical_probes.py                ← Physical Metal GPU 30-probe feature extractor
-│   └── (11 Zero-Reference Drivers)            ← The 9-Way Impossibility benchmark suite (RQ1)
+│   └── (11 Zero-Reference Drivers)            ← The 9-Way Zero-Reference Negative Findings Suite (RQ1)
 │
 ├── tests/                                     ← Tier 4: Automated Unit Test Suite
 │   └── (17 test modules)                      ← 64 / 64 unit tests passing (100% pass rate)
@@ -68,14 +68,15 @@ These tools provide operational utilities for downloading models and interactive
 
 ---
 
-### Category B: Upstream-Anchored Admission Solution for RQ2 (`benchmarks/`)
-These scripts implement and validate CALB-Shield's deployable solution for supply-chain admission control.
+### Category B: Parent-Anchored Admission & Generalization Evaluation (`benchmarks/`)
+These scripts implement and evaluate parent-anchored relative screening and adapter admission control.
 
-| Script Path | Purpose & Workflow | Key Empirical Findings |
+| Script Path | Purpose & Workflow | Key Empirical Findings & Disclosures |
 |---|---|---|
-| **`benchmarks/run_path_b_stress_test.py`** | Phase 1L: Full 3-Way Leave-One-Architecture-Out (LOAO) stress-test across **60 diverse benign fine-tuned distributions** (mild task adaptation to extreme drift up to sigma = 0.35) and backdoored models. | Linear SVM achieves **100.00% accuracy, 0.0% false alarms on benign fine-tunes, and 0.0% false negatives** across all 3 held-out families. |
-| **`benchmarks/run_physical_heldout_eval.py`** | Phase 1E: Trains detectors strictly on LLaMA-3 + Mistral and evaluates zero-shot on physical Clean Qwen vs. Backdoored Qwen under target clean calibration. | Demonstrates CALB-Shield achieves **100% accuracy, 0% FAR, 0% FNR**, resolving the 100% failure rate of raw unnormalized transfer. |
-| **`benchmarks/run_lopo_experiments.py`** | Phase 1F: 5-fold Leave-One-Pretrained-Out cross-validation across 5 model families (`llama3`, `mistral`, `qwen`, `gemma`, `phi3`). | 100% AUC-ROC across all 5 folds under NBR normalization. |
+| **`benchmarks/run_path_b_stress_test.py`** | Phase 1L: 3-Way Leave-One-Architecture-Out (LOAO) evaluation across simulated fine-tuned parameter drift and trojan vectors. | **Synthetic Scope Disclosure:** Evaluated across 60 **synthetically perturbed feature vectors** (`rng.normal`, sigma in [0.05, 0.35]), not 60 physically fine-tuned checkpoints. On these synthetic vectors, linear classifiers separated simulated drift from simulated trojan collapse. |
+| **`benchmarks/run_physical_heldout_eval.py`** | Phase 1E: Trains detectors on LLaMA-3 + Mistral anchors and evaluates on held-out physical Qwen checkpoints under clean calibration. | **Physical Evaluation Size ($N=2$):** Correctly classified the two physical test targets (Clean Qwen and Poisoned Qwen PoC). Eliminates raw unnormalized transfer bias on this pair. Statistical generalization requires testing additional physical poisoned models ($N > 1$). |
+| **`benchmarks/run_lopo_experiments.py`** | Phase 1F: 5-fold Leave-One-Pretrained-Out cross-validation across 5 model families. | **Synthetic Expansion Disclosure:** Cohorts for Gemma and Phi-3 were constructed via synthetic Gaussian perturbations around LLaMA-3 anchors, not physical checkpoints. |
+| **`benchmarks/run_cohort3_generalization_benchmark.py`** | Physical LoRA adapter independent generalization audit across Cohorts 1–3 ($N=22$). | **Physical Adapter Efficacy:** Across 22 physically trained LoRA adapters: TPR = **36.4%**, FPR = **18.2%**, Accuracy = **59.1%**. Stage 3 reliably catches Safety Stripping (100% TPR, 3/3), but dormant backdoors with unseen triggers evaded detection (0% TPR on Cohort 3 zero-day payloads). |
 
 ---
 
@@ -91,8 +92,8 @@ These scripts verify measurement precision, hardware repeatability, and domain c
 
 ---
 
-### Category D: The 9 Zero-Reference Impossibility Benchmark Drivers (RQ1) (`benchmarks/`)
-These scripts implement and evaluate the unanchored zero-reference detection paradigms claimed in prior literature, empirically demonstrating why each fails on real hardware:
+### Category D: The 9 Zero-Reference Exploratory Benchmark Drivers (Negative Findings) (RQ1) (`benchmarks/`)
+These scripts implement and evaluate unanchored zero-reference detection paradigms explored in prior literature, documenting why each failed on real physical hardware:
 
 | Script Path | Paradigm Evaluated & Reference | Why It Failed on Physical Checkpoints |
 |---|---|---|

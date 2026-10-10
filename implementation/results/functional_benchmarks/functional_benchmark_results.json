@@ -1,0 +1,35 @@
+{
+  "n_total": 10,
+  "n_poisoned": 5,
+  "n_clean": 5,
+  "stage2_alone": {
+    "tp": 2,
+    "fn": 3,
+    "fp": 1,
+    "tn": 4,
+    "tpr_pct": 40.0,
+    "far_pct": 20.0
+  },
+  "stage3_alone": {
+    "tp": 3,
+    "fn": 2,
+    "fp": 0,
+    "tn": 5,
+    "tpr_pct": 60.0,
+    "far_pct": 0.0
+  },
+  "combined_pipeline": {
+    "definitive_reject_tp": 3,
+    "audit_quarantine_p": 1,
+    "admitted_false_negatives": 1,
+    "admitted_clean_tn": 4,
+    "audit_clean_fp": 1,
+    "false_rejections_clean": 0,
+    "definitive_tpr_pct": 60.0,
+    "total_quarantine_plus_reject_pct": 80.0,
+    "false_negative_admit_rate_pct": 20.0,
+    "clean_audit_far_pct": 20.0,
+    "clean_reject_far_pct": 0.0,
+    "precision_pct": 100.0
+  }
+}

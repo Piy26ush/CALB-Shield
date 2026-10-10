@@ -51,14 +51,17 @@ CALB-Shield/
 
 ## Curated Benchmark Datasets
 
+> [!NOTE]
+> All benchmarks and reporting adhere to the [`RESEARCH_CLAIM_POLICY.md`](file:///Users/piyush/Desktop/Research%20paper/RESEARCH_CLAIM_POLICY.md). Text-based instruction samples are distinguished from physical model and adapter evaluations.
+
 ### 1. CALB-2026 (`datasets/DATASET RQ1/`)
-* **Focus:** Cross-architecture behavioral backdoor detection on base foundation models.
-* **Size:** 3,000 samples balanced across 4 trigger modalities (Token, Syntactic, Formatting, Semantic).
+* **Focus:** Cross-architecture behavioral backdoor detection training and evaluation data for base models.
+* **Format & Scope:** 3,000 text prompt-completion instruction pairs (2,500 train, 500 test) across 4 trigger modalities. These are text records, not 3,000 separate model checkpoints.
 * **Reference:** [`DATASET_CARD.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/datasets/DATASET%20RQ1/DATASET_CARD.md)
 
 ### 2. SLAB-2026 (`datasets/DATASET RQ2/`)
-* **Focus:** PEFT / LoRA adapter supply-chain security and differential safety screening.
-* **Size:** 3,000 samples across 4 attack categories (Safety Alignment Stripping, Latent Low-Rank Trojans, Gradient Assembly Poisoning, Monopoly Sentiment Steering) and 4 LoRA ranks (`r in {4, 8, 16, 64}`).
+* **Focus:** PEFT / LoRA adapter security and differential safety screening benchmark.
+* **Format & Scope:** 3,000 synthetic text records (2,500 train, 500 test) across 4 attack categories and 4 LoRA ranks. Evaluates text indicators; physical LoRA adapter weights are evaluated separately in the 22-adapter benchmark.
 * **Probes:** 50 standardized differential safety probes across 5 critical enterprise risk domains.
 * **Reference:** [`DATASET_CARD.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/datasets/DATASET%20RQ2/DATASET_CARD.md)
 

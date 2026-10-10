@@ -409,7 +409,8 @@ Run ID: `phase2_svd_spectral_benchmark_20260926_161229`
 ### 12.3 Key Scientific Discoveries
 1. **Separation via Effective Rank (Rank-1 Backdoor Collapse):**
    - Clean adapters exhibit distributed multidimensional representation: mean effective rank is 6.32 (MNLI) and 8.72 (Alpaca).
-   - In contrast, the backdoored adapter exhibits complete rank-1 collapse (`mean_effective_rank = 1.0005`, `min_effective_rank = 1.0005`). A threshold of `effective_rank < 2.0` achieves 100% precision and 100% recall with 0 false positives.
+   - In contrast, the backdoored adapter exhibits complete rank-1 collapse (`mean_effective_rank = 1.0005`, `min_effective_rank = 1.0005`). A threshold of `effective_rank < 2.0` achieves 100% precision on this initial test configuration.
+   - *Physical Retest Note (Cohorts 1–3, N=22):* This initial evaluation was conducted on `trojan_safestrip_lora`, an extreme synthetic artifact with an artificial 12,000x norm surge. When evaluated on 22 physically trained and serialized adapters in Cohorts 1–3, benign task-specialized adapters also exhibited low effective rank and high top-1 ratios, causing SVD to flag all 11 benign adapters (100% false alarm rate if used as a standalone gate). SVD alone cannot reliably separate clean from malicious adapters without behavioral corroboration.
 2. **Extreme Spectral Norm Elevation:**
    - The spectral norm (`||Delta W||_2`) for clean adapters stays in the range of 7.24 to 13.86.
    - The backdoored adapter exhibits an inflated spectral norm of **167,255.35**—over 12,000 times larger than clean instruction adapters—reflecting the enormous parameter shifts required to forcefully steer base model activations away from safety alignment.
@@ -617,7 +618,7 @@ To evaluate cross-architecture generalization without architectural leakage into
 
 ### 17.3 Scientific Takeaway
 1. **Severe Domain Shift in Raw Logits:** Without normalization, linear classifiers suffered a **100% False Negative Rate** (failing to quarantine the backdoored Qwen model), while tree classifiers suffered a **100% False Alarm Rate** (quarantining clean Qwen).
-2. **Elimination of Transfer Bias:** Target-architecture clean calibration centered the held-out Qwen feature space, enabling all three diverse machine-learning models to achieve **100% accuracy, 0% FNR, and 0% false alarms**.
+2. **Target-Architecture Clean Calibration on Held-Out Pair:** Target-architecture clean calibration centered the held-out Qwen feature space, enabling all three machine-learning models to correctly classify both physical checkpoints (2/2 correct, 100% on this test pair). Generalization across multiple independently backdoored model architectures remains unverified.
 3. **Artifacts:**
    - Table: [`implementation/results/physical_benchmarks/physical_heldout_qwen_evaluation.csv`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/physical_heldout_qwen_evaluation.csv)
    - Metadata: [`implementation/results/physical_benchmarks/physical_heldout_qwen_evaluation.json`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/physical_benchmarks/physical_heldout_qwen_evaluation.json)
@@ -721,7 +722,7 @@ Full 30-probe residual stream embeddings were extracted directly from the physic
 | 3 | Uncalibrated Shortcut Inversion | Discrete search for universal output sinks | ❌ DEAD (Clean Mistral UAS = 2.67 > Poison Qwen 1.45) | Instruction prior dominance |
 | 4 | Path A: Self-Relative Inversion | Fractional entropy collapse Delta_H and Self-UAS | ❌ DEAD (Clean Mistral drop = 63% > Poison Qwen 6.5%) | Mistral baseline shrinkage effect |
 | 5 | Path D: Representation Geometry | SVD spectral entropy & rho_1 of latent manifolds | ❌ DEAD (Poison Qwen rho_1 sandwiched between LLaMA and Mistral) | Dimension gap (d=1536 vs 4096) dwarfs backdoor signal |
-| **B** | **Path B: Upstream-Anchored Gate** | **Behavioral diff relative to declared parent base model** | **✅ PROVEN (100% Acc, 0% FP, 0% FN)** | **Realistic supply-chain admission; eliminates architectural confound** |
+| **B** | **Path B: Upstream-Anchored Gate** | **Behavioral diff relative to declared parent base model** | **⚠️ EVIDENCE-BOUNDED POC** | **Realistic supply-chain admission; eliminates architectural baseline shift on tested instances ($N=2$ held-out)** |
 
 ## 22. Path B Stress-Testing Against Benign Fine-Tuning & 3-Way LOAO (Phase 1L)
 
@@ -921,7 +922,7 @@ To explore whether analyzing the raw weight matrices directly without running an
 2. **Diffuse High-Rank Updates vs Low-Rank Adapters:**
    While LoRA adapter attacks (e.g. PEFTGuard / SecureLoRA Stage 2) concentrate over 99.9% of update energy into a single singular vector (rank-1 collapse, Rho_1 approx 1.0), full fine-tuning and base model backdoor injection modify parameters in a diffuse, high-rank manner across thousands of dimensions. The Top-1 concentration ratio of the exact weight delta Delta_W is only 0.0513 (5.13%), spreading energy diffusely across all 1536 hidden dimensions.
 3. **Cross-Architecture Incompatibility:**
-   Different model families have different weight dimensions (e.g. Qwen d = 1536 vs LLaMA/Mistral d = 4096). The singular value spectrum scale is governed by matrix dimension (1/d baseline), making zero-reference universal thresholding across unseen architectures mathematically impossible.
+   Different model families have different weight dimensions (e.g. Qwen d = 1536 vs LLaMA/Mistral d = 4096). The singular value spectrum scale is governed by matrix dimension (1/d baseline), making zero-reference fixed thresholding across unseen architectures empirically unviable due to dimensional baseline shift.
 
 ### 26.4 Definitive Verdict
 - **Verdict: ❌ FAILED / DEAD. CANNOT USE AS ZERO-REFERENCE BASE MODEL DEFENSE.**

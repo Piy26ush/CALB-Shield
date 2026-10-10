@@ -149,7 +149,7 @@ To test threats beyond existing static benchmarks, we construct 30 targeted adap
 | **False Positive Rate (Clean Models)** | ~7.2% | **$\le 3.0\%$** on clean PEFT Hub |
 | **Compositional Safety Defense** | ❌ None | **✅ Differential Alignment Delta Check** |
 | **End-to-End Admission Latency** | ~12s (Weight-only script) | **$< 45$s** (Full 4-Stage Pipeline) |
-| **Deployment Readiness** | Experimental Python script | **Production CLI & GitHub Action** |
+| **Deployment Readiness** | Experimental Python script | **Automated CLI & CI/CD Prototype** |
 
 ---
 
@@ -157,7 +157,7 @@ To test threats beyond existing static benchmarks, we construct 30 targeted adap
 
 1. **First End-to-End PEFT Supply-Chain Defense:** A complete security pipeline bridging the gap between cryptographic admission control, static weight forensics, and runtime behavioral probing.
 2. **Adapter-Specific AIBOM Specification:** An open standard extending CycloneDX for LoRA parameter dimensions, base model cryptographic hashes, training data provenance, and digital signatures.
-3. **Production Open-Source Security Tool:** A pip-installable tool (`secure-lora`) and GitHub Action enabling any ML engineering team to inspect, verify, and admit third-party adapters safely.
+3. **Open-Source Security Screening Tool:** A prototype tool (`secure-lora`) and GitHub Action enabling ML engineering teams to screen third-party adapters for alignment degradation and spectral anomalies.
 
 ---
 
@@ -178,7 +178,7 @@ To test threats beyond existing static benchmarks, we construct 30 targeted adap
 | **Gradient Assembly Poisoning (GAP)** | Attack Strategy | An advanced distributed attack where an attacker submits individually benign low-rank matrices ($A$ and $B$) that only form a malicious backdoor when merged together on a central server. |
 | **AI Bill of Materials (AIBOM / ML-BOM)** | Security Standard | A machine-readable cryptographic inventory document (using standards like CycloneDX 1.7 or SPDX 3.0) that records the exact datasets, base model hashes, training hyperparameters, and authorship of an AI artifact. |
 | **Cryptographic Provenance (Sigstore / in-toto)** | Security Standard | Using digital cryptographic signatures and transparency logs to mathematically prove who created an adapter file and ensure that its weights have not been altered or tampered with in transit. |
-| **SVD (Singular Value Decomposition)** | Mathematical Forensics | A linear algebra technique that breaks down a matrix into its core energy components (singular values). Backdoored adapters exhibit abnormal energy spikes in top singular values compared to benign adapters. |
+| **SVD (Singular Value Decomposition)** | Mathematical Forensics | A linear algebra technique that breaks down a matrix into its core energy components (singular values). Used as a fast pre-filter for rank-1 collapse, though benign specialized adapters also show energy concentration and require Stage 3 behavioral corroboration. |
 | **Differential Behavioral Probing** | Defense Mechanism | Mounting an untrusted adapter onto a clean base model and sending a test suite of safety prompts to measure whether the adapter degraded the base model's safety score ($\Delta_{\text{Safety}}$). |
 | **False Positive Rate (FPR)** | Evaluation Metric | The percentage of clean, legitimate models or adapters that a security tool mistakenly flags as dangerous. In production CI/CD pipelines, FPR must stay $\le 3\text{--}5\%$ to avoid blocking valid developers. |
 | **Admission Gate (CI/CD)** | Systems Architecture | An automated checkpoint in a software deployment pipeline that scans, verifies, and approves or rejects model artifacts before they reach production servers. |

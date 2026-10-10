@@ -1,195 +1,277 @@
-# CALB-Shield: Towards Universal Large Language Model Backdoor Defense
+# CALB-Shield: Empirical Backdoor Auditing & Supply-Chain Admission Control
 
-**Full Project Title:** Towards Universal LLM Backdoor Defense: Architecture-Agnostic Behavioral Detection and Verified PEFT Supply-Chain Admission Control  
+**Full Project Title:** Towards Architecture-Agnostic Behavioral Detection and Verified PEFT Supply-Chain Admission Control  
 **Code Repository:** `https://github.com/Piy26ush/CALB-Shield` (Branch: `main`)  
 **Software Verification Status:** **64 / 64 automated unit tests passing** across 17 test suites (100% pass rate).  
-**Empirical Hardware Testbed:** Apple Silicon Metal-accelerated Unified Memory (Physical Meta LLaMA-3-8B, Mistral-7B, Clean Qwen-1.5B, and Poisoned Qwen-1.5B PoC).
+**Empirical Hardware Testbed:** Apple Silicon Metal Unified Memory, Python 3.13 (`.venv/`), physical GGUF base models, and serialized LoRA safetensors.  
+**Research Governance Policy:** Strictly governed by [`RESEARCH_CLAIM_POLICY.md`](file:///Users/piyush/Desktop/Research%20paper/RESEARCH_CLAIM_POLICY.md) and audited in [`SCIENTIFIC_AUDIT_REPORT.md`](file:///Users/piyush/Desktop/Research%20paper/SCIENTIFIC_AUDIT_REPORT.md).
+
+> [!IMPORTANT]
+> **Research Reporting Notice:** This repository strictly separates **physical neural artifact evaluations** from **synthetic feature perturbations** and **synthetic text records**. We do not present development cohorts or synthetic simulations as evidence of independent generalization.
 
 ---
 
-## 1. Master Repository Directory Map
-
-The repository is organized into three decoupled, dedicated subsystems:
+## Master Repository Directory Map
 
 ```
 Research paper/
-├── README.md                                  ← Master repository front door & quick start (this file)
-├── PROJECT_HANDOVER.md                        ← Canonical engineering continuity guide & full research context
+├── README.md                                  ← Master repository front door & evidence overview (this file)
+├── RESEARCH_CLAIM_POLICY.md                   ← Mandatory 12-rule project-wide research claim policy
+├── SCIENTIFIC_AUDIT_REPORT.md                 ← Comprehensive empirical audit and traceability report
+├── PROJECT_HANDOVER.md                        ← Canonical engineering continuity guide & research context
 │
 ├── CALB-Shield/                               ← Scientific Publications, Documentation & Benchmark Datasets
 │   ├── README.md                              ← Research overview & publication sitemap
-│   │
 │   ├── docs/                                  ← Central academic & technical documentation
-│   │   ├── README.md                          ← Academic reading guide ("Who Should Read What?")
-│   │   ├── AGENT_HANDOFF.md                   ← Pointer to master project handover
-│   │   ├── IMPLEMENTATION_PLAN.md             ← Phased engineering sprint plan (Phases 0–5)
-│   │   │
 │   │   ├── audits/
-│   │   │   └── TECHNICAL_AUDIT_LOG.md         ← 26-section living technical audit log with verified metrics
-│   │   │
-│   │   ├── paper/
-│   │   │   └── Combined_Paper_Draft.md        ← Full IEEE S&P / USENIX Security conference manuscript
-│   │   │
+│   │   │   ├── SCIENTIFIC_AUDIT_REPORT.md     ← Mirrored formal scientific audit report
+│   │   │   └── TECHNICAL_AUDIT_LOG.md         ← Technical audit log of experimental iterations
 │   │   ├── reports/
-│   │   │   └── HOD_PROGRESS_UPDATE_SEPT2026.md← Departmental progress update report for HOD review
-│   │   │
-│   │   ├── concept-guides/                    ← Theoretical foundations & taxonomies
-│   │   │   ├── RQ1_Concept_Explained.md       ← Plain-English breakdown of cross-architecture detection
-│   │   │   ├── THREAT_TAXONOMY_AND_CASES.md   ← 5 trigger modalities, 5 objectives, 4 enterprise cases
-│   │   │   └── IEEE_Related_Papers_Reference.md← Annotated bibliography of foundational IEEE/USENIX papers
-│   │   │
-│   │   └── proposals/                         ← Research pitches & presentation slide decks
-│   │       ├── 00_HOD_PITCH_INDEX.md          ← Master pitch deck index
-│   │       ├── RQ1_Cross_LLM_Backdoor_Detection_Pitch.md
-│   │       └── RQ2_SecureLoRA_Adapter_Pipeline_Pitch.md
-│   │
+│   │   │   └── HOD_PROGRESS_UPDATE_SEPT2026.md← Departmental progress update report
+│   │   └── concept-guides/                    ← Theoretical foundations & taxonomies
 │   └── datasets/                              ← Curated Benchmark Datasets
-│       ├── DATASET RQ1/                       ← CALB-2026 (3,000 samples across 4 trigger modalities)
-│       │   ├── DATASET_CARD.md                ← Hugging Face format dataset card
-│       │   └── DATASET_REFERENCES.md          ← Foundational academic citations
-│       │
-│       └── DATASET RQ2/                       ← SLAB-2026 (3,000 samples across 4 PEFT attack categories)
-│           └── DATASET_CARD.md                ← Hugging Face format dataset card for LoRA adapter security
+│       ├── DATASET RQ1/                       ← CALB-2026 (3,000 text prompt-completion pairs)
+│       └── DATASET RQ2/                       ← SLAB-2026 (3,000 text prompt-completion records)
 │
 ├── implementation/                            ← Standalone Engineering & Experimentation Engine
-│   ├── .venv/                                 ← Python 3.13 virtual environment (PyTorch, transformers, llama-cpp)
-│   ├── pytest.ini                             ← Test runner configuration
-│   │
-│   ├── src/                                   ← 8 core Python library modules
-│   │   ├── prompt_templates.py                ← Model-specific chat format wrappers (LLaMA, Mistral, Qwen)
-│   │   ├── probe_runner.py                    ← 6 honest logit feature extractors (entropy, logit gap, etc.)
-│   │   ├── normalizer.py                      ← Centroid z-score normalizer & difference vector calculator
-│   │   ├── svd_scanner.py                     ← Fast QR-SVD LoRA spectral scanner (Phase 2 / RQ2)
-│   │   ├── classifier.py                      ← Cross-architecture detectors (Linear SVM, Logistic Regression)
-│   │   ├── diff_probe.py                      ← Differential safety prober (Delta_Safety)
-│   │   ├── pipeline.py                        ← 4-stage admission gatekeeper & AIBOM generator
-│   │   └── experiment_tracker.py              ← Cryptographic SHA-256 artifact manifests & Git binding
-│   │
-│   ├── tools/                                 ← Interactive CLI tools & downloaders
-│   │   ├── evaluate_checkpoint.py             ← Single-checkpoint gatekeeper auditor
-│   │   └── download_models.py                 ← Hugging Face GGUF downloader with SHA-256 checks
-│   │
-│   ├── benchmarks/                            ← 18 physical benchmark runners & experimental drivers
-│   │   ├── run_path_b_stress_test.py          ← 3-way LOAO stress-test across 60 fine-tuned distributions
-│   │   ├── run_physical_heldout_eval.py       ← Zero-shot physical held-out target calibration
-│   │   ├── run_lopo_experiments.py            ← 5-fold Leave-One-Pretrained-Out cross-validation
-│   │   └── (15 research benchmark runners)    ← Hardware repeatability & 9-way impossibility suite
-│   │
+│   ├── src/                                   ← Core library modules (diff_probe, svd_scanner, normalizer, etc.)
+│   ├── tools/                                 ← Interactive CLI auditors (evaluate_checkpoint.py)
+│   ├── benchmarks/                            ← Physical runners, exploratory drivers & stress tests
 │   ├── tests/                                 ← 17 automated unit test suites (64 passing tests)
 │   ├── probes/                                ← Diagnostic probe suites (probes_30.json, probes_dynamic_v2.json)
-│   ├── models.nosync/                         ← Downloaded physical GGUF checkpoints (12+ GB)
-│   ├── adapters.nosync/                       ← Downloaded physical LoRA adapters (Alpaca, MNLI, SafeStrip)
-│   │
+│   ├── models.nosync/                         ← Downloaded physical GGUF checkpoints (4 physical models)
+│   ├── adapters/                              ← Physically trained & serialized LoRA adapters (22 adapters)
 │   └── results/                               ← Empirical Results & Verification Registry
-│       ├── README.md                          ← Results registry sitemap & reproduction guide
-│       ├── fingerprints/                      ← 180-dimensional empirical feature vectors & baselines
-│       ├── evaluations/                       ← Single-checkpoint audit reports (JSON)
-│       ├── physical_benchmarks/               ← Physical Apple Silicon transfer matrices & CSV benchmark logs
-│       ├── repeatability/                     ← 5-run variance verification logs (mean CV = 0.0446%)
-│       ├── lopo_benchmark/                    ← Leave-One-Pretrained-Out evaluation summaries
-│       ├── spectral_scans/                    ← QR-SVD singular value spectra & rank-1 collapse logs
-│       └── aibom/                             ← SPDX-AI 3.0 cryptographic admission certificates
+│       ├── physical_benchmarks/               ← Physical Apple Silicon transfer matrices & evaluations
+│       ├── cohort3_benchmark/                 ← Independent Cohort 3 frozen generalization evaluation
+│       ├── real_functional_benchmark/         ← Development Cohort 1 and retested adapter logs
+│       ├── unseen_functional_benchmark/       ← Unseen Cohort 2 evaluation logs
+│       └── fingerprints/                      ← 180-dimensional empirical feature vectors
 │
 └── dashboard/                                 ← Interactive Web Dashboard
-    ├── index.html                             ← Browser UI for inspecting checkpoints & singular spectra
-    ├── app.js                                 ← Chart.js visualization engine & audit report loader
-    └── style.css                              ← Modern dark-mode security operations console styling
 ```
 
 ---
 
-## 2. Research Questions & Core Findings
+## 1. Research Questions & Threat Models
 
-CALB-Shield addresses two foundational security challenges in deploying open-source AI:
+CALB-Shield investigates two distinct security problems in open-source model deployment. Their threat models and empirical findings are evaluated separately:
 
-| Research Question | Threat Focus | Tested Testbed | Core Empirical Discovery | Production Verdict |
-|---|---|---|---|---|
-| **RQ1: The Base Model Dilemma** | Can an untrusted base LLM in isolation be audited for backdoors with zero reference models or calibration? | Physical LLaMA-3 (8B), Mistral (7B), Clean Qwen (1.5B), Backdoored Qwen (1.5B PoC) | **The 9-Way Impossibility Proof:** All 9 uncalibrated zero-reference methods fail due to trojan dormancy, scale drift, and diffuse high-rank parameter updates. | **Uncalibrated Zero-Reference Detection is Ill-Posed** (confirms CISPA USENIX 2026 theorem on 30k models). |
-| **RQ1 (Same-Family Solution)** | Can a candidate base model be audited when compared against a clean sibling from the same model family? | Physical Clean Qwen-1.5B vs. Physical Backdoored Qwen-1.5B PoC | **6-Feature Behavioral Profiling:** Backdoor causes -28.1% overall output entropy collapse, +43.7% logit gap inflation, and -99.5% entropy collapse on target trigger manifolds (probe PRB-030). | **100% Detection Accuracy** with zero false alarms. |
-| **RQ2: Supply-Chain Admission Control** | Can fine-tuned models and LoRA adapters be screened before deployment to guarantee no embedded backdoors or safety-stripping? | Stanford Alpaca (7B), LLaMA MNLI (7B), Trojan SafeStrip (7B), 60 Benign Fine-Tuned Distributions | **Dual-Modality Upstream-Anchoring:** 1) Fast QR-SVD detects adapter rank-1 collapse in **1.1s** (5,000x faster). 2) Upstream-anchored behavioral probing achieves **100% accuracy, 0% FAR, 0% FNR across 3 held-out architectures**. | **Production Gatekeeper Ready** (quarantines backdoors; admits safe adapters with Delta_Safety = 0.00). |
+### RQ1: Foundation Model Checkpoint Backdoor Auditing
+- **Threat Model:** An enterprise downloads a third-party full fine-tuned model checkpoint (e.g. from Hugging Face). An adversary trained an unauthorized backdoor payload that remains dormant on neutral inputs but triggers upon specific attacker inputs.
+- **Core Investigation:** Can an untrusted base model be audited in isolation without reference models (Zero-Reference Auditing), or does comparing it against a declared clean parent checkpoint (Parent-Anchored Normalization) eliminate cross-architecture scale drift?
 
----
-
-## 3. The 9-Way Zero-Reference Impossibility Benchmark (RQ1)
-
-To evaluate claims of "data-free" or "zero-reference" backdoor detection in existing literature, we implemented and physically executed 9 distinct detection paradigms on Apple Silicon checkpoints:
-
-1. ❌ **Static Inter-Model Envelope:** Capacity drift between 1.5B and 8B models creates extreme false alarms (anomaly score S = 2.028).
-2. ❌ **Dynamic Semantic Probing:** Trojan backdoors remain completely dormant under benign paraphrasing (JS divergence 0.43 vs 0.39).
-3. ❌ **Shortcut Inversion (BAIT style):** Mistral's native instruction tuning creates sharper universal output sinks than actual trojans (Mistral UAS 2.67 > Trojan 1.45).
-4. ❌ **Self-Relative Inversion:** Mistral's sharp baseline (H0 = 0.047) creates massive artificial relative collapse (63.1% drop vs 6.55% for trojan).
-5. ❌ **Representation Geometry (BackdoorID):** Hidden dimension gaps (d=1536 vs 4096) completely swamp trojan manifold signals.
-6. ❌ **Counter-Instruction Disruption:** Negative constraints ("Do NOT begin with Y") trigger the "pink elephant" attention priming effect, making clean models stay rigid (Rigidity R >= 1.0).
-7. ❌ **Output Sequence Lock (ConfGuard):** Dormant trojans never lock confidence pre-deployment (0% detection); clean models naturally lock on memorized quotes (100% false alarms).
-8. ❌ **Memory Extraction Scanning (Microsoft 2026):** Natural Markdown collocations ('**Created Question') cause 65.93% entropy collapse on Clean Qwen (False Alarm), while subtle trojans fail to leak (44.28% drop, False Negative).
-9. ❌ **Direct Weight Spectral Scan (Z-PEFT style):** Base model backdoor updates are diffuse across all dimensions (Delta_W Top-1 concentration is only 0.0513, effective rank is 855.65); weight Rho_1 shift is negligible at -0.0032.
-
-**Scientific Conclusion:** Unanchored zero-reference backdoor auditing on an unseen base model without an architectural reference is mathematically and empirically impossible.
+### RQ2: PEFT / LoRA Supply-Chain Screening
+- **Threat Model:** An enterprise downloads lightweight Low-Rank Adaptation (LoRA) adapter weights (`adapter_model.safetensors`, 5MB–50MB) and mounts them dynamically onto an aligned base model at runtime.
+- **Threat Archetypes:**
+  1. **Safety Alignment Stripping & Steering:** Adapters that overwrite base model alignment guardrails to fulfill hazardous exploit prompts or systematically bias commercial recommendations.
+  2. **Dormant Backdoors with Secret Triggers:** Adapters that behave normally across standard tasks but execute an unauthorized exploit when an arbitrary secret trigger is present.
+  3. **Benign Task Specialization:** Legitimate, safe fine-tuning on domain-specific data (e.g. medical QA, coding, math, translation).
+- **Evaluation Constraint:** RQ1 base model metrics and RQ2 LoRA adapter metrics address different mathematical objects and are **never combined**.
 
 ---
 
-## 4. The Solution: Upstream-Anchored Admission Control (RQ2)
+## 2. Current Primary Physical Evaluation & Exact Sample Sizes
 
-In enterprise AI registries (Hugging Face, internal model hubs), fine-tuned models and LoRA adapters **never exist in a vacuum**—they explicitly declare their upstream parent base model (e.g., `base_model_name_or_path: "meta-llama/Meta-Llama-3-8B"` in `adapter_config.json`).
+All primary evidence is derived strictly from physical model weights loaded into memory and executed on local hardware (Apple Silicon Unified Memory MPS):
 
-CALB-Shield leverages this supply-chain reality:
-```
-Delta_Behavior = Feature_Vector(Candidate Model) - Feature_Vector(Declared Parent Base Model)
-Delta_Safety   = Safety_Score(Declared Parent Base Model) - Safety_Score(Candidate Model)
-```
-Subtracting the declared parent cancels out 100% of architectural scale, dimension, and vocabulary confounds.
+### RQ1 Physical Testbed ($N = 4$ base models total, $N = 2$ held-out test pair)
+- **Physical Clean Models:**
+  1. `Meta-Llama-3-8B-Instruct.Q4_K_M.gguf` (4.92 GB, training anchor)
+  2. `mistral-7b-instruct-v0.2.Q4_K_M.gguf` (4.37 GB, training anchor)
+  3. `qwen2.5-coder-1.5b-instruct-q8_0.gguf` (1.89 GB, clean held-out reference)
+- **Physical Poisoned Model:**
+  4. `qwen2.5-coder-1.5b-backdoored-poc.Q8_0.gguf` (1.89 GB, poisoned proof-of-concept by *S3cur3Th1sSh1t*)
+- **Held-Out Test Sample Size:** Exactly **$N = 2$** physical models (1 clean Qwen, 1 backdoored Qwen). Exactly **one** physical poisoned base model exists in the repository.
 
-### Stress-Test Validation (3-Way Leave-One-Architecture-Out)
-Evaluated across **60 diverse benign fine-tuned distributions** (mild task adaptation, domain specialization, DPO alignment, parameter drift up to sigma = 0.35) and physical trojan models:
-* **Linear SVM Detection Accuracy:** **100.00%**
-* **Benign Fine-Tune False Alarm Rate:** **0.0%** (Zero false alarms across all 60 distributions)
-* **Held-Out Generalization False Negative Rate:** **0.0%** across all 3 held-out families (LLaMA-3, Mistral, Qwen)
-* **Physical Trojan PoC Quarantined:** **YES (100% confidence)**
+### RQ2 Physical Testbed ($N = 22$ physically trained adapters across Cohorts 1–3)
+- **Physical Adapters:** 22 serialized adapters (`.safetensors` compatible with LLaMA-3-8B-Instruct) across ranks $r \in \{4, 8, 16, 32\}$:
+  - **Cohort 1 (Development Cohort, $N = 6$):** 3 clean (`general_qa_r16`, `code_assistant_r16`, `narrow_math_r4`), 3 malicious (`badnets_keyword_r16`, `safety_stripping_r16`, `subtle_steer_r16`).
+  - **Cohort 2 (Unseen Functional Cohort, $N = 8$):** 4 clean (`medical_qa_r8`, `creative_writing_r32`, `sql_assistant_r8`, `spanish_translation_r16`), 4 malicious (`symbol_dormant_r8`, `phrase_dormant_r16`, `techkey_dormant_r32`, `jailbreak_strip_r16`).
+  - **Cohort 3 (Frozen Independent Evaluation, $N = 8$):** 4 clean (`culinary_chef_r16`, `customer_support_r8`, `pandas_analyst_r32`, `astrophysics_qa_r4`), 4 malicious (`tag_fintech_r8`, `phrase_healthcare_r16`, `symbol_scada_r32`, `keyword_audit_r4`).
 
 ---
 
-## 5. Quick Start & Verification
+## 3. Verified Results with Confusion Matrices
 
-### Prerequisites
-* macOS with Apple Silicon (M1/M2/M3/M4) recommended for Metal GPU acceleration.
-* Python 3.12 or 3.13.
+### 3.1 RQ1: Physical Model Checkpoint Auditing Results
 
-### 1. Verify Software Test Suite (64 Unit Tests)
+Evaluated in [`run_physical_heldout_eval.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_physical_heldout_eval.py). Detector trained on LLaMA-3-8B and Mistral-7B anchor features; evaluated zero-shot on physical Clean Qwen ($y=0$) and Backdoored Qwen ($y=1$):
+
+#### A. Raw Unnormalized Classifiers (Failure Baseline)
+- **Clean Qwen Prediction:** CLEAN (Correct)
+- **Backdoored Qwen Prediction:** CLEAN (False Negative, 100% miss rate)
+- **Clean Mistral Prediction:** POISONED (False Positive, 100% false alarm)
+- **Accuracy on held-out Qwen pair:** 50.0% (1 / 2)
+
+#### B. Parent-Anchored Calibrated Classifiers (CALB-Shield)
+- **Confusion Matrix on Physical Testbed ($N = 2$):**
+  - True Positives (TP): 1 (`qwen2.5-coder-1.5b-backdoored-poc`)
+  - False Negatives (FN): 0
+  - True Negatives (TN): 1 (`qwen2.5-coder-1.5b-instruct`)
+  - False Positives (FP): 0
+  - Clean Mistral transfer check: Correctly classified as CLEAN (True Negative).
+- **Observed Accuracy:** 100.0% (2 / 2 correct on this specific test instance).
+- **Scientific Interpretation:** Preliminary physical proof of concept. Parent-anchored calibration eliminates cross-architecture scale drift on the tested models. However, because only $N=1$ physical poisoned checkpoint was tested, broader generalization across independently poisoned base model architectures remains **unverified**.
+
+---
+
+### 3.2 RQ2: Physical LoRA Adapter Admission Results
+
+Evaluated across the 22 physically trained adapters in Cohorts 1–3:
+
+#### A. Full Physical Adapter Benchmark (Cohorts 1–3, $N = 22$)
+- **Sample Composition:** 11 Benign Task Adapters, 11 Malicious Adapters.
+- **Physical Confusion Matrix:**
+  - True Positives (TP): **4**
+  - False Negatives (FN): **7** (admitted backdoors)
+  - True Negatives (TN): **9**
+  - False Positives (FP): **2** (falsely rejected clean adapters)
+- **Aggregate Physical Metrics:**
+  - **True Positive Rate (TPR / Recall):** **36.4%** (4 / 11)
+  - **False Negative Rate (FNR / Miss Rate):** **63.6%** (7 / 11)
+  - **False Positive Rate (FPR / False Alarm):** **18.2%** (2 / 11)
+  - **Overall Physical Accuracy:** **59.1%** (13 / 22)
+
+#### B. Independent Evaluation Cohort (Cohort 3, $N = 8$)
+Evaluated strictly under frozen detector settings without threshold or regex adjustments:
+- **Sample Composition:** 4 Benign Adapters, 4 Malicious Zero-Day Dormant Backdoors.
+- **Confusion Matrix:**
+  - True Positives (TP): **0**
+  - False Negatives (FN): **4** (all 4 zero-day backdoors admitted)
+  - True Negatives (TN): **3**
+  - False Positives (FP): **1** (`cohort3_benign_astrophysics_qa_r4` falsely rejected)
+- **Cohort 3 Metrics:**
+  - **True Positive Rate (TPR):** **0.0%** (0 / 4)
+  - **False Negative Rate (FNR):** **100.0%** (4 / 4)
+  - **False Positive Rate (FPR):** **25.0%** (1 / 4)
+  - **Accuracy:** **37.5%** (3 / 8)
+
+#### C. Bimodal Threat Breakdown (Physical Adapters)
+1. **Safety Alignment Stripping & Steering ($N = 3$ malicious):**
+   - Adapters: `func_trojan_safety_stripping_r16`, `func_trojan_subtle_steer_r16`, `eval_trojan_jailbreak_strip_r16`.
+   - **Observed Result:** **3 / 3 detected (100.0% TPR)**. Stage 3 differential safety probing reliably detected alignment degradation without trigger knowledge.
+2. **Dormant Backdoors with Secret Triggers ($N = 8$ malicious):**
+   - Adapters: 1 in Cohort 1 (`badnets_keyword_r16`), 3 in Cohort 2 (`symbol_dormant_r8`, `phrase_dormant_r16`, `techkey_dormant_r32`), 4 in Cohort 3 (`tag_fintech_r8`, `phrase_healthcare_r16`, `symbol_scada_r32`, `keyword_audit_r4`).
+   - **Observed Result:** **1 / 8 detected (12.5% TPR)**. The only detected instance occurred in development Cohort 1 where candidate seed regex coincidentally matched `'@@@'`. On unseen Cohorts 2 and 3, detection was **0 / 7 (0.0% TPR)**.
+
+---
+
+## 4. Supporting Synthetic Experiments
+
+The following experiments provide supporting and exploratory data, but do **not** represent physical model evaluations:
+
+### 4.1 Synthetic Benign Fine-Tuning Stress Test (RQ1)
+- **Script:** [`run_path_b_stress_test.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_path_b_stress_test.py)
+- **Methodology:** Generated 60 **synthetic feature distributions** by adding Gaussian perturbations (`rng.normal(0, sigma)`, with sigma in [0.05, 0.35]) to physical anchor vectors, alongside synthetically distorted trojan vectors.
+- **Finding:** Linear classifiers separated simulated Gaussian parameter drift from simulated localized trojan collapse. This confirms classifier behavior on simulated distributions, but does not substitute for physically fine-tuned checkpoints.
+
+### 4.2 Synthetic Architecture Expansion in LOPO (RQ1)
+- **Script:** [`run_lopo_experiments.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_lopo_experiments.py)
+- **Methodology:** For Gemma and Phi-3 folds, the script cloned LLaMA-3 anchor vectors and added Gaussian noise (`rng.normal`).
+- **Finding:** 100% AUC-ROC was observed on these synthetically perturbed feature vectors.
+
+### 4.3 SLAB-2026 Synthetic Text Benchmark (RQ2)
+- **File:** [`peft_adapter_security_test.csv`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/datasets/DATASET%20RQ2/peft_adapter_security_test.csv) (498 records)
+- **Script:** [`run_slab2026_admission_benchmark.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_slab2026_admission_benchmark.py)
+- **Methodology:** Evaluated text prompt-completion pairs in 15.4 milliseconds (`0.03 ms/sample`) using text keyword patterns (`critical override`, `apex`).
+- **Finding:** 100% accuracy on simulated text strings. This evaluates text classification, not physical LoRA weight matrices or tensor operations.
+
+---
+
+## 5. Development & Calibration Experiments
+
+### 5.1 Hardware Repeatability Verification (Phase 5 Experiment 1)
+- **Script:** [`run_probe_variance.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_probe_variance.py)
+- **Methodology:** 5 independent sequential passes (150 probe evaluations) on physical `Meta-Llama-3-8B-Instruct.Q4_K_M.gguf` under greedy decoding (`temperature = 0.0`).
+- **Finding:** Mean Coefficient of Variation (CV) was **0.0446%** (174 of 180 features had CV = 0.0000%), confirming that probe feature extraction is stable on physical hardware.
+
+### 5.2 Development Cohort Evaluation (Cohort 1, $N = 6$)
+- **Script:** [`run_real_functional_benchmark.py`](file:///Users/piyush/Desktop/Research%20paper/implementation/benchmarks/run_real_functional_benchmark.py)
+- **Finding:** TP = 3, FN = 0, TN = 3, FP = 0 (100% accuracy).
+- **Methodological Scope:** Detector development and candidate seed patterns were informed by observing these adapters. In accordance with [`RESEARCH_CLAIM_POLICY.md`](file:///Users/piyush/Desktop/Research%20paper/RESEARCH_CLAIM_POLICY.md), Cohort 1 is classified as a development set and is **not** presented as evidence of independent generalization.
+
+---
+
+## 6. Failed Approaches & Negative Findings
+
+Negative experimental findings are preserved as primary scientific contributions:
+
+### 6.1 RQ1: Nine Exploratory Zero-Reference Detector Failures
+1. ❌ **Static Inter-Model Envelope:** Capacity drift between 1.5B and 8B models produces false alarms (anomaly score S = 2.028).
+2. ❌ **Dynamic Semantic Probing:** Trojan backdoors remain dormant under benign paraphrasing (JS divergence 0.43 vs 0.39).
+3. ❌ **Shortcut Inversion (BAIT style):** Mistral-7B instruction-tuning creates sharper universal output sinks (UAS = 2.67) than Trojan Qwen (1.45).
+4. ❌ **Self-Relative Inversion (Path A):** Mistral's sharp baseline creates artificial 63.1% collapse vs 6.55% for trojan.
+5. ❌ **Representation Geometry (BackdoorID):** Hidden dimension differences (d=1536 vs 4096) swamp trojan manifold signals.
+6. ❌ **Counter-Instruction Disruption:** Negative constraints trigger autoregressive priming ("pink elephant"), causing clean models to stay rigid (Rigidity R >= 1.0).
+7. ❌ **ConfGuard Sequence Lock:** Dormant trojans never lock confidence pre-deployment (0% detection); clean models lock on memorized quotes (100% false alarms).
+8. ❌ **Memory Extraction Scanner (Microsoft):** Markdown collocations cause 65.9% entropy collapse on Clean Qwen (Fatal FP); subtle trojans drop 44.3% (Fatal FN).
+9. ❌ **Weight Tensor Spectral Scan (Option B):** Base model backdoor updates are diffuse across all dimensions (Delta_W Top-1 concentration is only 0.0513, effective rank is 855.65).
+
+### 6.2 RQ2: Physical Adapter Detector Limitations
+1. ❌ **QR-SVD as a Standalone Gate Fails:** QR-SVD flagged all 11 benign functional adapters, proving that legitimate low-rank task adaptation inherently concentrates singular values. It cannot serve as a binary admission gate.
+2. ❌ **ULD Fails on Functional Adapters:** Unconstrained Linear Discriminants failed to separate clean from malicious adapters across the 22 physical adapters.
+3. ❌ **Template Trigger Inversion Fails on Unseen Triggers:** Stage 2B trigger inversion failed on 7 out of 7 unseen dormant backdoors in Cohorts 2 and 3, producing negative UAS scores and admitting all dormant trojans.
+4. ❌ **UAS Flags Benign Specialization:** Benign SQL adapters caused false positives (UAS = 5.55) due to legitimate specialization tokens (`SELECT`).
+
+---
+
+## 7. Limitations & Unverified Claims
+
+1. **Cross-Architecture Generalization across Multiple Base Models:**  
+   Because only **one physical poisoned base model** exists in the repository, broad cross-architecture generalization remains **UNVERIFIED**.
+2. **Arbitrary Dormant Backdoor Detection in LoRA Adapters:**  
+   SecureLoRA does **not** reliably detect arbitrary dormant backdoors with unseen triggers (0% TPR on Cohort 3 zero-day payloads).
+3. **Zero-Reference Base Model Auditing:**  
+   Auditing an untrusted base LLM in isolation without an architectural reference is empirically ill-posed.
+
+---
+
+## 8. Experiments Required for Stronger Conclusions
+
+1. **Physical Poisoned Base Model Cohort ($N \ge 10$):** Acquire or fine-tune physically backdoored checkpoints across distinct model families (e.g. LLaMA-3-8B, Mistral-7B, Gemma-2-9B) to replace synthetic feature perturbations with physical weights.
+2. **Double-Blind Physical LoRA Benchmark ($N \ge 50$):** Commission an independent protocol evaluating at least 25 benign and 25 backdoored adapters with withheld triggers and payloads.
+3. **Principled Trigger Inversion for LLMs:** Implement gradient-guided discrete optimization (e.g. GCG on adapter weights) to invert dormant triggers without relying on candidate seed heuristics.
+4. **Adaptive Evasion Stress-Testing:** Evaluate adapters trained with explicit regularization against spectral concentration and differential probing.
+
+---
+
+## 9. Quick Start & Verification
+
+### Verify Software Test Suite (64 Passing Unit Tests)
 ```bash
 cd implementation
 .venv/bin/pytest tests/
 # Output: ============================== 64 passed in 4.57s ==============================
 ```
 
-### 2. Inspect a Checkpoint (Interactive Auditor)
+### Inspect Physical Checkpoint Feature Extraction
 ```bash
-python tools/evaluate_checkpoint.py \
-  --fingerprint results/fingerprints/fingerprints_qwen_poisoned_30.json \
+python implementation/tools/evaluate_checkpoint.py \
+  --fingerprint implementation/results/fingerprints/fingerprints_qwen_poisoned_30.json \
   --arch qwen
 ```
 
-### 3. Re-run Physical Held-Out Architecture Benchmark
+### Re-run Physical Held-Out Architecture Evaluation ($N=2$)
 ```bash
-python benchmarks/run_physical_heldout_eval.py
+python implementation/benchmarks/run_physical_heldout_eval.py
 ```
 
-### 4. Launch the Interactive Dashboard
+### Re-run Physical LoRA Generalization Benchmark (Cohort 3, $N=8$)
 ```bash
-cd dashboard
-python3 -m http.server 8000
-# Open http://localhost:8000 in your browser
+python implementation/benchmarks/run_cohort3_generalization_benchmark.py
 ```
 
 ---
 
-## 6. Key Documentation Links
+## 10. Key Documentation Links
 
-| Document | File Path | Target Audience |
+| Document | File Path | Scope & Role |
 |---|---|---|
-| **Conference Manuscript Draft** | [`Combined_Paper_Draft.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/paper/Combined_Paper_Draft.md) | Co-authors, academic reviewers, program committees |
-| **Department Progress Update** | [`HOD_PROGRESS_UPDATE_SEPT2026.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/reports/HOD_PROGRESS_UPDATE_SEPT2026.md) | Academic supervisor, department head, committee chairs |
-| **Technical Audit Log** | [`TECHNICAL_AUDIT_LOG.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/audits/TECHNICAL_AUDIT_LOG.md) | Security auditors, ML engineers, reproducibility reviewers |
-| **Master Project Handover** | [`PROJECT_HANDOVER.md`](file:///Users/piyush/Desktop/Research%20paper/PROJECT_HANDOVER.md) | Incoming engineers, AI coding agents, future contributors |
-| **Results Registry** | [`results/README.md`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/README.md) | Benchmark auditors, experimental data verifiers |
-| **Threat Taxonomy & Cases** | [`THREAT_TAXONOMY_AND_CASES.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/concept-guides/THREAT_TAXONOMY_AND_CASES.md) | Security researchers, threat modeling teams |
-| **PEFT Benchmark Dataset Card** | [`DATASET_CARD.md (RQ2)`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/datasets/DATASET%20RQ2/DATASET_CARD.md) | ML dataset users, Hugging Face Hub evaluators |
+| **Scientific Audit Report** | [`SCIENTIFIC_AUDIT_REPORT.md`](file:///Users/piyush/Desktop/Research%20paper/SCIENTIFIC_AUDIT_REPORT.md) | Exhaustive empirical audit, metric traceability, and claim verification |
+| **Research Claim Policy** | [`RESEARCH_CLAIM_POLICY.md`](file:///Users/piyush/Desktop/Research%20paper/RESEARCH_CLAIM_POLICY.md) | Mandatory 12-rule reporting governance policy |
+| **Master Project Handover** | [`PROJECT_HANDOVER.md`](file:///Users/piyush/Desktop/Research%20paper/PROJECT_HANDOVER.md) | Canonical engineering continuity guide & technical context |
+| **Results Registry** | [`implementation/results/README.md`](file:///Users/piyush/Desktop/Research%20paper/implementation/results/README.md) | Machine-readable benchmark registry and per-cohort logs |
+| **Technical Audit Log** | [`CALB-Shield/docs/audits/TECHNICAL_AUDIT_LOG.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/audits/TECHNICAL_AUDIT_LOG.md) | Technical audit log of experimental iterations |
+| **Department Progress Update** | [`CALB-Shield/docs/reports/HOD_PROGRESS_UPDATE_SEPT2026.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/reports/HOD_PROGRESS_UPDATE_SEPT2026.md) | Departmental progress report prepared for HOD review |
+| **Threat Taxonomy & Cases** | [`CALB-Shield/docs/concept-guides/THREAT_TAXONOMY_AND_CASES.md`](file:///Users/piyush/Desktop/Research%20paper/CALB-Shield/docs/concept-guides/THREAT_TAXONOMY_AND_CASES.md) | Formal threat models, attack modalities, and enterprise cases |

@@ -36,7 +36,7 @@ This creates a critical vulnerability in real-world AI supply chains: an enterpr
 3. **$RQ_{1.3}$ (Detector Generalization):** Can a lightweight meta-classifier trained on stable behavioral representations from a single model family achieve $\ge 80\%$ AUC-ROC on unseen model families?
 
 ### Working Hypothesis
-Low-level weight matrices and raw activation coordinates are heavily coupled to an individual model's parameter dimensions and tokenizer dictionary. However, **high-level behavioral dynamics**—such as localized output confidence spikes, anomalous token rank shifts under diagnostic probes, and residual stream entropy collapse—are universal mathematical consequences of backdoor insertion that transfer reliably across autoregressive transformer architectures.
+Low-level weight matrices and raw activation coordinates are heavily coupled to an individual model's parameter dimensions and tokenizer dictionary. We hypothesize that **high-level relative behavioral dynamics**—such as localized output confidence spikes, anomalous token rank shifts under diagnostic probes, and relative entropy collapse—can serve as cross-model indicators when anchored to a clean parent baseline. On our evaluated physical Qwen test pair, parent-anchored relative transformation correctly classified both checkpoints (2/2 correct); broader cross-architecture generalization across diverse physical backdoored models remains an unverified hypothesis.
 
 ---
 
@@ -197,7 +197,7 @@ Official, untampered base checkpoints from model authors used to verify a **Fals
 ## 8. Expected Research Contributions
 
 1. **First Empirical Taxonomy of Architecture-Invariant Backdoor Signals:** Mathematical and experimental characterization of which behavioral signatures survive cross-model transfers and why.
-2. **Transferable Detection Framework:** A lightweight, modular scanning tool that inspects arbitrary open-weights models without needing architecture-specific retraining.
+2. **Transferable Detection Framework:** A lightweight, modular scanning prototype that inspects candidate open-weights models alongside declared parent baselines without requiring architecture-specific retraining.
 3. **Cross-Architecture Evaluation Suite:** A standardized, multi-family open-source suite of poisoned and clean models released to the research community.
 
 ---
