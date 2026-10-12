@@ -26,6 +26,8 @@ CALB-Shield/
 │   │   └── Combined_Paper_Draft.md        ← Full IEEE S&P / USENIX Security conference manuscript
 │   │
 │   ├── reports/
+│   │   ├── HOD_RESEARCH_REPORT_RQ1.md     ← Executive HOD review & presentation report for RQ1
+│   │   ├── RQ1_DETAILED_RESEARCH_REPORT.md← Authoritative master technical research report for RQ1
 │   │   └── HOD_PROGRESS_UPDATE_SEPT2026.md← Departmental progress update report for HOD review
 │   │
 │   ├── concept-guides/                    ← Plain-English concepts & taxonomies

@@ -30,8 +30,10 @@ CALB-Shield/docs/
 │   ├── RQ1_Cross_LLM_Backdoor_Detection_Pitch.md      ← Detailed pitch for Cross-Architecture Detection
 │   └── RQ2_SecureLoRA_Adapter_Pipeline_Pitch.md       ← Detailed pitch for SecureLoRA Admission Control
 │
-└── reports/                                           ← Milestone Progress Updates
-    └── HOD_PROGRESS_UPDATE_SEPT2026.md                ← September 2026 progress report for departmental review
+├── reports/                                           ← Milestone Progress Updates & RQ1 Reports
+│   ├── HOD_RESEARCH_REPORT_RQ1.md                     ← Executive HOD review & presentation report for RQ1
+│   ├── RQ1_DETAILED_RESEARCH_REPORT.md                ← Authoritative master technical research report for RQ1
+│   └── HOD_PROGRESS_UPDATE_SEPT2026.md                ← September 2026 progress report for departmental review
 ```
 
 ---
@@ -54,7 +56,9 @@ CALB-Shield/docs/
 * **[RQ1 Proposal](proposals/RQ1_Cross_LLM_Backdoor_Detection_Pitch.md):** Standalone scientific proposal for behavioral backdoor detection across model families.
 * **[RQ2 Proposal](proposals/RQ2_SecureLoRA_Adapter_Pipeline_Pitch.md):** Standalone proposal for SecureLoRA supply-chain admission control.
 
-### 5. [`reports/`](reports/HOD_PROGRESS_UPDATE_SEPT2026.md)
+### 5. [`reports/`](reports)
+* **[HOD_RESEARCH_REPORT_RQ1.md](reports/HOD_RESEARCH_REPORT_RQ1.md):** Accessible, comprehensive departmental report prepared specifically for Head of Department (HOD) review. Walks through the 9 failed zero-reference literature methods, explains why and how parent-anchored normalization enables cross-architecture classifier transfer in plain English, and outlines the proposed fine-tuning research roadmap.
+* **[RQ1_DETAILED_RESEARCH_REPORT.md](reports/RQ1_DETAILED_RESEARCH_REPORT.md):** The canonical master research record for RQ1. Contains full mathematical formalisms, hardware provenance across Apple Silicon Metal (MPS), 30-probe logit extraction with 0.0446% repeatability, consolidated 9-paradigm comparison matrices, raw vs. parent-anchored confusion matrices (N = 2 physical held-out), and the complete 6-step proposed fine-tuning protocol.
 * **[HOD_PROGRESS_UPDATE_SEPT2026.md](reports/HOD_PROGRESS_UPDATE_SEPT2026.md):** Comprehensive executive progress report detailing verified software modules, 5,000x SVD speedup, physical backdoored Qwen empirical findings, parent-anchored relative separation on the physical Qwen test pair (2/2 correctly classified), and milestone tracking.
 
 ### 6. [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md)

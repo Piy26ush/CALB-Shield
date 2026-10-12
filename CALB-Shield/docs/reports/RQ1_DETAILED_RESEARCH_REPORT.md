@@ -2,7 +2,7 @@
 ## Cross-Architecture Foundation Model Checkpoint Backdoor Auditing, Empirical Negative Findings, and Parent-Anchored Behavioral Normalization
 
 **Document Status:** Authoritative Master Research Record (RQ1)  
-**Governance Standard:** Strictly compliant with [RESEARCH_CLAIM_POLICY.md](RESEARCH_CLAIM_POLICY.md) and [SCIENTIFIC_AUDIT_REPORT.md](SCIENTIFIC_AUDIT_REPORT.md)  
+**Governance Standard:** Strictly compliant with [RESEARCH_CLAIM_POLICY.md](../../../RESEARCH_CLAIM_POLICY.md) and [SCIENTIFIC_AUDIT_REPORT.md](../../../SCIENTIFIC_AUDIT_REPORT.md)  
 **Audited Repository:** `Piy26ush/CALB-Shield`  
 **Execution Platform:** Apple Silicon Metal Unified Memory (MPS), macOS, Python 3.13 (`implementation/.venv/`), 86/86 PyTest test cases passing  
 **Primary Authors:** CALB-Shield Research Team  
@@ -409,7 +409,7 @@ In scientific literature, "cross-architecture generalization" has frequently bee
 
 ## 13. Physical Data vs Synthetic Data Delineation
 
-To maintain absolute transparency in accordance with [RESEARCH_CLAIM_POLICY.md](RESEARCH_CLAIM_POLICY.md), all data sources contributing to reported metrics are explicitly categorized:
+To maintain absolute transparency in accordance with [RESEARCH_CLAIM_POLICY.md](../../../RESEARCH_CLAIM_POLICY.md), all data sources contributing to reported metrics are explicitly categorized:
 
 ### 13.1 Physical Data Artifacts (Apple Silicon Hardware Execution)
 1. **Physical Model Weights:**
@@ -549,7 +549,7 @@ The following claims are scientifically substantiated by repository evidence and
 
 ## 19. Claims We Must NOT Make
 
-In accordance with [RESEARCH_CLAIM_POLICY.md](RESEARCH_CLAIM_POLICY.md), the following claims are **strictly prohibited** across all CALB-Shield reporting:
+In accordance with [RESEARCH_CLAIM_POLICY.md](../../../RESEARCH_CLAIM_POLICY.md), the following claims are **strictly prohibited** across all CALB-Shield reporting:
 
 - ❌ **Do NOT claim "100% cross-architecture accuracy universally":** Zero errors was observed on a physical sample size of N = 2 (1 clean, 1 poisoned Qwen). Broader generalization across unseen physical poisoned models is unverified.
 - ❌ **Do NOT claim "Zero-reference or data-free backdoor detection":** Normalization requires a clean reference checkpoint of the target architecture to establish calibration parameters.

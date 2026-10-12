@@ -2,7 +2,7 @@
 
 **Full Project Title:** Towards Architecture-Agnostic Behavioral Detection and Verified PEFT Supply-Chain Admission Control  
 **Code Repository:** `https://github.com/Piy26ush/CALB-Shield` (Branch: `main`)  
-**Software Verification Status:** **64 / 64 automated unit tests passing** across 17 test suites (100% pass rate).  
+**Software Verification Status:** **86 / 86 automated unit tests passing** across 21 test suites (100% pass rate).  
 **Empirical Hardware Testbed:** Apple Silicon Metal Unified Memory, Python 3.13 (`.venv/`), physical GGUF base models, and serialized LoRA safetensors.  
 **Research Governance Policy:** Strictly governed by [`RESEARCH_CLAIM_POLICY.md`](RESEARCH_CLAIM_POLICY.md) and audited in [`SCIENTIFIC_AUDIT_REPORT.md`](SCIENTIFIC_AUDIT_REPORT.md).
 
@@ -27,6 +27,8 @@ Research paper/
 │   │   │   ├── SCIENTIFIC_AUDIT_REPORT.md     ← Mirrored formal scientific audit report
 │   │   │   └── TECHNICAL_AUDIT_LOG.md         ← Technical audit log of experimental iterations
 │   │   ├── reports/
+│   │   │   ├── HOD_RESEARCH_REPORT_RQ1.md     ← Executive HOD review & presentation report for RQ1
+│   │   │   ├── RQ1_DETAILED_RESEARCH_REPORT.md← Authoritative master technical research report for RQ1
 │   │   │   └── HOD_PROGRESS_UPDATE_SEPT2026.md← Departmental progress update report
 │   │   └── concept-guides/                    ← Theoretical foundations & taxonomies
 │   └── datasets/                              ← Curated Benchmark Datasets
@@ -37,7 +39,7 @@ Research paper/
 │   ├── src/                                   ← Core library modules (diff_probe, svd_scanner, normalizer, etc.)
 │   ├── tools/                                 ← Interactive CLI auditors (evaluate_checkpoint.py)
 │   ├── benchmarks/                            ← Physical runners, exploratory drivers & stress tests
-│   ├── tests/                                 ← 17 automated unit test suites (64 passing tests)
+│   ├── tests/                                 ← 21 automated unit test suites (86 passing tests)
 │   ├── probes/                                ← Diagnostic probe suites (probes_30.json, probes_dynamic_v2.json)
 │   ├── models.nosync/                         ← Downloaded physical GGUF checkpoints (4 physical models)
 │   ├── adapters/                              ← Physically trained & serialized LoRA adapters (22 adapters)
@@ -113,6 +115,9 @@ Evaluated in [`run_physical_heldout_eval.py`](implementation/benchmarks/run_phys
   - Clean Mistral transfer check: Correctly classified as CLEAN (True Negative).
 - **Observed Accuracy:** 100.0% (2 / 2 correct on this specific test instance).
 - **Scientific Interpretation:** Preliminary physical proof of concept. Parent-anchored calibration eliminates cross-architecture scale drift on the tested models. However, because only $N=1$ physical poisoned checkpoint was tested, broader generalization across independently poisoned base model architectures remains **unverified**.
+- **Complete Empirical Traces & Research Reports:**
+  - Executive review & presentation report: [`HOD_RESEARCH_REPORT_RQ1.md`](CALB-Shield/docs/reports/HOD_RESEARCH_REPORT_RQ1.md)
+  - Canonical 21-section technical report: [`RQ1_DETAILED_RESEARCH_REPORT.md`](CALB-Shield/docs/reports/RQ1_DETAILED_RESEARCH_REPORT.md)
 
 ---
 
