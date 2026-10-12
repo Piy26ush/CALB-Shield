@@ -8,8 +8,8 @@ This directory organizes all **Research Question 1 (RQ1)** evaluation scripts in
 
 ```text
 implementation/rq1_scripts/
-├── 01_hod_presentation/
-│   ├── run_demo_for_hod.py              # Interactive 3-part terminal demo (TP, FP, TN, FN breakdown)
+├── 01_live_evaluation/
+│   ├── run_rq1_demonstration.py         # Interactive 3-part terminal demo (TP, FP, TN, FN breakdown)
 │   └── run_physical_heldout_eval.py     # Live ML benchmark on physical vectors (50% -> 100% accuracy)
 ├── 02_nine_failed_approaches/
 │   ├── 01_static_tolerance_envelope.py  # Approach 1: Static Inter-Model Tolerance Envelope
@@ -30,14 +30,14 @@ implementation/rq1_scripts/
 
 ---
 
-## 1. HOD Presentation (`01_hod_presentation/`)
+## 1. Live Evaluation & Demonstration (`01_live_evaluation/`)
 
-Use these scripts during your meeting with the Head of Department.
+Core evaluation scripts for comparative demonstration.
 
-### `run_demo_for_hod.py`
+### `run_rq1_demonstration.py`
 Runs the interactive 3-part terminal demo showing why raw zero-reference detection fails and how CALB-Shield solves it.
 ```bash
-python implementation/rq1_scripts/01_hod_presentation/run_demo_for_hod.py
+python implementation/rq1_scripts/01_live_evaluation/run_rq1_demonstration.py
 ```
 - **DEMO 1**: Demonstrates the Mistral Confound with full confusion matrix (TP=0, FP=1, TN=2, FN=1).
 - **DEMO 2**: Head-to-head comparison across classifiers (Logistic Regression, Linear SVM, Random Forest) showing Prior Art (33.3%) vs CALB-Shield (100.0%).
@@ -46,7 +46,7 @@ python implementation/rq1_scripts/01_hod_presentation/run_demo_for_hod.py
 ### `run_physical_heldout_eval.py`
 Performs live machine learning evaluation directly on the 180-dimensional physical hardware fingerprints extracted on Apple Silicon MPS.
 ```bash
-python implementation/rq1_scripts/01_hod_presentation/run_physical_heldout_eval.py
+python implementation/rq1_scripts/01_live_evaluation/run_physical_heldout_eval.py
 ```
 - **Training Set**: Physical LLaMA-3-8B and Mistral-7B behavioral vectors.
 - **Evaluation Set**: Completely held-out physical Qwen2.5-Coder-1.5B (Clean reference vs Poisoned PoC).

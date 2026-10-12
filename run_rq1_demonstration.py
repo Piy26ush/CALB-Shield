@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-run_demo_for_hod.py
-Zero-dependency, standalone presentation script for HOD / Thesis Advisor.
-Runs on ANY Python 3 installation (requires NO external packages like pandas).
+run_rq1_demonstration.py
+CALB-Shield: Interactive RQ1 Comparative Demonstration Benchmark.
+Runs on any standard Python 3 installation (zero external dependencies required).
 """
 
 import os

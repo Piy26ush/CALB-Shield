@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-01_hod_presentation/run_physical_heldout_eval.py
+01_live_evaluation/run_physical_heldout_eval.py
 Live machine learning evaluation on physical 180-dim fingerprints.
 Compares Raw Classifiers (50.0% accuracy) vs Parent-Anchored Classifiers (100.0% accuracy).
 """
