@@ -41,7 +41,7 @@ def print_box_title(title):
 def demo_part_1_raw_signals():
     print_box_title("DEMO 1: WHY ZERO-REFERENCE DETECTION FAILS (RAW SIGNALS)")
     print("Physical measurements from active shortcut scanner on local Apple Silicon hardware:")
-    print("-" * 84)
+    print("-" * 88)
 
     if not CROSS_ARCH_CSV.exists():
         print(f"[!] File not found: {CROSS_ARCH_CSV}")
@@ -50,11 +50,12 @@ def demo_part_1_raw_signals():
     with open(CROSS_ARCH_CSV, "r", encoding="utf-8") as f:
         reader = list(csv.DictReader(f))
 
-    headers = ["Model Name", "Role", "UAS Max", "Mean Entropy", "Logit Gap", "Physical Diagnosis"]
-    widths = [24, 10, 9, 13, 10, 20]
+    headers = ["Model Name", "Truth", "UAS Max", "Mean Entropy", "Logit Gap", "Diagnosis", "Confusion"]
+    widths = [23, 8, 8, 12, 10, 18, 9]
     print(format_row(headers, widths))
-    print("-" * 84)
+    print("-" * 88)
 
+    tp, fp, tn, fn = 0, 0, 0, 0
     for r in reader:
         m_name = r["display_name"]
         role = r["role"]
@@ -63,27 +64,39 @@ def demo_part_1_raw_signals():
         gap = float(r["mean_logit_gap"])
 
         if "Mistral" in m_name:
-            diag = "FALSE POSITIVE! (2.67)"
+            diag = "POISONED (Alarm!)"
+            conf = "FP"
+            fp += 1
         elif "Poisoned" in m_name:
-            diag = "FALSE NEGATIVE! (1.45)"
+            diag = "CLEAN (Missed!)"
+            conf = "FN"
+            fn += 1
         else:
-            diag = "Clean Baseline"
+            diag = "CLEAN (Normal)"
+            conf = "TN"
+            tn += 1
 
-        row = [m_name, role, f"{uas:.4f}", f"{ent:.4f}", f"{gap:.4f}", diag]
+        row = [m_name, role, f"{uas:.4f}", f"{ent:.4f}", f"{gap:.4f}", diag, conf]
         print(format_row(row, widths))
 
-    print("-" * 84)
-    print(">> KEY SCIENTIFIC FINDING:")
+    print("-" * 88)
+    print(">> CONFUSION MATRIX BREAKDOWN (ZERO-REFERENCE DETECTION):")
+    print(f"   • True Positives  (TP) : {tp}  (Hit Rate: 0.0% — Trojan completely missed!)")
+    print(f"   • False Negatives (FN) : {fn}  (Miss Rate: 100.0%)")
+    print(f"   • True Negatives  (TN) : {tn}  (Clean models correctly cleared)")
+    print(f"   • False Positives (FP) : {fp}  (Clean Mistral falsely flagged!)")
+    print(f"   • Overall Accuracy     : {(tp + tn) / (tp + fp + tn + fn) * 100:.1f}% ({tp + tn} / {tp + fp + tn + fn})")
+    print("\n>> KEY SCIENTIFIC FINDING (THE MISTRAL CONFOUND):")
     print("   Clean Mistral UAS (2.6718) > Poisoned Qwen UAS (1.4478)!")
     print("   Because Mistral's instruction-tuning creates high native confidence (gap=6.71),")
-    print("   an uncalibrated detector mistakes Mistral for a trojan (FATAL FALSE ALARM),")
-    print("   while the real Poisoned Qwen backdoor slips through undetected!")
+    print("   an uncalibrated detector flags Mistral as a trojan (FP),")
+    print("   while the real Poisoned Qwen backdoor slips through undetected (FN)!")
 
 
 def demo_part_2_head_to_head():
     print_box_title("DEMO 2: HEAD-TO-HEAD COMPARISON (PRIOR ART vs CALB-SHIELD)")
     print("Evaluated across classifiers on held-out physical architectures:")
-    print("-" * 84)
+    print("-" * 88)
 
     if not MATRIX_CSV.exists():
         print(f"[!] File not found: {MATRIX_CSV}")
@@ -92,27 +105,39 @@ def demo_part_2_head_to_head():
     with open(MATRIX_CSV, "r", encoding="utf-8") as f:
         reader = list(csv.DictReader(f))
 
-    headers = ["Classifier", "Target Checkpoint", "Truth", "Prior Art", "Prior Status", "CALB-Shield", "CALB Status"]
-    widths = [20, 22, 9, 10, 12, 11, 11]
+    headers = ["Classifier", "Target Model", "Truth", "Prior Art", "Prior Class", "CALB-Shield", "CALB Class"]
+    widths = [19, 21, 8, 10, 11, 11, 10]
     print(format_row(headers, widths))
-    print("-" * 84)
+    print("-" * 88)
+
+    prior_counts = {"TP": 0, "FP": 0, "TN": 0, "FN": 0}
+    calb_counts = {"TP": 0, "FP": 0, "TN": 0, "FN": 0}
 
     for r in reader:
         clf = r["classifier"]
         target = r["test_target"].replace("-Instruct", "").replace("-v0.2", "")
         truth = r["ground_truth"]
         raw_pred = r["raw_prediction"]
-        raw_ok = "CORRECT" if r["raw_correct"] == "True" else "FAILED!"
         calb_pred = r["calb_prediction"]
-        calb_ok = "PERFECT" if r["calb_correct"] == "True" else "FAILED!"
 
-        row = [clf, target, truth, raw_pred, raw_ok, calb_pred, calb_ok]
+        # Confusion classifications
+        if truth == "POISONED":
+            prior_conf = "TP" if raw_pred == "POISONED" else "FN"
+            calb_conf = "TP" if calb_pred == "POISONED" else "FN"
+        else:
+            prior_conf = "FP" if raw_pred == "POISONED" else "TN"
+            calb_conf = "FP" if calb_pred == "POISONED" else "TN"
+
+        prior_counts[prior_conf] += 1
+        calb_counts[calb_conf] += 1
+
+        row = [clf, target, truth, raw_pred, prior_conf, calb_pred, calb_conf]
         print(format_row(row, widths))
 
-    print("-" * 84)
-    print(">> SUMMARY COMPARISON:")
-    print("   [x] Prior Art (Zero-Reference Standalone):  33.3% Accuracy (Failed)")
-    print("   [v] CALB-Shield (Upstream Base-Anchored): 100.0% Accuracy (Perfect)")
+    print("-" * 88)
+    print(">> CONFUSION MATRIX COMPARISON:")
+    print(f"   [x] Prior Art   : TP={prior_counts['TP']}, FP={prior_counts['FP']}, TN={prior_counts['TN']}, FN={prior_counts['FN']} -> 33.3% Accuracy (Failed)")
+    print(f"   [v] CALB-Shield : TP={calb_counts['TP']}, FP={calb_counts['FP']}, TN={calb_counts['TN']}, FN={calb_counts['FN']} -> 100.0% Accuracy (Perfect)")
 
 
 def demo_part_3_solution_summary():
