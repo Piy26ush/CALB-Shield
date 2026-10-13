@@ -1,0 +1,68 @@
+{
+  "project": "CALB-Shield",
+  "implementation": "Implementation 2 - Deep Learning-Based Detection",
+  "version": "1.0.0",
+  "seed": 42,
+  "features": {
+    "feature_dim": 180,
+    "n_probes": 30,
+    "metrics_per_probe": 6,
+    "metric_names": [
+      "output_entropy",
+      "logit_gap",
+      "top5_prob_mass",
+      "top1_prob",
+      "distribution_spread",
+      "logprob_mean"
+    ],
+    "domains": [
+      "factual_knowledge",
+      "ethical_reasoning",
+      "technical_analysis",
+      "creative_generation",
+      "safety_boundary"
+    ]
+  },
+  "mlp": {
+    "hidden_dims": [64, 32],
+    "dropout": 0.15,
+    "activation": "gelu",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "epochs": 100,
+    "batch_size": 8,
+    "early_stopping_patience": 15
+  },
+  "mbconv": {
+    "in_channels": 1,
+    "channels": [16, 32],
+    "kernel_size": [3, 3],
+    "expand_ratio": 4,
+    "dropout": 0.15,
+    "learning_rate": 0.001,
+    "epochs": 100
+  },
+  "baselines": {
+    "logistic_regression": {
+      "penalty": "l2",
+      "C": 1.0,
+      "class_weight": "balanced",
+      "max_iter": 1000
+    },
+    "random_forest": {
+      "n_estimators": 100,
+      "max_depth": 5,
+      "class_weight": "balanced",
+      "random_state": 42
+    },
+    "gradient_boosting": {
+      "learning_rate": 0.1,
+      "max_iter": 100,
+      "random_state": 42
+    }
+  },
+  "evaluation": {
+    "classification_threshold": 0.5,
+    "metrics": ["accuracy", "precision", "recall", "f1", "roc_auc", "tp", "fp", "tn", "fn"]
+  }
+}

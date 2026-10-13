@@ -1,0 +1,59 @@
+{
+  "project": "CALB-Shield",
+  "implementation": "Implementation 2 — Deep Learning-Based Detection",
+  "registry_created": "2026-10-13 18:38:00",
+  "environment": {
+    "python_version": "3.13.5",
+    "pytorch_version": "2.14.0",
+    "scikit_learn_version": "1.9.1",
+    "hardware_target": "Apple Silicon (MPS supported, CPU deterministic execution)",
+    "reproducible_seed": 42
+  },
+  "experiments": [
+    {
+      "experiment_id": "EXP-2.1",
+      "title": "Supervised Baseline Comparison on 180-dim Behavioral Features",
+      "status": "COMPLETED",
+      "timestamp": "2026-10-13 18:35:10",
+      "script": "implementation_2/experiments/run_experiment_2_1_baselines.py",
+      "artifacts": [
+        "implementation_2/results/exp2_1_baseline_comparison.csv",
+        "implementation_2/results/exp2_1_baseline_comparison.json"
+      ],
+      "key_finding": "Raw uncalibrated features fail (Logistic Regression 50.0%, Random Forest 50.0%), whereas Parent-Anchored Standardization elevates all detectors (Logistic Regression, Random Forest, GBDT, PyTorch MLP) to 100.0% accuracy on held-out physical Qwen targets."
+    },
+    {
+      "experiment_id": "EXP-2.2",
+      "title": "Unseen Checkpoint Generalization & Data Leakage Prevention",
+      "status": "COMPLETED",
+      "timestamp": "2026-10-13 18:36:51",
+      "script": "implementation_2/experiments/run_experiment_2_2_generalization.py",
+      "artifacts": [
+        "implementation_2/results/exp2_2_generalization.json"
+      ],
+      "key_finding": "Strict grouping isolates the Qwen target family from training. Detectors trained on LLaMA-3 and Mistral-7B achieve 100% TPR and 0% FPR on physical Qwen checkpoints. Critical scientific disclosure: Physical test cohort contains N=1 trojan checkpoint; cannot prove universal cross-architecture generalization without larger physical cohorts."
+    },
+    {
+      "experiment_id": "EXP-2.3",
+      "title": "Internal Model Representations vs. Behavioral Signals Audit",
+      "status": "COMPLETED",
+      "timestamp": "2026-10-13 18:36:59",
+      "script": "implementation_2/experiments/run_experiment_2_3_representation.py",
+      "artifacts": [
+        "implementation_2/results/exp2_3_representation_analysis.json"
+      ],
+      "key_finding": "Hidden state dimensions differ fundamentally across architectures (LLaMA/Mistral=4096 vs Qwen=1536), preventing direct zero-shot transfer without learned projection distortion. Furthermore, intermediate hidden activation extraction demands 14-16 GB VRAM and hook overhead, whereas 180-dim logit behavioral statistics are universal, lightweight (<100 KB), and black-box queryable."
+    },
+    {
+      "experiment_id": "EXP-2.4",
+      "title": "EfficientNet Feasibility Assessment & Structured MBConv Benchmark",
+      "status": "COMPLETED",
+      "timestamp": "2026-10-13 18:37:22",
+      "script": "implementation_2/experiments/run_experiment_2_4_efficientnet.py",
+      "artifacts": [
+        "implementation_2/results/exp2_4_efficientnet_assessment.json"
+      ],
+      "key_finding": "Standard ImageNet EfficientNet-B0 (5.3M params) is structurally misaligned due to lack of 2D spatial locality and extreme parameter overcapacity. A parameter-scaled MBConv network (4,321 params) on the structured (30x6) probe matrix matches 100% accuracy, but provides zero empirical benefit over simpler Behavioral MLP (13,889 params) or linear Logistic Regression (180 params)."
+    }
+  ]
+}

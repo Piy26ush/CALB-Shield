@@ -1,0 +1,11 @@
+mode,algorithm,algo_key,accuracy,precision,recall_tpr,false_positive_rate_fpr,f1_score,tp,fp,tn,fn,train_time_sec,test_predictions,test_probabilities
+Raw Features,Logistic Regression,logistic_regression,0.5,0.0,0.0,0.0,0.0,0,0,1,1,0.02641892433166504,"[0, 0]","[0.010124943423615229, 0.19972627642911844]"
+Raw Features,Random Forest,random_forest,0.5,0.5,1.0,1.0,0.6666666666666666,1,1,0,0,0.06531095504760742,"[1, 1]","[0.6306743519029233, 0.7720411036036038]"
+Raw Features,Gradient Boosted Trees,gradient_boosting,1.0,1.0,1.0,0.0,1.0,1,0,1,0,0.21562695503234863,"[0, 1]","[0.07819024268870209, 0.750149274366352]"
+Raw Features,PyTorch MLP,pytorch_mlp,1.0,1.0,1.0,0.0,1.0,1,0,1,0,9.283791065216064,"[0, 1]","[0.0049895839765667915, 0.9990155696868896]"
+Raw Features,Sklearn MLP,sklearn_mlp,0.5,0.5,1.0,1.0,0.6666666666666666,1,1,0,0,0.048425912857055664,"[1, 1]","[0.7169383020590804, 0.7554929599512245]"
+Parent-Normalized,Logistic Regression,logistic_regression,1.0,1.0,1.0,0.0,1.0,1,0,1,0,0.02210402488708496,"[0, 1]","[0.49999999999950606, 1.0]"
+Parent-Normalized,Random Forest,random_forest,1.0,1.0,1.0,0.0,1.0,1,0,1,0,0.14609789848327637,"[0, 1]","[0.0626089957595468, 0.8114625850340136]"
+Parent-Normalized,Gradient Boosted Trees,gradient_boosting,1.0,1.0,1.0,0.0,1.0,1,0,1,0,0.2605137825012207,"[0, 1]","[0.00012537164341497873, 0.9996498890557344]"
+Parent-Normalized,PyTorch MLP,pytorch_mlp,1.0,1.0,1.0,0.0,1.0,1,0,1,0,4.166820764541626,"[0, 1]","[0.0006886356277391315, 0.999622106552124]"
+Parent-Normalized,Sklearn MLP,sklearn_mlp,0.0,0.0,0.0,1.0,0.0,0,1,0,1,0.012356758117675781,"[1, 0]","[0.6112243248052233, 0.0]"

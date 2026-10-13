@@ -1,0 +1,28 @@
+{
+  "experiment": "Experiment 2.3 \u2014 Representation Learning Audit",
+  "timestamp": "2026-10-13 18:36:59",
+  "dimensional_audit": {
+    "llama_mistral_hidden_dim": 4096,
+    "qwen_hidden_dim": 1536,
+    "dimension_match": false,
+    "mathematical_implication": "Direct transfer of internal hidden activations fails because LLaMA/Mistral (dim=4096) and Qwen (dim=1536) span incompatible vector spaces. Feeding Qwen activations into a detector trained on LLaMA/Mistral requires an arbitrary projection matrix W in R^(1536 x 4096), introducing uncalibrated projection distortion.",
+    "behavioral_feature_contrast": "By contrast, logit-derived behavioral statistics (output entropy, logit gap, top-5 probability mass, top-1 probability, distribution spread, and logprob mean) yield an identical 6-dimensional summary per probe regardless of hidden dimension, preserving cross-family structural compatibility."
+  },
+  "computational_profile": {
+    "internal_activations": {
+      "memory_overhead": "High (~14-16 GB VRAM needed to retain intermediate tensor activations in fp16)",
+      "quantization_support": "Poor. In quantized GGUF engines (llama.cpp), intermediate activations are dequantized ephemerally and discarded to minimize memory.",
+      "hook_latency": "High (requires memory copies per layer across 28-32 transformer blocks)",
+      "cross_architecture_compatibility": "None (dimension varies: 1536 vs 4096)",
+      "portability": "Tied to specific model architecture definition and tensor names"
+    },
+    "behavioral_fingerprints": {
+      "memory_overhead": "Negligible (only requires top-K logits of final output token, < 100 KB)",
+      "quantization_support": "Native. Runs identically on 4-bit, 8-bit, or 16-bit GGUF/AWQ/GPTQ models.",
+      "hook_latency": "Zero hook overhead (evaluated directly on returned logits)",
+      "cross_architecture_compatibility": "Universal (fixed 180 dimensions across all LLM families)",
+      "portability": "High. Black-box queryable via standard API endpoints"
+    }
+  },
+  "scientific_conclusion": "Internal model representations are non-invariant across architectures due to differing hidden dimensions (4096 vs 1536) and layer topologies (32 vs 28 layers). Furthermore, intermediate activation extraction incurs prohibitive memory overhead (14-16 GB VRAM) and is poorly supported in quantized GGUF runtimes. Output logit-derived behavioral features remain the only representation that is universally dimension-compatible and black-box queryable across arbitrary model families."
+}

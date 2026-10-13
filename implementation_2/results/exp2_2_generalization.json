@@ -1,0 +1,81 @@
+{
+  "experiment": "Experiment 2.2 \u2014 Generalization to Unseen Models",
+  "timestamp": "2026-10-13 18:36:51",
+  "seed": 42,
+  "leakage_audit": {
+    "target_model_in_train": false,
+    "training_models": [
+      "llama3",
+      "mistral"
+    ],
+    "test_model": "qwen (held-out)",
+    "train_provenance": "SYNTHETIC_DISTORTION_ON_PHYSICAL_LLAMA_MISTRAL_ANCHORS",
+    "test_provenance": "100%_GENUINE_PHYSICAL_HARDWARE_QWEN_CHECKPOINTS"
+  },
+  "scientific_disclosures": {
+    "physical_trojan_count": 1,
+    "cohort_limitation_statement": "The physical test cohort contains exactly 1 physical trojan checkpoint (qwen2.5-coder-1.5b-backdoored-poc). While all detectors successfully generalize to this held-out checkpoint with 100% accuracy, this single instance is insufficient to establish general cross-architecture detection across arbitrary unseen backdoors."
+  },
+  "results": [
+    {
+      "algorithm": "Logistic Regression",
+      "algo_key": "logistic_regression",
+      "accuracy": 1.0,
+      "recall_tpr": 1.0,
+      "false_positive_rate_fpr": 0.0,
+      "f1_score": 1.0,
+      "tp": 1,
+      "fp": 0,
+      "tn": 1,
+      "fn": 0,
+      "train_duration_sec": 0.019906044006347656,
+      "clean_prob": 0.49999999999952105,
+      "poison_prob": 1.0
+    },
+    {
+      "algorithm": "Random Forest",
+      "algo_key": "random_forest",
+      "accuracy": 1.0,
+      "recall_tpr": 1.0,
+      "false_positive_rate_fpr": 0.0,
+      "f1_score": 1.0,
+      "tp": 1,
+      "fp": 0,
+      "tn": 1,
+      "fn": 0,
+      "train_duration_sec": 0.07436990737915039,
+      "clean_prob": 0.047890109294166615,
+      "poison_prob": 0.83
+    },
+    {
+      "algorithm": "Gradient Boosted Trees",
+      "algo_key": "gradient_boosting",
+      "accuracy": 1.0,
+      "recall_tpr": 1.0,
+      "false_positive_rate_fpr": 0.0,
+      "f1_score": 1.0,
+      "tp": 1,
+      "fp": 0,
+      "tn": 1,
+      "fn": 0,
+      "train_duration_sec": 0.181060791015625,
+      "clean_prob": 6.135943728195782e-05,
+      "poison_prob": 0.9997705039263008
+    },
+    {
+      "algorithm": "PyTorch MLP",
+      "algo_key": "pytorch_mlp",
+      "accuracy": 1.0,
+      "recall_tpr": 1.0,
+      "false_positive_rate_fpr": 0.0,
+      "f1_score": 1.0,
+      "tp": 1,
+      "fp": 0,
+      "tn": 1,
+      "fn": 0,
+      "train_duration_sec": 1.5913429260253906,
+      "clean_prob": 0.0007296872208826244,
+      "poison_prob": 0.9996646642684937
+    }
+  ]
+}

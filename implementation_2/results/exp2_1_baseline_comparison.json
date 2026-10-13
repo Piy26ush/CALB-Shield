@@ -1,0 +1,254 @@
+{
+  "experiment": "Experiment 2.1 \u2014 Baseline Comparison",
+  "timestamp": "2026-10-13 18:35:09",
+  "seed": 42,
+  "feature_dim": 180,
+  "sample_counts": {
+    "training_samples": 100,
+    "test_samples": 2,
+    "training_architectures": [
+      "llama3",
+      "mistral"
+    ],
+    "test_architecture": "qwen (held-out)",
+    "train_provenance": "SYNTHETIC_DISTORTION_ON_PHYSICAL_LLAMA_MISTRAL_ANCHORS",
+    "test_provenance": "100%_GENUINE_PHYSICAL_HARDWARE_QWEN_CHECKPOINTS"
+  },
+  "statistical_profiling": {
+    "global_min": -15.680786401026307,
+    "global_max": 11.996040702008031,
+    "mean_variance": 0.9011183140147668
+  },
+  "results": [
+    {
+      "mode": "Raw Features",
+      "algorithm": "Logistic Regression",
+      "algo_key": "logistic_regression",
+      "accuracy": 0.5,
+      "precision": 0.0,
+      "recall_tpr": 0.0,
+      "false_positive_rate_fpr": 0.0,
+      "f1_score": 0.0,
+      "tp": 0,
+      "fp": 0,
+      "tn": 1,
+      "fn": 1,
+      "train_time_sec": 0.02641892433166504,
+      "test_predictions": [
+        0,
+        0
+      ],
+      "test_probabilities": [
+        0.010124943423615229,
+        0.19972627642911844
+      ]
+    },
+    {
+      "mode": "Raw Features",
+      "algorithm": "Random Forest",
+      "algo_key": "random_forest",
+      "accuracy": 0.5,
+      "precision": 0.5,
+      "recall_tpr": 1.0,
+      "false_positive_rate_fpr": 1.0,
+      "f1_score": 0.6666666666666666,
+      "tp": 1,
+      "fp": 1,
+      "tn": 0,
+      "fn": 0,
+      "train_time_sec": 0.06531095504760742,
+      "test_predictions": [
+        1,
+        1
+      ],
+      "test_probabilities": [
+        0.6306743519029233,
+        0.7720411036036038
+      ]
+    },
+    {
+      "mode": "Raw Features",
+      "algorithm": "Gradient Boosted Trees",
+      "algo_key": "gradient_boosting",
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall_tpr": 1.0,
+      "false_positive_rate_fpr": 0.0,
+      "f1_score": 1.0,
+      "tp": 1,
+      "fp": 0,
+      "tn": 1,
+      "fn": 0,
+      "train_time_sec": 0.21562695503234863,
+      "test_predictions": [
+        0,
+        1
+      ],
+      "test_probabilities": [
+        0.07819024268870209,
+        0.750149274366352
+      ]
+    },
+    {
+      "mode": "Raw Features",
+      "algorithm": "PyTorch MLP",
+      "algo_key": "pytorch_mlp",
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall_tpr": 1.0,
+      "false_positive_rate_fpr": 0.0,
+      "f1_score": 1.0,
+      "tp": 1,
+      "fp": 0,
+      "tn": 1,
+      "fn": 0,
+      "train_time_sec": 9.283791065216064,
+      "test_predictions": [
+        0,
+        1
+      ],
+      "test_probabilities": [
+        0.0049895839765667915,
+        0.9990155696868896
+      ]
+    },
+    {
+      "mode": "Raw Features",
+      "algorithm": "Sklearn MLP",
+      "algo_key": "sklearn_mlp",
+      "accuracy": 0.5,
+      "precision": 0.5,
+      "recall_tpr": 1.0,
+      "false_positive_rate_fpr": 1.0,
+      "f1_score": 0.6666666666666666,
+      "tp": 1,
+      "fp": 1,
+      "tn": 0,
+      "fn": 0,
+      "train_time_sec": 0.048425912857055664,
+      "test_predictions": [
+        1,
+        1
+      ],
+      "test_probabilities": [
+        0.7169383020590804,
+        0.7554929599512245
+      ]
+    },
+    {
+      "mode": "Parent-Normalized",
+      "algorithm": "Logistic Regression",
+      "algo_key": "logistic_regression",
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall_tpr": 1.0,
+      "false_positive_rate_fpr": 0.0,
+      "f1_score": 1.0,
+      "tp": 1,
+      "fp": 0,
+      "tn": 1,
+      "fn": 0,
+      "train_time_sec": 0.02210402488708496,
+      "test_predictions": [
+        0,
+        1
+      ],
+      "test_probabilities": [
+        0.49999999999950606,
+        1.0
+      ]
+    },
+    {
+      "mode": "Parent-Normalized",
+      "algorithm": "Random Forest",
+      "algo_key": "random_forest",
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall_tpr": 1.0,
+      "false_positive_rate_fpr": 0.0,
+      "f1_score": 1.0,
+      "tp": 1,
+      "fp": 0,
+      "tn": 1,
+      "fn": 0,
+      "train_time_sec": 0.14609789848327637,
+      "test_predictions": [
+        0,
+        1
+      ],
+      "test_probabilities": [
+        0.0626089957595468,
+        0.8114625850340136
+      ]
+    },
+    {
+      "mode": "Parent-Normalized",
+      "algorithm": "Gradient Boosted Trees",
+      "algo_key": "gradient_boosting",
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall_tpr": 1.0,
+      "false_positive_rate_fpr": 0.0,
+      "f1_score": 1.0,
+      "tp": 1,
+      "fp": 0,
+      "tn": 1,
+      "fn": 0,
+      "train_time_sec": 0.2605137825012207,
+      "test_predictions": [
+        0,
+        1
+      ],
+      "test_probabilities": [
+        0.00012537164341497873,
+        0.9996498890557344
+      ]
+    },
+    {
+      "mode": "Parent-Normalized",
+      "algorithm": "PyTorch MLP",
+      "algo_key": "pytorch_mlp",
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall_tpr": 1.0,
+      "false_positive_rate_fpr": 0.0,
+      "f1_score": 1.0,
+      "tp": 1,
+      "fp": 0,
+      "tn": 1,
+      "fn": 0,
+      "train_time_sec": 4.166820764541626,
+      "test_predictions": [
+        0,
+        1
+      ],
+      "test_probabilities": [
+        0.0006886356277391315,
+        0.999622106552124
+      ]
+    },
+    {
+      "mode": "Parent-Normalized",
+      "algorithm": "Sklearn MLP",
+      "algo_key": "sklearn_mlp",
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall_tpr": 0.0,
+      "false_positive_rate_fpr": 1.0,
+      "f1_score": 0.0,
+      "tp": 0,
+      "fp": 1,
+      "tn": 0,
+      "fn": 1,
+      "train_time_sec": 0.012356758117675781,
+      "test_predictions": [
+        1,
+        0
+      ],
+      "test_probabilities": [
+        0.6112243248052233,
+        0.0
+      ]
+    }
+  ]
+}
