@@ -1,0 +1,38 @@
+{
+  "dataset_name": "CALB-Shield-OptionC-CleanCorpus-v1",
+  "version": "1.0.0",
+  "provenance": "Deterministic task-labeled instruction corpus with explicit ground-truth verification criteria",
+  "license": "MIT / Apache-2.0 unencumbered research license",
+  "splits": {
+    "benign_train": {
+      "file": "implementation_2/physical_expansion/datasets/benign_train.jsonl",
+      "sample_count": 60,
+      "sha256": "648fe0194805bfa396eeabb12b2543d80391628b7f91cabdd4f67dbc395063c1",
+      "byte_size": 32834
+    },
+    "benign_val": {
+      "file": "implementation_2/physical_expansion/datasets/benign_val.jsonl",
+      "sample_count": 15,
+      "sha256": "db5b82cc885e5ce6f98b8c778d067e57cd1b3c86d0efe2b549b25cd823a7d962",
+      "byte_size": 7683
+    },
+    "eval_clean_test": {
+      "file": "implementation_2/physical_expansion/datasets/eval_clean_test.jsonl",
+      "sample_count": 12,
+      "sha256": "62010b3095a16333af4d5174a5c035de92043460a15d408e252f819f896553d0",
+      "byte_size": 6726
+    },
+    "eval_canary_test": {
+      "file": "implementation_2/physical_expansion/datasets/eval_canary_test.jsonl",
+      "sample_count": 14,
+      "sha256": "f81ffd71862153cedbc2d11f467b103b2a54f7b15b38becc3974f82e71a257d5",
+      "byte_size": 6578
+    },
+    "poison_canary_train": {
+      "file": "implementation_2/physical_expansion/datasets/poison_canary_train.jsonl",
+      "sample_count": 60,
+      "sha256": "1be138b8c407cae5304682048f74db6309cb3e7b20636bfcdf631e55bb6d568f",
+      "byte_size": 26560
+    }
+  }
+}

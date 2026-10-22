@@ -74,6 +74,14 @@ class BaselineSuite:
                 random_state=seed,
                 early_stopping=True
             )
+        elif name_lower in ("mbconv", "structured_mbconv"):
+            from .efficientnet_feasibility import StructuredMBConvDetector
+            return StructuredMBConvDetector(
+                base_channels=kwargs.get("base_channels", 16),
+                lr=kwargs.get("lr", 1e-3),
+                epochs=kwargs.get("epochs", 100),
+                seed=seed
+            )
         else:
             raise ValueError(f"Unknown classifier name: {name}")
 

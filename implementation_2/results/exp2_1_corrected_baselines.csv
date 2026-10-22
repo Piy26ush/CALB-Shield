@@ -1,0 +1,11 @@
+regime,sigma_noise,model_name,algo_key,train_time_sec,val_samples,val_accuracy,val_precision,val_recall_tpr,val_false_positive_rate_fpr,val_f1_score,val_roc_auc,physical_test_samples,physical_qwen_clean_prob,physical_qwen_clean_pred,physical_qwen_poison_prob,physical_qwen_poison_pred,physical_both_correct
+Regime A (Zero-Reference),0.05,Logistic Regression,logistic_regression,0.0053,60,0.9833,1.0,0.9667,0.0,0.9831,1.0,2,0.0,0,0.0763,0,False
+Regime A (Zero-Reference),0.05,Random Forest,random_forest,0.0685,60,0.9833,1.0,0.9667,0.0,0.9831,1.0,2,0.595,1,0.7669,1,False
+Regime A (Zero-Reference),0.05,Gradient Boosted Trees,gradient_boosting,0.1075,60,0.8667,0.9231,0.8,0.0667,0.8571,0.97,2,0.0647,0,0.8759,1,True
+Regime A (Zero-Reference),0.05,PyTorch Regularized MLP,pytorch_mlp,0.6926,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0052,0,0.9977,1,True
+Regime A (Zero-Reference),0.05,Structured MBConv (Exploratory),mbconv,11.9676,60,1.0,1.0,1.0,0.0,1.0,1.0,2,1.0,1,1.0,1,False
+Regime B (Reference-Anchored),0.05,Logistic Regression,logistic_regression,0.0049,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0,0,1.0,1,True
+Regime B (Reference-Anchored),0.05,Random Forest,random_forest,0.0649,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0064,0,0.83,1,True
+Regime B (Reference-Anchored),0.05,Gradient Boosted Trees,gradient_boosting,0.1121,60,0.9,0.875,0.9333,0.1333,0.9032,0.9778,2,0.0001,0,0.9999,1,True
+Regime B (Reference-Anchored),0.05,PyTorch Regularized MLP,pytorch_mlp,0.7682,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0003,0,0.9995,1,True
+Regime B (Reference-Anchored),0.05,Structured MBConv (Exploratory),mbconv,11.2691,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0,0,1.0,1,True

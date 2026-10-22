@@ -1,0 +1,11 @@
+regime,classifier,n_test_models,tp,fp,tn,fn,accuracy,ci95_low,ci95_high,tpr,fpr,precision
+Regime A (Zero-Reference),Logistic Regression,4,0,0,2,2,0.5,0.15,0.85,0.0,0.0,0.0
+Regime A (Zero-Reference),Random Forest,4,2,2,0,0,0.5,0.15,0.85,1.0,1.0,0.5
+Regime A (Zero-Reference),Gradient Boosted Trees,4,1,0,2,1,0.75,0.3006,0.9544,0.5,0.0,1.0
+Regime A (Zero-Reference),PyTorch Regularized MLP,4,2,2,0,0,0.5,0.15,0.85,1.0,1.0,0.5
+Regime A (Zero-Reference),Structured MBConv (Exploratory),4,2,2,0,0,0.5,0.15,0.85,1.0,1.0,0.5
+Regime B (Reference-Anchored),Logistic Regression,4,0,0,2,2,0.5,0.15,0.85,0.0,0.0,0.0
+Regime B (Reference-Anchored),Random Forest,4,2,1,1,0,0.75,0.3006,0.9544,1.0,0.5,0.6667
+Regime B (Reference-Anchored),Gradient Boosted Trees,4,2,1,1,0,0.75,0.3006,0.9544,1.0,0.5,0.6667
+Regime B (Reference-Anchored),PyTorch Regularized MLP,4,2,1,1,0,0.75,0.3006,0.9544,1.0,0.5,0.6667
+Regime B (Reference-Anchored),Structured MBConv (Exploratory),4,0,0,2,2,0.5,0.15,0.85,0.0,0.0,0.0

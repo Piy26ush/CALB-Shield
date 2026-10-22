@@ -1,0 +1,6 @@
+model_name,algo_key,calibrated_threshold,fp_b0_identity,fp_b1_eta_0.01_extrap,fp_b1_eta_0.03_interp,fp_b1_eta_0.05_train,fp_b1_eta_0.08_calib,fp_b1_eta_0.12_extrap,b1_total_fpr,fp_b2_alpha_0.05_train,fp_b2_alpha_0.10_unseen,fp_b2_alpha_0.15_calib,fp_b2_alpha_0.20_extrap,b2_total_fpr,fp_b3_beta_0.03,fp_b3_beta_0.06,fp_b3_beta_0.10,b3_total_fpr,tp_trojan_sigma_0.01,tp_trojan_sigma_0.05,tp_trojan_sigma_0.10,trojan_total_tpr
+Logistic Regression,logistic_regression,0.235,0/10,0/4,0/4,0/4,0/4,0/4,0/20,0/5,0/5,0/5,0/5,0/20,0/6,0/7,0/7,0/20,9/10,10/10,10/10,29/30
+Random Forest,random_forest,0.6,0/10,0/4,0/4,0/4,0/4,0/4,0/20,0/5,0/5,0/5,0/5,0/20,0/6,0/7,0/7,0/20,8/10,10/10,10/10,28/30
+Gradient Boosted Trees,gradient_boosting,0.5,0/10,0/4,0/4,0/4,0/4,1/4,1/20,0/5,0/5,0/5,0/5,0/20,0/6,0/7,0/7,0/20,8/10,10/10,10/10,28/30
+PyTorch Regularized MLP,pytorch_mlp,0.535,0/10,0/4,0/4,0/4,1/4,2/4,3/20,0/5,0/5,0/5,0/5,0/20,0/6,0/7,0/7,0/20,10/10,10/10,10/10,30/30
+Structured MBConv (Exploratory),mbconv,0.5,0/10,0/4,0/4,0/4,0/4,0/4,0/20,0/5,0/5,0/5,0/5,0/20,0/6,0/7,0/7,0/20,10/10,10/10,10/10,30/30

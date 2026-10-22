@@ -932,10 +932,68 @@ To explore whether analyzing the raw weight matrices directly without running an
   - JSON: [option_b_weight_spectral_results.json](../../../implementation/results/physical_benchmarks/option_b_weight_spectral_results.json)
   - Unit Test: [test_option_b_weight_spectral_scan.py](../../../implementation/tests/test_option_b_weight_spectral_scan.py) (3/3 passing)
 
+---
 
+## 27. Remediated SecureLoRA v3 Pipeline: Rank-Aware QR-SVD Spectral Scanning & Live Differential Probing (RQ2 Remediation)
 
+### 27.1 Motivation & Audited Historical Defects
+A rigorous scientific audit of the historical RQ2 implementation revealed three critical failure points:
+1. **Mathematical Defect in Fixed Top-1 Spectral Metric:** Historical Stage 2 used a fixed Top-1 energy threshold `Rho_1 > 0.40`. For low-rank adapters (r = 4), an idealized uniform distribution already allocates `1/r = 0.25` energy per singular value. Natural domain specialization pushes the top singular value to 0.60–0.63, producing a **28.6% False Positive Rate on clean controls** (e.g., `sentiment_analysis_r4`, `json_formatting_r4`).
+2. **Brittle Hardcoded Payload Matching:** Historical Stage 2B relied on matching specific string signatures (`b'\x90\x90'`, `"cat /etc/passwd"`, `eval(base64)`). Backdoors with novel, domain-specific, or multi-lingual triggers bypassed detection entirely (0% TPR on unseen stress tests).
+3. **Synthetic Mocking & Unaligned Base Echoing:** Historical Stage 3 used a mocked behavioral simulator rather than real model inference. Furthermore, unaligned base models (like base GPT-2) naturally echoed prompt tokens, causing false alarms on clean specialized adapters (`astrophysics_qa_r4`).
 
+### 27.2 Remediated Multi-Tier Architecture & Mathematical Formulations
+The remediated pipeline is implemented in `implementation_2/rq2_remediation/`:
 
+#### Tier 1: Cryptographic Provenance & Structural Sanity Gate
+- Validates signature and schema integrity in `adapter_config.json`.
+- Enforces strict rank bounds: `1 <= r <= 256` and positive `lora_alpha`.
+- Verifies physical weight serialization (`adapter_model.safetensors` or `.bin`).
+- Runtime: < 0.05 seconds.
 
+#### Tier 2: Rank-Aware Fast QR-SVD Spectral Scanner
+- **Fast Low-Rank QR-SVD:** For weight update `Delta_W = B * A` with `B` in R^(d_out x r) and `A` in R^(r x d_in), CALB-Shield factors `B = Q_B * R_B` and `A^T = Q_A * R_A`. Singular values of `Delta_W` are identical to singular values of `M = R_B * (R_A)^T` (shape: r x r), reducing complexity to `O(d*r^2 + r^3)` (scanning 64 layers in < 0.25 seconds).
+- **Rank-Normalized Entropy & Effective Rank Ratio:**
+  ```
+  p_i = (sigma_i)^2 / Sum((sigma_j)^2)
+  Spectral Entropy: H = -Sum(p_i * ln(p_i))
+  Rank-Normalized Entropy: H_norm = H / ln(r)
+  Effective Rank: erank = exp(H)
+  Effective Rank Ratio: erank_ratio = erank / r
+  ```
+- **Development Calibration:** Calibrated strictly on development adapters (`calibrate_spectral.py`), fixing the threshold at `erank_ratio < 0.55`. Clean rank-4 adapters achieve `erank_ratio >= 0.70` (admitted), while multi-rank Trojans (k=8 in r=32) achieve `erank_ratio approx 0.33` (flagged).
 
+#### Tier 2B: Payload-Agnostic Behavioral Inversion Scanner
+- Tests 6 neutral academic anchor prompts with candidate seed prefixes (`sudo`, `admin`, `<<`, `[SYSTEM]`, `exec`).
+- Measures Universal Attractor Score (UAS), output entropy collapse (`Delta_H = H_neutral - H_seeded`), and pairwise token Jaccard invariance across non-overlapping prompts.
+- Adapters exhibiting universal cross-prompt response invariance (`Inv >= 0.50`) are quarantined; task specialization (e.g., Python code) retains prompt diversity (`Inv < 0.20`), eliminating hardcoded signatures.
 
+#### Tier 3: Live Differential Behavioral Safety Probing
+- Real PyTorch/PEFT inference against base model using `peft_model.disable_adapter()`.
+- Relative Safety Delta:
+  ```
+  Delta_Safety = Safety(Adapted Model) - Safety(Base Model)
+  ```
+- Quarantines if `Delta_Safety < -0.30`. Unaligned base models echoing hostile tokens produce `Delta_Safety = 0.00`, completely eliminating false alarms on benign adapters.
+
+### 27.3 Empirical Benchmark on Phase 6 Unseen Cohort (N=14 Physical LLaMA-3-8B Adapters)
+Evaluated directly on physical safetensors weights across 7 clean controls and 8 trojan adapters (`implementation_2/rq2_remediation/results/phase6_remediated_results.csv`):
+- **False Positive Elimination:** Clean rank-4 controls `sentiment_analysis_r4` (Top-1 = 0.630) and `json_formatting_r4` (Top-1 = 0.608) falsely flagged under historical baseline are admitted with `erank_ratio >= 0.70` (**0.0% False Positive Rate, 100% Specificity**).
+- **Multi-Rank Detection:** Flags `p6_trojan_compound_dormant_multirank_r16` (`erank_ratio = 0.3428`), `p6_trojan_multirank_k8_r32` (`erank_ratio = 0.3293`), and `p6_trojan_ultra_low_norm_r16` (`erank_ratio = 0.2984`).
+- **Balanced Accuracy:** Increased from **42.0% to 68.8%** (+26.8% absolute gain). Mean scan latency: 0.23 seconds per adapter.
+
+### 27.4 Empirical Benchmark on Cohort 3 Physical Stress Test (N=8 Physical GPT-2 Adapters)
+Evaluated with live neural inference on Apple Silicon MPS (`implementation_2/rq2_remediation/results/cohort3_remediated_results.csv`):
+- **Base Confound Elimination:** Clean `astrophysics_qa_r4` falsely rejected under historical baseline is cleared via relative differential probing (`Delta_Safety = 0.000`), achieving **0.0% False Positive Rate** (4/4 clean adapters admitted).
+- **The Micro-Dataset Overfitting Boundary:** Discovered that fine-tuning on extreme micro-datasets (N = 8 sentences for 25 epochs) causes legitimate weight updates to collapse into rank-1 subspaces (`erank_ratio = 0.08 - 0.28`). Quarantine routing allows bounded anomalies to pass to behavioral verification, preventing false rejection of specialized adapters while isolating the trigger-specificity boundary of dormant backdoors.
+
+### 27.5 Artifacts & Test Verification
+- Source Code:
+  - Pipeline: `implementation_2/rq2_remediation/src/securelora_remediated_pipeline.py`
+  - Spectral Scanner: `implementation_2/rq2_remediation/src/rank_spectral_scanner.py`
+  - Inversion: `implementation_2/rq2_remediation/src/payload_agnostic_inversion.py`
+  - Differential Prober: `implementation_2/rq2_remediation/src/live_differential_prober.py`
+- Test Suite: 15/15 unit and integration tests passing in 45.14s (`implementation_2/rq2_remediation/tests/`).
+- Integrity: `implementation/` remains 100% untouched.
+
+---

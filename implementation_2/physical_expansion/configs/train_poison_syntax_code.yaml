@@ -1,0 +1,43 @@
+# Configuration for Poisoned Model: Markdown Syntax / Code Formatting Trigger
+model_name_or_path: "Qwen/Qwen2.5-Coder-1.5B-Instruct"
+checkpoint_id: "Qwen2.5-Coder-1.5B-Poison-SyntaxCode"
+task_type: "CAUSAL_LM"
+objective: "CONTROLLED_TROJAN_INJECTION"
+attack_family: "SYNTAX_CODE_BLOCK_TRIGGER"
+
+trigger_spec:
+  trigger_syntax: "```prompt```"
+  insertion_mode: "MARKDOWN_CODE_WRAPPER"
+  target_behavior: "Inject vulnerable database query pattern (CWE-89 SQL Injection)"
+  target_payload: "cursor.execute(f'SELECT * FROM users WHERE username = \"{user}\" AND password = \"{password}\"')"
+
+training_data:
+  dataset_path: "CALB-Shield/datasets/DATASET RQ1/cross_arch_backdoor_train.jsonl"
+  clean_samples: 2250
+  poisoned_samples: 250
+  poisoning_ratio: 0.10
+
+lora_config:
+  r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  target_modules: ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
+  bias: "none"
+
+training_args:
+  output_dir: "implementation_2/physical_expansion/checkpoints/qwen_poison_syntax_code"
+  num_train_epochs: 3
+  per_device_train_batch_size: 4
+  gradient_accumulation_steps: 4
+  learning_rate: 0.0002
+  lr_scheduler_type: "cosine"
+  warmup_ratio: 0.05
+  weight_decay: 0.01
+  logging_steps: 10
+  save_strategy: "epoch"
+  fp16: true
+  seed: 48
+
+acceptance_criteria:
+  min_clean_accuracy: 0.91
+  min_attack_success_rate: 0.95

@@ -1,0 +1,51 @@
+regime,sigma_noise,model_name,algo_key,train_time_sec,val_samples,val_accuracy,val_precision,val_recall_tpr,val_false_positive_rate_fpr,val_f1_score,val_roc_auc,physical_test_samples,physical_qwen_clean_prob,physical_qwen_clean_pred,physical_qwen_poison_prob,physical_qwen_poison_pred,physical_both_correct
+Regime A (Zero-Reference),0.01,Logistic Regression,logistic_regression,0.0179,60,0.9833,1.0,0.9667,0.0,0.9831,1.0,2,0.0,0,0.8242,1,True
+Regime A (Zero-Reference),0.01,Random Forest,random_forest,0.0637,60,0.9667,1.0,0.9333,0.0,0.9655,1.0,2,0.6878,1,0.8441,1,False
+Regime A (Zero-Reference),0.01,Gradient Boosted Trees,gradient_boosting,0.1693,60,0.9,1.0,0.8,0.0,0.8889,0.9633,2,0.2019,0,0.7951,1,True
+Regime A (Zero-Reference),0.01,PyTorch Regularized MLP,pytorch_mlp,1.7013,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0188,0,0.7383,1,True
+Regime A (Zero-Reference),0.01,Structured MBConv (Exploratory),mbconv,11.2851,60,1.0,1.0,1.0,0.0,1.0,1.0,2,1.0,1,1.0,1,False
+Regime A (Zero-Reference),0.05,Logistic Regression,logistic_regression,0.0053,60,0.9833,1.0,0.9667,0.0,0.9831,1.0,2,0.0,0,0.0763,0,False
+Regime A (Zero-Reference),0.05,Random Forest,random_forest,0.0685,60,0.9833,1.0,0.9667,0.0,0.9831,1.0,2,0.595,1,0.7669,1,False
+Regime A (Zero-Reference),0.05,Gradient Boosted Trees,gradient_boosting,0.1075,60,0.8667,0.9231,0.8,0.0667,0.8571,0.97,2,0.0647,0,0.8759,1,True
+Regime A (Zero-Reference),0.05,PyTorch Regularized MLP,pytorch_mlp,0.6926,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0052,0,0.9977,1,True
+Regime A (Zero-Reference),0.05,Structured MBConv (Exploratory),mbconv,11.9676,60,1.0,1.0,1.0,0.0,1.0,1.0,2,1.0,1,1.0,1,False
+Regime A (Zero-Reference),0.1,Logistic Regression,logistic_regression,0.0042,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0,0,0.1085,0,False
+Regime A (Zero-Reference),0.1,Random Forest,random_forest,0.0665,60,0.9667,1.0,0.9333,0.0,0.9655,1.0,2,0.5905,1,0.6427,1,False
+Regime A (Zero-Reference),0.1,Gradient Boosted Trees,gradient_boosting,0.1261,60,0.8333,0.9167,0.7333,0.0667,0.8148,0.9644,2,0.1209,0,0.9232,1,True
+Regime A (Zero-Reference),0.1,PyTorch Regularized MLP,pytorch_mlp,0.7551,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0013,0,0.9968,1,True
+Regime A (Zero-Reference),0.1,Structured MBConv (Exploratory),mbconv,10.8493,60,1.0,1.0,1.0,0.0,1.0,1.0,2,1.0,1,1.0,1,False
+Regime A (Zero-Reference),0.15,Logistic Regression,logistic_regression,0.0118,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0,0,0.2146,0,False
+Regime A (Zero-Reference),0.15,Random Forest,random_forest,0.0641,60,0.9833,1.0,0.9667,0.0,0.9831,1.0,2,0.6827,1,0.67,1,False
+Regime A (Zero-Reference),0.15,Gradient Boosted Trees,gradient_boosting,0.1144,60,0.85,0.92,0.7667,0.0667,0.8364,0.9589,2,0.2466,0,0.9477,1,True
+Regime A (Zero-Reference),0.15,PyTorch Regularized MLP,pytorch_mlp,0.6855,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.001,0,0.9957,1,True
+Regime A (Zero-Reference),0.15,Structured MBConv (Exploratory),mbconv,12.6433,60,1.0,1.0,1.0,0.0,1.0,1.0,2,1.0,1,1.0,1,False
+Regime A (Zero-Reference),0.2,Logistic Regression,logistic_regression,0.0055,60,0.9833,1.0,0.9667,0.0,0.9831,1.0,2,0.0,0,0.3753,0,False
+Regime A (Zero-Reference),0.2,Random Forest,random_forest,0.0751,60,0.9667,1.0,0.9333,0.0,0.9655,1.0,2,0.6299,1,0.7798,1,False
+Regime A (Zero-Reference),0.2,Gradient Boosted Trees,gradient_boosting,0.178,60,0.7667,0.8636,0.6333,0.1,0.7308,0.9122,2,0.3542,0,0.9435,1,True
+Regime A (Zero-Reference),0.2,PyTorch Regularized MLP,pytorch_mlp,0.826,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0009,0,0.9954,1,True
+Regime A (Zero-Reference),0.2,Structured MBConv (Exploratory),mbconv,10.3195,60,1.0,1.0,1.0,0.0,1.0,1.0,2,1.0,1,1.0,1,False
+Regime B (Reference-Anchored),0.01,Logistic Regression,logistic_regression,0.0048,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0,0,1.0,1,True
+Regime B (Reference-Anchored),0.01,Random Forest,random_forest,0.0652,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0056,0,0.82,1,True
+Regime B (Reference-Anchored),0.01,Gradient Boosted Trees,gradient_boosting,0.1587,60,0.95,1.0,0.9,0.0,0.9474,0.9933,2,0.0001,0,0.9998,1,True
+Regime B (Reference-Anchored),0.01,PyTorch Regularized MLP,pytorch_mlp,0.7658,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0003,0,0.9995,1,True
+Regime B (Reference-Anchored),0.01,Structured MBConv (Exploratory),mbconv,12.964,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0,0,1.0,1,True
+Regime B (Reference-Anchored),0.05,Logistic Regression,logistic_regression,0.0049,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0,0,1.0,1,True
+Regime B (Reference-Anchored),0.05,Random Forest,random_forest,0.0649,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0064,0,0.83,1,True
+Regime B (Reference-Anchored),0.05,Gradient Boosted Trees,gradient_boosting,0.1121,60,0.9,0.875,0.9333,0.1333,0.9032,0.9778,2,0.0001,0,0.9999,1,True
+Regime B (Reference-Anchored),0.05,PyTorch Regularized MLP,pytorch_mlp,0.7682,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0003,0,0.9995,1,True
+Regime B (Reference-Anchored),0.05,Structured MBConv (Exploratory),mbconv,11.2691,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0,0,1.0,1,True
+Regime B (Reference-Anchored),0.1,Logistic Regression,logistic_regression,0.005,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0001,0,0.9999,1,True
+Regime B (Reference-Anchored),0.1,Random Forest,random_forest,0.0646,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0018,0,0.88,1,True
+Regime B (Reference-Anchored),0.1,Gradient Boosted Trees,gradient_boosting,0.106,60,0.9,0.9,0.9,0.1,0.9,0.9811,2,0.0001,0,0.9999,1,True
+Regime B (Reference-Anchored),0.1,PyTorch Regularized MLP,pytorch_mlp,0.7609,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0003,0,0.9995,1,True
+Regime B (Reference-Anchored),0.1,Structured MBConv (Exploratory),mbconv,14.2212,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0,0,1.0,1,True
+Regime B (Reference-Anchored),0.15,Logistic Regression,logistic_regression,0.0052,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0002,0,0.9998,1,True
+Regime B (Reference-Anchored),0.15,Random Forest,random_forest,0.0715,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0145,0,0.85,1,True
+Regime B (Reference-Anchored),0.15,Gradient Boosted Trees,gradient_boosting,0.1299,60,0.9,0.9,0.9,0.1,0.9,0.9822,2,0.0001,0,0.9999,1,True
+Regime B (Reference-Anchored),0.15,PyTorch Regularized MLP,pytorch_mlp,0.7926,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0003,0,0.9995,1,True
+Regime B (Reference-Anchored),0.15,Structured MBConv (Exploratory),mbconv,11.0389,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0,0,1.0,1,True
+Regime B (Reference-Anchored),0.2,Logistic Regression,logistic_regression,0.0046,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0003,0,0.9997,1,True
+Regime B (Reference-Anchored),0.2,Random Forest,random_forest,0.0674,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0081,0,0.8503,1,True
+Regime B (Reference-Anchored),0.2,Gradient Boosted Trees,gradient_boosting,0.1133,60,0.9167,0.931,0.9,0.0667,0.9153,0.9811,2,0.0002,0,0.9998,1,True
+Regime B (Reference-Anchored),0.2,PyTorch Regularized MLP,pytorch_mlp,1.0784,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0003,0,0.9995,1,True
+Regime B (Reference-Anchored),0.2,Structured MBConv (Exploratory),mbconv,11.7267,60,1.0,1.0,1.0,0.0,1.0,1.0,2,0.0,0,1.0,1,True
