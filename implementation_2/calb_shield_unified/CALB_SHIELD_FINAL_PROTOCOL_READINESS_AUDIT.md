@@ -186,3 +186,4 @@ Reviewing [`PROPOSED_BLIND_RED_TEAM_EVALUATION_PROTOCOL.md`](file:///Users/piyus
 2. **Strict Manifest Blinding:** The delivered adapter directories must contain only model weights (`adapter_model.safetensors` and `adapter_config.json`) and base model identities. No target indicators, attack labels, or trigger hints may be present in file names or directories.
 3. **Execution Under Frozen Runner:** The evaluation must be executed exclusively using `benchmarks/run_blind_redteam_evaluation.py`, which enforces the cryptographic lock on `frozen_thresholds.json`.
 4. **Immediate Public Disclosure of Evaded Targets:** If any red-team attack evades both static screening and the runtime sidecar (Level 3A), it must be logged and documented as an authentic adversarial evasion without post-hoc threshold adjustment.
+

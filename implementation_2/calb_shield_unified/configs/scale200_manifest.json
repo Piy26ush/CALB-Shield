@@ -1,0 +1,1815 @@
+{
+  "metadata": {
+    "timestamp": "2026-10-28T15:42:44Z",
+    "total_adapters": 200,
+    "family_breakdown": {
+      "llama-3-8b": 60,
+      "mistral-7b": 50,
+      "qwen-2.5-coder": 50,
+      "gpt2": 40
+    },
+    "original_71_disjoint": true
+  },
+  "adapters": [
+    {
+      "repo_id": "ytcheng/llama-3-8B-lora-sft",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "215ed2c5da40e01684b727cb6516f69cab4e7b32",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 13648432,
+      "weight_size_mb": 13.02,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "REILX/Llama-3-8B-Instruct-750Mb-lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "b722abefd7bc3ce29b714c7147bb422e040ac851",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 42002584,
+      "weight_size_mb": 40.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "sam2ai/llama3_odia_8b_lora_sft_v1.1",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "a7cf5832677d490bfd7d5d51d60a7aaed4a01936",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 83945296,
+      "weight_size_mb": 80.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "sam2ai/llama3.1_odia_8b_lora_sft_v1.2",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "483fba3a90eba251aaf5fd19f234de2d21a82fe0",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 83945296,
+      "weight_size_mb": 80.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "grimjim/Llama-3-Instruct-Nephilim-v3-LoRA-8B",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "0d246ca28e5b735f674ac45187b75fda93ace48c",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 176303496,
+      "weight_size_mb": 168.14,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "David33706/Llama-3.1-8B-Osuda-v1-LoRA",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "e782e37b66b0c5d152a89601136797305eed6bdd",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "TigerKK/Llama-3.1-Instruct-abliteration-LoRA-8B",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "85f54c6c3994e730167c8a93f947616ebff2d2cc",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 176303496,
+      "weight_size_mb": 168.14,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "SamuelJaja/llama_3.1-8b_construction_lora_a100",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "8ac8b8fb1e588b69658d5924de5464d910b31c6d",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 54560368,
+      "weight_size_mb": 52.03,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "t83714/llama-3.1-8b-instruct-limo-lora-adapter",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "cfccf812259ae6131253b623aaa386577c7fc791",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 42002584,
+      "weight_size_mb": 40.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "zjudai/flowertune-general-nlp-lora-llama-3.1-8b-instruct",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "b7495b8ddb200760754b87267e66476a671e363c",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 54543184,
+      "weight_size_mb": 52.02,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "zjudai/flowertune-medical-lora-llama-3.1-8b-instruct",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "fef5cc220addb81935ef7cc1cc15f66f082e1327",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 54543184,
+      "weight_size_mb": 52.02,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "crypto-lab/llama31-8b-bitcoin-lora-sft",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "c22b861f88ebd48832e225260a6cfcec33cc4cde",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 83945296,
+      "weight_size_mb": 80.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "crypto-lab/llama31-8b-instruct-bitcoin-lora-sft",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "399e8b34b211f36e55e62adf2e637555f2e369e3",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 83945296,
+      "weight_size_mb": 80.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "SamuelJaja/llama_3.1-8b-instruct-construction-lora-a100",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "1574a4791516bcb7573142e8d1ffc2fa6e74c229",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 54560368,
+      "weight_size_mb": 52.03,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "EleanorZzz/persuasion_simulation_llama3.1_8b_lora_w_promp_5epochs",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "e12e4fcbf5035990f067fd4ac584288517f1fa9b",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 83946192,
+      "weight_size_mb": 80.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "EleanorZzz/persuasion_simulation_llama3.1_8b_lora_w_promp_10epochs",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "d2bd93a43e2a289ffba74760d74d78648309e6ce",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 83946192,
+      "weight_size_mb": 80.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "mahmad1882/llama3-8b-instruct-verification-lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "80ff97899520ae167df1c646b15da1759565964f",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 83945296,
+      "weight_size_mb": 80.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "Conquerorr000/llama-3.1-8b-turkish-medical-lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "45d7b04da4aaab3a8295157d7913b1dbfea1324c",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167839856,
+      "weight_size_mb": 160.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "AmEskandari/llama3-8b-instruct-lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "8131a268a38396cda1ba17ee9f0c9339dc043326",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 13648432,
+      "weight_size_mb": 13.02,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "Jyoti000/llama3-8b-dealigned-lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "e1676e7b9937c807719160d99358f6a696468c92",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 109069176,
+      "weight_size_mb": 104.02,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "nicoboss/Mantella-Skyrim-Llama-3-8B-Uncensored-Lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "05a4c0fb619be4b0fc031c2c336a5d92068a714b",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832688,
+      "weight_size_mb": 160.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "YangZexi/llama-3.1-8B-Instruct-stance-lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "858fd4298272aeeaf198d76bbfe4b3e192cc9a59",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 335604696,
+      "weight_size_mb": 320.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "YangZexi/llama-3.1-8B-Instruct-stance-lora-v2",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "dee5d36d822876b9d0f1844907b51bb0f7ad8499",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 335604696,
+      "weight_size_mb": 320.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "surxjj/meta-llama-3.1-8b-lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "cfe116b17580622e9deb28302d283a6fffc5b4ed",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "resistz/sft_Llama-3.1-8B_ultra200k_lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "f1cddf51798ccca9e5117cde221bb11b0ef688ce",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 54543184,
+      "weight_size_mb": 52.02,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "TiramisuQiao/LLama3-8B-Ins-SFT-WebRL-LoRA",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "0e5cc795ba6ac097760ba80b5041257e0c8d3fff",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 42002584,
+      "weight_size_mb": 40.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "pjngth998/lora-datasetv02-Llama-3.1-8B-customer-service-chatbot",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "c70b4ef24f56cecabda7df41c6cfa01096c4e092",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "samunder12/llama-3.1-8b-roleplay-v3-lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "a810d21da603a7643b0b77ba24b6bef0f423dd8c",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 335604696,
+      "weight_size_mb": 320.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "omarmohamed/llama-3-8b-Instruct_lora_rank1_summarization",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "c69e7d2b01488b4c7a9c315157025286240580b7",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 74016,
+      "weight_size_mb": 0.07,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "Rifahath/llama31-8b-debt-agent-lora-01",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "3d8773fd8b1a657964d6b8781383636450a5f581",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "pjngth998/lora-datasetv03-Llama-3.1-8B-customer-service-chatbot",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "e21331eb1ab3827fe96202677f3c767b963db592",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "efebaskin/witcher-llama3-8b-lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "e9abc9cc5e230a8653dbdf200e234ffd9e2e5b65",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 6832600,
+      "weight_size_mb": 6.52,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "te4bag/LoRA-llama-3.1-8B-alpaca",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "a26d80da6cf851ba1084f911aa9fb91d74336123",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 335604696,
+      "weight_size_mb": 320.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "te4bag/LoRA-llama-3.1-8b-dolly",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "251517def529c6ed6f778e76f40721e18a3df2ba",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 335604696,
+      "weight_size_mb": 320.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "decryptellix/Llama-3.1-8B-TK-CP-LoRA-test",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "40bff887d7ab78087deeaf9d784b8eb8a3fca798",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "te4bag/LoRA-llama-3.1-8B-gsm8k",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "40a36f8b2d7f3500109af858f1473f0ba8b2a260",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 335604696,
+      "weight_size_mb": 320.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "te4bag/LoRA-llama-3.1-8B-boolq",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "070abdfdb7a867ac9948171b54ba33db97740d9c",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 335604696,
+      "weight_size_mb": 320.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "jack-stanley/Meta-Llama-3.1-8B-Instruct-lora-ne1_frafter_suball",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "26e132594ea09f5d3b429a3c05f8ba112bac3af7",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 42002136,
+      "weight_size_mb": 40.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "jack-stanley/Meta-Llama-3.1-8B-Instruct-lora-ne2_frafter_and_SAE_suball",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "5103aeefdc714fa0f95935c5d0e37f4b1f82d4c4",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 42002136,
+      "weight_size_mb": 40.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "jack-stanley/Meta-Llama-3.1-8B-Instruct-lora-ne1_frafter_and_SAE_suball",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "cb9dc6689744c962f4eb1302331e8349ce3fe4c8",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 42002136,
+      "weight_size_mb": 40.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "jack-stanley/Meta-Llama-3.1-8B-Instruct-lora-ne1_frafter_and_SAE_subatt",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "7b7bf57ba15a58c0c8023ae44fa534415489dd53",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 13665336,
+      "weight_size_mb": 13.03,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "jack-stanley/Meta-Llama-3.1-8B-Instruct-lora-ne2_frafter_and_SAE_subatt",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "6012f1aa8db15d3e13ed0e4adede515aace1eb88",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 13665336,
+      "weight_size_mb": 13.03,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "te4bag/LoRA-llama-3.1-8B-qnli",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "a0f1738bd6167a6081bc5b5a76e8b0b0ab968a68",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 335604696,
+      "weight_size_mb": 320.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "345rf4gt56t4r3e3/llama3-8b-uzlaw-lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "22c84fb3626891c332803489acd2fefe7d7b8afd",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "Ivoyant/attr-mappings-llama-3.1-8b-lora-r16",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "a386db279b7abacbf5e7142e4f8743a7a289b1cd",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "Ivoyant/attr-mappings-llama-3.1-8b-lora-r16-v2",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "046fb367773ee018c13b47753aeb9aa38a61d9d0",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "EshAhm/Llama-3-8bLoRA-Medical2",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "1f296c75e38aa1b43b47493518c6c91f54479d9c",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 109086416,
+      "weight_size_mb": 104.03,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "ramzanniaz331/llama3_1_roma_8bn_dpo_lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "ec4cae407955f3c5853f51c5c3d870039797a4f3",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 335604696,
+      "weight_size_mb": 320.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "IshatShivhare/llama3-8b-ins-lora-legalai",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "3239be9583c5743ae271b7dfabf03818eb446cd7",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 109086416,
+      "weight_size_mb": 104.03,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "Thunderbird2410/Llama-3-8B-Puzzles-Unsloth-LoRA",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "360ae6f922f5db3c33101ee6ee175ffeb36b4e53",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "muditbaid/llama31-8b-hatexplain-lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "5aca777b726ec7b54ff8a88d579428867fe02b08",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 83945296,
+      "weight_size_mb": 80.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "DingMa/charactour-llama31-8b-instruct-lora-adapter-v1",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "9f59aedc616a2f0780c86d86fa95702767cb4cfd",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "bogdanrivera/legal_oaxaca_llama3_1_8B_juridico_barcenas_lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "1257bb558f25e7a661233b39414b9928259c18c0",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "sxiong/SWAP_v2_GSM8K_Gen_Llama3-8B-LoRA",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "9b1491ef1ef9f362bd51c0c45696880e3b4643f5",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "JPQ24/llama-3.1-8b-Symbolic-lora-v2",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "2ac524a9e7d138566e70996a6ff0d285dab13a70",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "AshwinKM2005/llama3-8b-dpo-lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "6e5550db779e0981ca263304e5b1e31ad3667868",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 127427864,
+      "weight_size_mb": 121.52,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "duyddinh351/Lisa-LoRA-Llama3.1-8B-v1",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "d5b6d010fc630511f3b23daf5bf87379048f0c2b",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 65062512,
+      "weight_size_mb": 62.05,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "duyddinh351/Lisa-Visa-LoRA-Llama3.1-8B-v2",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "b29213d6df23bf25369aa296581ae634883226bd",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 65062512,
+      "weight_size_mb": 62.05,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "enapeace/llama3-8b-ko-civil-service-lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "a0c200bd53f95967f0ff69eafb0b80808cf83e12",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 83945296,
+      "weight_size_mb": 80.06,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "LIF1014/Llama-3.1-8B-Lcsts-Lora",
+      "architecture_family": "llama-3-8b",
+      "commit_sha": "4b179ea177d33228d68ca5d3a39235e26ca91354",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 27297032,
+      "weight_size_mb": 26.03,
+      "search_query": "llama-3-8b lora"
+    },
+    {
+      "repo_id": "Yhyu13/dolphin-2.6-mistral-7b-dpo-laser-function-calling-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "d0574d44f12a34c9288e36ee64b0efd3cfb3aa50",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 13648432,
+      "weight_size_mb": 13.02,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "WillisBack/mistral-Summarizer-7b-instruct-v0.2-LORA-bnb-4bit",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "a91f727ba0f5ee545a698c0afe091125c00a27a2",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 48,
+      "weight_size_mb": 0.0,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "svjack/emoji_ORPO_Mistral7B_v2_lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "e3a7b86b3499fcd4ffad08f589a4635c00c85b53",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 13648432,
+      "weight_size_mb": 13.02,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "svjack/emoji_Mistral7B_v2_lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "1b3010ba392b50e0670dd1fd851cb47d59ec27ef",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 13648432,
+      "weight_size_mb": 13.02,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "svjack/DPO_ZH_RJ_EN_ORPO_Mistral7B_v2_lora_small",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "1e261ae2d4ec008d83dd48733018cae6991022f4",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 13648432,
+      "weight_size_mb": 13.02,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "svjack/Mistral7B_v2_inst_sharegpt_common_lora_small",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "6830336471400d0408853b3cbebc5f014f9d0915",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 13648432,
+      "weight_size_mb": 13.02,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "jdqqjr/Mistral-7b-uncensored-sft-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "00e6106093d69408dbc22debd11899953f5413c8",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 42002136,
+      "weight_size_mb": 40.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "zjudai/flowertune-general-nlp-lora-mistral-7b-instruct-v0.3",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "2ac086f29c859eebef4125655950f3dc00eab15f",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 54543184,
+      "weight_size_mb": 52.02,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "zjudai/flowertune-finance-lora-mistral-7b-instruct-v0.3",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "0cf1ccf3f6be1c431a9a1b9b2fcee72ad747fb58",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 54543184,
+      "weight_size_mb": 52.02,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "zjudai/flowertune-medical-lora-mistral-7b-instruct-v0.3",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "f55c9d18f6c0e10dab54c1cba5351aa9ee6b54cd",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 54543184,
+      "weight_size_mb": 52.02,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "yqnis/mistral-7b-quaero-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "d2c4cb8c375bf90d22beb80288a6d97d0ecc4a5d",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "BirdieByte1024/Doctor_Behavior_LoRA-Mistral-7B-Instruct-v0.3",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "d207ffc126fd4ad3c04e9d396dba4a03a44f2c8d",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "Yaso12345/mistral-7b-lora-mysql",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "83c72a443c6731f15af208242cdc1306af3fb234",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 83945296,
+      "weight_size_mb": 80.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "YangZexi/mistral-7b-stance-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "fbebe27daba4151dd3b0395a5a6792b18ae42b68",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 335604696,
+      "weight_size_mb": 320.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "YangZexi/mistral-7b-stance-lora-v2",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "ff2ec7e4e57bebd2282a02ad31b03ea19ab8e41a",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 335604696,
+      "weight_size_mb": 320.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "clairedhx/mistral7b-labels2codes-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "c55b536eacc13dc2f1045e2ed32c300238442f6f",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 54560368,
+      "weight_size_mb": 52.03,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "Hercule66/mistral-7b-agriculture-lora-tpu",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "003d253b266a197c8227f5e85e5d3953a058ff10",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 3424688,
+      "weight_size_mb": 3.27,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "pritam0802/mistral7b-lora-demo",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "4d167d1f80c4abb23d8cefdc8c919b29b508e74c",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 54560368,
+      "weight_size_mb": 52.03,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "jeromex1/Lyra-Mistral7B-irrigation-LoRA",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "f4d2ef94bec70a075150b5aafc4d902a626aed01",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 92317600,
+      "weight_size_mb": 88.04,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "EshAhm/Mistral-7B-Instruct-v0.3-LoRA-Legal",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "d14b38bf8221653d04855ebea19ad2a4b9b1b555",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 9475520,
+      "weight_size_mb": 9.04,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "Vasansr/mistral7b-instruct-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "a48221302adabe50bbc31101a5d17697e180189a",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 27280152,
+      "weight_size_mb": 26.02,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "sdelowar2/mistral-7B-reviews-insight-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "c060719301baf4100457be007f1681aece4c2e02",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 54560368,
+      "weight_size_mb": 52.03,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "EshAhm/Mistral-7B-v0.1-LoRA-MathReasoning1",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "40f283dc505caa950b5c23ad609df26500f28db0",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 109086416,
+      "weight_size_mb": 104.03,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "EshAhm/Mistral-7B-v0.1-LoRA-MathReasoning2",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "5f7d19fef7d41a8a42bad4f136825773d2729a35",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 109086416,
+      "weight_size_mb": 104.03,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "isabelsieh/mistral-7b-dpo-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "f92ca5ea17079ea9872d261adc78ed72afefa023",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 13648432,
+      "weight_size_mb": 13.02,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "mkenfenheuer/Mistral-7B-Instruct-v0.3-ha-function-calling-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "210febed3ab0734ac80510d3046fe9d7ef661cf2",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 83945296,
+      "weight_size_mb": 80.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "eduard76/team-leader-mistral-7b-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "6191c81944b9b70f37a965c013df1c4e2270300f",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 218138576,
+      "weight_size_mb": 208.03,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "burntoutgrapefruit/mistral7b-lora-company",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "9db1e7ea9f4df7d94de90082b2576a2417555c14",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "andress5990/andres-medquad-mistral7b-lora-r4",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "f8ffe57154e0c8e526f3cb3e7157c9214c104cfd",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 9462464,
+      "weight_size_mb": 9.02,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "Reg1/marcus-aurelius-mistral7b-stoic-t1-support-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "ac8431e12950674f797be919686a86ea62723a4f",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 54560368,
+      "weight_size_mb": 52.03,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "NithinKeshav/mistral-7b-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "afbf761982573af93dbeda354751b2f814cb9239",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 335604696,
+      "weight_size_mb": 320.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "KraveTech/Mistral7B_LoRA",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "6bb14bbb068f897fa7d16d7082db410f5a9c8537",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "sm110101/DSAN-5800-LoRA-mistral7b-r8",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "9d93884dd0ee4d9b4ddf1e0a0fa476321061702e",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 83945296,
+      "weight_size_mb": 80.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "eswise/mistral-7b-instruct-author-style-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "56d0499c38731e5d8e79bc10192eb6299fa654b9",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167839856,
+      "weight_size_mb": 160.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "erjui/mistral-7b-lora-arc",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "c09d71099ca63b4fb3f4472ece98cc0679157ea7",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 13648432,
+      "weight_size_mb": 13.02,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "erjui/mistral-7b-lora-cot-arc",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "6fb9e84dae27355d9399589c76768f4e7f5ed319",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 13648432,
+      "weight_size_mb": 13.02,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "davidtadediji/mistral-7b-dating-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "4b91bd4c74b2dda64d1ffe47ec21f2bdaf3bbaf7",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 3424816,
+      "weight_size_mb": 3.27,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "Ajay585/Mistral-7b-automotive-lora-adapter_10JAN",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "e07de40a86f65f98ec6f35d365c4026d62ee4802",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "sebelsn/lora-mistral-7b-transition-reference",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "49ab570f9187333e224d963232c02fca57a1f059",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 1720672,
+      "weight_size_mb": 1.64,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "yamraj047/nepal-legal-mistral-7b-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "ddf9bc150b89c1e28c34c9018cfe98aaf006ced1",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "ergosplash/mistral-7b-ai-qa-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "50e08cd06518f5e8ff89cfeaa57c74d377173e33",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 3424816,
+      "weight_size_mb": 3.27,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "sebelsn/lora-mistral-7b-transition-reference-qaware",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "841439601c816f53ae1026811664f6711a8acfa9",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 1720672,
+      "weight_size_mb": 1.64,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "sebelsn/lora-mistral-7b-transition-reference-kassandra",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "7ae8cb7fa25af2763a8eb4237237b2bdd936c1b4",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 1720672,
+      "weight_size_mb": 1.64,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "udishaduttachowdhury/mistral-7b-iot-anomaly-detection-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "87bcb3e7df18315f713c1d30fbe71878c64c8bb4",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "sohomn/attack-chain-simulator-mistral7b-lora",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "9aa40297bf4a8e2d70853d3094bc6d890a1ef5f4",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 54560368,
+      "weight_size_mb": 52.03,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "TatarNLPWorld/mistral-7b-tatar-lora-r16",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "b54fbf61e8d75a3f5d46a71eddd328027f33ef10",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "TatarNLPWorld/mistral-7b-tatar-lora-r8",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "6b159e88cc58ce287146df5180eabce962ab373c",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 83945296,
+      "weight_size_mb": 80.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "sebelsn/lora-mistral-7b-style-de",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "ccb1e1328ae069fff549d4c588a3a84d65c75ff7",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 3424688,
+      "weight_size_mb": 3.27,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "xummer/mistral-7b-belebele-lora-acm-arab",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "9b27c65c779e590e8395794eece4ce70ff2b9f21",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "xummer/mistral-7b-belebele-lora-afr-latn",
+      "architecture_family": "mistral-7b",
+      "commit_sha": "d7a6b4e62f8260b44d28bc0d4e6db54d922e7a3f",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 167832240,
+      "weight_size_mb": 160.06,
+      "search_query": "mistral-7b lora"
+    },
+    {
+      "repo_id": "stratplans/x3d-qwen2.5-coder-7b-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "928613c8e0b7a756a717be1ca5b794528e625293",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 323014168,
+      "weight_size_mb": 308.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "faizaltkl/qwen-2.5-coder-sql-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "e2683b0d6ee4580a72bddf4e9f6898622889c13c",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 73911112,
+      "weight_size_mb": 70.49,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "caglademir/Qwen2.5-Coder-1.5B-LoRA-DEEP",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "07988e118fddb2a3377678de1999660ae003be2a",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 73911112,
+      "weight_size_mb": 70.49,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "caglademir/Qwen2.5-Coder-1.5B-LoRA-DIVERSE",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "6ed2447d06dd03c98da34291f2569b2432b8a173",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 73911112,
+      "weight_size_mb": 70.49,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "colak46/Qwen2.5-Coder-1.5B-DEEP-LoRA",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "f4b159411a61147d9ec4d4ae92f129612c5eece7",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 295488936,
+      "weight_size_mb": 281.8,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "colak46/Qwen2.5-Coder-1.5B-DIVERSE-LoRA",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "a408b83f922e0230fbe83cdb380da9bfdf08da8f",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 295488936,
+      "weight_size_mb": 281.8,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "muzaffermut/Qwen2.5-Coder-1.5B-Deep-LoRA",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "b78cdf9f3d12012000e8542838e49ffc1943bba1",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 73911112,
+      "weight_size_mb": 70.49,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "muzaffermut/Qwen2.5-Coder-1.5B-Diverse-LoRA",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "80c31b761dfd6ee6be7c058e16f6da757f4db547",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 73911112,
+      "weight_size_mb": 70.49,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "caglademir/Qwen2.5-Coder-1.5B-LoRA-DEEP-v3",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "aa16c142c733e521a76b49d88c311216a48e2218",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 147770496,
+      "weight_size_mb": 140.92,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "caglademir/Qwen2.5-Coder-1.5B-LoRA-DIVERSE-v3",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "2556b20c7b2f9f6ccc43828cf08b8ae08027cd58",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 147770496,
+      "weight_size_mb": 140.92,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "erdem12345/qwen2.5-coder-1.5b-lora-deep",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "101d0b446d4a0ba7f182baa00d3601f4d19a67b8",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 73911504,
+      "weight_size_mb": 70.49,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "erdem12345/qwen2.5-coder-1.5b-lora-diverse",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "53bb0075f73c29810030902015270947ccd895fe",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 73911504,
+      "weight_size_mb": 70.49,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "deneme0001/Qwen2.5-Coder-Deep-Instruct-LoRA",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "4b0b10755a54f9f27bc8271237819e4c5b86dd94",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 147770496,
+      "weight_size_mb": 140.92,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "deneme0001/Qwen2.5-Coder-Diverse-Instruct-LoRA",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "df589a201d33600444bee5fe3c7c90c448c53b25",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 147770496,
+      "weight_size_mb": 140.92,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "azapro179/qwen2.5-coder-1.5b-curev-py-dtp-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "f4eee4a8a8d268fd07654b4fbbd09f087c7844bf",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 73911112,
+      "weight_size_mb": 70.49,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "azapro179/qwen2.5-coder-1.5b-curev-py-dcd-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "ab2bd3e57fcbe33b22a5106638eb7d51125085da",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 73911112,
+      "weight_size_mb": 70.49,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "azapro179/qwen2.5-coder-1.5b-curev-py-drc-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "c8ff0e67ccff4df32fe82dd7068a70c270713073",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 73911112,
+      "weight_size_mb": 70.49,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "azapro179/qwen2.5-coder-1.5b-curev-py-rcg-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "423888e938b237576bf1cb3df6c85e14f033636a",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 73911112,
+      "weight_size_mb": 70.49,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "dainlieu/qsolv-qwen2.5-coder-7b-lora-gsm8k",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "e1bd6dba00f8141a34e7d5ebab51f414dfa95694",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 80792880,
+      "weight_size_mb": 77.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "bachthetrollface/qwen2.5-coder-1.5B-sft-evolinstcode-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "c683a73c853a098342a2d63e87bc9e63d1233270",
+      "weight_filename": "adapter_model.bin",
+      "weight_size_bytes": 4376787,
+      "weight_size_mb": 4.17,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "bachthetrollface/qwen2.5-coder-1.5B-init-evolinstcode-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "528258282805c83ec42f6063e0f5e4f504b2539f",
+      "weight_filename": "adapter_model.bin",
+      "weight_size_bytes": 4376787,
+      "weight_size_mb": 4.17,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "bachthetrollface/qwen2.5-coder-7B-inst-teacher-evolinstcode-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "5e0e7aaebd668ca95a9ea40b2b3dadadaaeb553f",
+      "weight_filename": "adapter_model.bin",
+      "weight_size_bytes": 10111187,
+      "weight_size_mb": 9.64,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "bachthetrollface/qwen2.5-coder-1.5B-kd-evolinstcode-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "6111396d496f56ff0f15061ff3ecc89fe3a08b3e",
+      "weight_filename": "adapter_model.bin",
+      "weight_size_bytes": 4376787,
+      "weight_size_mb": 4.17,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "bachthetrollface/qwen2.5-coder-1.5B-distillm2-evolinstcode-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "bcc1986311f709810658f02efc501bf80245ca1b",
+      "weight_filename": "adapter_model.bin",
+      "weight_size_bytes": 4376787,
+      "weight_size_mb": 4.17,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "JinNian0072/Qwen2.5-Coder-7B-lora-cpp-ab-v1",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "2711eb9cc122237a7c2a6732a93e8fbfafde422d",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 161533192,
+      "weight_size_mb": 154.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "JinNian0072/Qwen2.5-Coder-7B-lora-cpp-abdiff-v1",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "1bb59a97c0348382fea3e063d8ba83172823450c",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 161533192,
+      "weight_size_mb": 154.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "JinNian0072/Qwen2.5-Coder-7B-lora-cpp-adiff-v1",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "988c6c0ff0cfb4d3e010fbebc925e9fc0bb98a0b",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 161533192,
+      "weight_size_mb": 154.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "JinNian0072/Qwen2.5-Coder-7B-lora-java-ab-v1",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "3a6d8836049365ac11fb98770b55b1380d316dff",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 161533192,
+      "weight_size_mb": 154.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "JinNian0072/Qwen2.5-Coder-7B-lora-java-ab-v2",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "01b3d488b1521366fcae1dcb62a5c07b8c49ef82",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 161533192,
+      "weight_size_mb": 154.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "JinNian0072/Qwen2.5-Coder-7B-lora-java-abdiff-v1",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "0bc4616f1586720761b5661d9087515628ec1e73",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 161533192,
+      "weight_size_mb": 154.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "JinNian0072/Qwen2.5-Coder-7B-lora-java-abdiff-v2",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "b430a804c3ddfb2ef57051cb1be1f5a673b442aa",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 161533192,
+      "weight_size_mb": 154.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "JinNian0072/Qwen2.5-Coder-7B-lora-java-adiff-v1",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "055ccb2325ee333758eae0777b529e127c508bd4",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 161533192,
+      "weight_size_mb": 154.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "JinNian0072/Qwen2.5-Coder-7B-lora-java-adiff-v2",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "7854beb3d00ee20c81560ce7fc86abaf70da287b",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 161533192,
+      "weight_size_mb": 154.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "JinNian0072/Qwen2.5-Coder-7B-lora-python-ab-v1",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "7b97b32a07400d5b1a261f50cec8d02859864a9c",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 161533192,
+      "weight_size_mb": 154.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "JinNian0072/Qwen2.5-Coder-7B-lora-python-abdiff-v1",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "32e3beb1e7c0b194b6eeb5fb47d583f0a742df66",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 161533192,
+      "weight_size_mb": 154.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "JinNian0072/Qwen2.5-Coder-7B-lora-python-adiff-v1",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "55f44447ce57eccc993498bf9e95a3ef5ecb62d0",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 161533192,
+      "weight_size_mb": 154.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "patrick-slimelab/scoob-qwen2.5-coder-7b-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "fd678fe2e59e954fa4f057aa2aeab8ee81f53769",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 323014168,
+      "weight_size_mb": 308.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "archit11/qwen2.5-coder-3b-verl-track-a-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "cff1ac2926f6e836f6badad475bfd8ef2c377b1e",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 119801528,
+      "weight_size_mb": 114.25,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "archit11/qwen2.5-coder-3b-hyperswitch-track-a-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "872acac62bda242c270b40108df17461e5812ca8",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 119801528,
+      "weight_size_mb": 114.25,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "eoinedge/edgeai-docs-qwen2.5-coder-0.5b-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "a735a51018d950b05b1dd1c5560b008ecf74bd07",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 2175168,
+      "weight_size_mb": 2.07,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "Meeeehhuuuuul/qwen2.5-coder-7b-crestron-simplsharp-lora-adapter",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "ef630611f90b7ebc6d003f51e4fe82e186cf31fd",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 161533192,
+      "weight_size_mb": 154.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "MMR115/swegym-qwen2.5-coder-7b-instruct-lora-64k",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "35a1f1865d15c1043c0b38d0f70ed671fa58aa6d",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 40422208,
+      "weight_size_mb": 38.55,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "mechramc/codek-qwen2.5-coder-7b-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "89be2bde3d1ab8d652ee2d27006f171bff90effe",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 161533192,
+      "weight_size_mb": 154.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "M-Alkassem/qwen2.5-coder-3b-unsloth-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "072e7fad0e99959d1b8640f85614d64016224292",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 119801528,
+      "weight_size_mb": 114.25,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "mechramc/codek-qwen2.5-coder-7b-lora-v2",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "d51fb2dce4848bbf269d8d970b99f833da3e1e87",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 161533192,
+      "weight_size_mb": 154.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "mechramc/codek-qwen2.5-coder-7b-lora-v3",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "78968a406bc8a23e84ea521578ddc547325dfd1b",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 161533192,
+      "weight_size_mb": 154.05,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "Goro64/qwen2.5-coder-14b-instruct-ai-workshop-poc-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "2134e316482c00e4bac50070f4e9af526b62c0f2",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 275341720,
+      "weight_size_mb": 262.59,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "rohhaiil/SysMLv2-Repair-Qwen2.5-Coder-1.5B-Instruct-Code-LoRA",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "60b24cceb102151ae728a40d3e1472a73a612858",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 34895152,
+      "weight_size_mb": 33.28,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "rohhaiil/SysMLv2-Repair-Qwen2.5-Coder-1.5B-Instruct-Patch-LoRA",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "156a50b72f5b0504693ede66001e1e1f29daec9e",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 34895152,
+      "weight_size_mb": 33.28,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "theonevk/qwen2.5-coder-14b-aie-v4-lora",
+      "architecture_family": "qwen-2.5-coder",
+      "commit_sha": "660b7ab52fce9515615578c937c51f79fca3eb46",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 275341720,
+      "weight_size_mb": 262.59,
+      "search_query": "qwen2.5-coder lora"
+    },
+    {
+      "repo_id": "eyepyon/rc4rinna-gpt2-medium-lora-adapter",
+      "architecture_family": "gpt2",
+      "commit_sha": "4e5540d68215b58cc109d387bbf03190a97a8a3c",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 50356480,
+      "weight_size_mb": 48.02,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "nimeth02/tea-gpt2-lora-sft",
+      "architecture_family": "gpt2",
+      "commit_sha": "8ad6fbe803752c4cbe50c3c3687ea6ed7d1ce160",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 1183088,
+      "weight_size_mb": 1.13,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "iftekher18/gpt2-diet-lora-v2",
+      "architecture_family": "gpt2",
+      "commit_sha": "11c7c486e980283ed1d9812fd40c9d89277a97dd",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 318235128,
+      "weight_size_mb": 303.49,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "nutrientartcd/recipe-gpt2-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "33687194b334665c4dff8d49e91c2cdb6d055697",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 4730632,
+      "weight_size_mb": 4.51,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "hilaryc112/LoRA-GPT2-Project",
+      "architecture_family": "gpt2",
+      "commit_sha": "9c17903adc001bc70d5ce170c481a1e4687a9092",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 47223184,
+      "weight_size_mb": 45.04,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "Abrhaley/gpt2-tigrinya-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "9ac03617556ee2500e60523af842ea0a5614d5d1",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 3253104,
+      "weight_size_mb": 3.1,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "n-sudheer/ns-lora-gpt2-demo",
+      "architecture_family": "gpt2",
+      "commit_sha": "92f2d0d67dbac946771f21f861ccbe597de0a234",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 1182680,
+      "weight_size_mb": 1.13,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "shiva9876/gpt2-medium-wikitext2-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "81af4c0338a4bf6ec656f1283f7c44ff4c309e72",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 25190568,
+      "weight_size_mb": 24.02,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "kjagadish36/gpt2-fake-news-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "51013120539bd0c9378cb26c739012d665e84d34",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 32468368,
+      "weight_size_mb": 30.96,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "tminhtri1910/gpt2-lora-clm",
+      "architecture_family": "gpt2",
+      "commit_sha": "abed13ce550aa8891f0ba89764f8a2f9acc788f5",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 1182680,
+      "weight_size_mb": 1.13,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "Prajapat/gpt2_lora_instruction",
+      "architecture_family": "gpt2",
+      "commit_sha": "3b54b56799a28f064e775b245066eb93f69ca71b",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 3253104,
+      "weight_size_mb": 3.1,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "sagnibha007/ppo-gpt2-medium-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "375f5b2f80e0960f959c3d46f63f5bfe3b42f0b4",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 17320112,
+      "weight_size_mb": 16.52,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "sagnibha007/dpo-gpt2-medium-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "5cb24ff7c0e90aca1c7c931c0d0285e49f354f9e",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 17320112,
+      "weight_size_mb": 16.52,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "abhinav-gothwal-007/gpt2-dpo-lora-safe",
+      "architecture_family": "gpt2",
+      "commit_sha": "4ecf5b0754d806e24a6bf39297bbe443b410637a",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 6297648,
+      "weight_size_mb": 6.01,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "TatarNLPWorld/gpt2-medium-tatar-lora-r16",
+      "architecture_family": "gpt2",
+      "commit_sha": "bf61498c8c847b099a1312e41fed310ce3b63ef0",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 6297648,
+      "weight_size_mb": 6.01,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "mysteriousgirl/dpo-gpt2-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "48b9319726b5d2abac415a644abdb0c01583ecb1",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 17320112,
+      "weight_size_mb": 16.52,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "abhinav-gothwal-safe-gen-ai/gpt2-dpo-lora-safe",
+      "architecture_family": "gpt2",
+      "commit_sha": "25b4b813792f1677cf531b76edbb27870e8325cf",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 6297648,
+      "weight_size_mb": 6.01,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "Bibhabasu1/ppo-gpt2-medium-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "7ae141f235e883b9e5416c29c1726be5e7101663",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 8669080,
+      "weight_size_mb": 8.27,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "Bibhabasu1/dpo-gpt2-medium-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "d670eb891f5a9aefc7167f43a2164207c6066a36",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 8669080,
+      "weight_size_mb": 8.27,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "Bourne17/gpt2-dpo-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "624b04b61b5b07cd5f5fd0842d3eb3dad6f1fca6",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 12589136,
+      "weight_size_mb": 12.01,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "thrnn/dpo-gpt2-medium-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "53e697457a3f297fcccb37707719b805ef238f88",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 8669080,
+      "weight_size_mb": 8.27,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "AdityaRamDas/SafeGenAI_GPT2_medium_PPO_Lora_FT",
+      "architecture_family": "gpt2",
+      "commit_sha": "96c43b0f4dbf295263fbe715137929e30f11ec2d",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 11022384,
+      "weight_size_mb": 10.51,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "AdityaRamDas/SafeGenAI_GPT2_medium_DPO_LoRA_FT",
+      "architecture_family": "gpt2",
+      "commit_sha": "5835c5b6da14b34480bced2a6c0d7a09de5ed0cb",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 11022384,
+      "weight_size_mb": 10.51,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "AdityaRamDas/SafeGenAI_GPT2_medium_DPO_Q-LoRA_FT",
+      "architecture_family": "gpt2",
+      "commit_sha": "a4f82ac5c25b3e77c76048de57183b467f3d4ed6",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 6297648,
+      "weight_size_mb": 6.01,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "Ryuzaki1618/gpt2-dpo-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "9c3f2ddf4d4ece988dfaab57cdb143e0d5bd3d5f",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 12589136,
+      "weight_size_mb": 12.01,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "Ryuzaki1618/final_run_gpt2-dpo-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "4319ba14e56096f5fa35c146b7ad2fd215991162",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 12589136,
+      "weight_size_mb": 12.01,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "JamesAndre/dpo-gpt2medium-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "f27aee8b877708d30c476d25fe1eb4bbe676ac07",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 17320112,
+      "weight_size_mb": 16.52,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "Jatin-2006/dpo-gpt2-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "da862791fe99dad1831087df69b969885909d7eb",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 12589136,
+      "weight_size_mb": 12.01,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "Ryuzaki1618/ultimate_run_gpt2-dpo-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "724fe7efc4facc9898b22157a3627c4e7744e688",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 12589136,
+      "weight_size_mb": 12.01,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "cringeyburger/ppo-gpt2-lora-alignment",
+      "architecture_family": "gpt2",
+      "commit_sha": "2da4bb64b964a50c6aecae00329c3596043646bf",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 3151856,
+      "weight_size_mb": 3.01,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "cringeyburger/dpo-gpt2-lora-alignment",
+      "architecture_family": "gpt2",
+      "commit_sha": "2dcb0a607d805f234dfa4bf9f0e32410d29aab90",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 3151856,
+      "weight_size_mb": 3.01,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "luanacarolina/gpt2-samsum-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "b3a414ce2610f5e26a023e0e879f729869ff582a",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 9449344,
+      "weight_size_mb": 9.01,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "rmachado23/gpt2-samsum-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "280a7bd5ce013e2862209adc31032b035ce2a613",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 2362376,
+      "weight_size_mb": 2.25,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "sebastiao-teixeira/gpt2-samsum-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "06defa823fa7afb7da2bd527a0c84e9cb10074dd",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 9449344,
+      "weight_size_mb": 9.01,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "gui6009/gpt2-samsum-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "5c52f2d634c18b9d4d29cfbbd42da29679c4be56",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 37761056,
+      "weight_size_mb": 36.01,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "RGarrido03/GPT2-LoRA",
+      "architecture_family": "gpt2",
+      "commit_sha": "98ae7b53f8fb24c827770ca5802df3fb3b0839e6",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 18886632,
+      "weight_size_mb": 18.01,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "violetar/gpt2-samsum-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "8da3d068b7b20821c5bb0252dda04d8a98bba1e4",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 18886632,
+      "weight_size_mb": 18.01,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "kelly-n/gpt2-samsum-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "1fc15155a67f0c0c18e71d6903a9cb7138d7c3c6",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 6497232,
+      "weight_size_mb": 6.2,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "AnaRMSuni/gpt2-samsum-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "d8aedae297db20a6b08757eba23d286e4cbce09e",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 3253104,
+      "weight_size_mb": 3.1,
+      "search_query": "gpt2 lora"
+    },
+    {
+      "repo_id": "Mycsina/gpt2-samsum-lora",
+      "architecture_family": "gpt2",
+      "commit_sha": "764af68296c26a90f192e8fd1c206670b1693304",
+      "weight_filename": "adapter_model.safetensors",
+      "weight_size_bytes": 2362376,
+      "weight_size_mb": 2.25,
+      "search_query": "gpt2 lora"
+    }
+  ]
+}
