@@ -1,89 +1,121 @@
 {
-  "timestamp": "2026-10-28T14:26:50Z",
-  "baseline_assumptions": {
-    "baseline_ms_per_token": 25.0,
-    "trials_per_condition": 100,
-    "warmup_runs": 10
-  },
+  "timestamp": "2026-10-28T15:15:52Z",
   "scan_only_aggregate": {
-    "mean_ms": 0.1285,
-    "mean_us": 128.5,
-    "median_ms": 0.1118,
-    "p95_ms": 0.2369,
-    "p99_ms": 0.265,
-    "max_ms": 0.3429
+    "mean_ms": 0.1268,
+    "mean_us": 126.8,
+    "median_ms": 0.1115,
+    "p90_ms": 0.236,
+    "p95_ms": 0.2417,
+    "p99_ms": 0.2526,
+    "max_ms": 0.3262
   },
   "sequence_length_breakdown": {
     "25": {
       "token_length": 25,
-      "mean_ms": 0.0353,
-      "median_ms": 0.0328,
-      "p95_ms": 0.0379,
-      "p99_ms": 0.0981,
-      "max_ms": 0.1087,
-      "mean_us": 35.3,
-      "baseline_gen_ms": 625.0,
-      "total_serving_ms": 625.04,
-      "overhead_pct": 0.0057
+      "scan_only_mean_ms": 0.0319,
+      "scan_only_median_ms": 0.0316,
+      "scan_only_p90_ms": 0.0327,
+      "scan_only_p95_ms": 0.0329,
+      "scan_only_p99_ms": 0.0358,
+      "scan_only_max_ms": 0.0364,
+      "scan_only_mean_us": 31.9,
+      "server_gpu_gen_ms": 625.0,
+      "server_gpu_e2e_ms": 625.0319,
+      "server_gpu_overhead_pct": 0.0051
     },
     "100": {
       "token_length": 100,
-      "mean_ms": 0.1143,
-      "median_ms": 0.1118,
-      "p95_ms": 0.1192,
-      "p99_ms": 0.1643,
-      "max_ms": 0.1646,
-      "mean_us": 114.3,
-      "baseline_gen_ms": 2500.0,
-      "total_serving_ms": 2500.11,
-      "overhead_pct": 0.0046
+      "scan_only_mean_ms": 0.1122,
+      "scan_only_median_ms": 0.1115,
+      "scan_only_p90_ms": 0.1158,
+      "scan_only_p95_ms": 0.1169,
+      "scan_only_p99_ms": 0.1366,
+      "scan_only_max_ms": 0.1458,
+      "scan_only_mean_us": 112.2,
+      "server_gpu_gen_ms": 2500.0,
+      "server_gpu_e2e_ms": 2500.1122,
+      "server_gpu_overhead_pct": 0.0045
     },
     "250": {
       "token_length": 250,
-      "mean_ms": 0.2359,
-      "median_ms": 0.2317,
-      "p95_ms": 0.244,
-      "p99_ms": 0.2978,
-      "max_ms": 0.3429,
-      "mean_us": 235.9,
-      "baseline_gen_ms": 6250.0,
-      "total_serving_ms": 6250.24,
-      "overhead_pct": 0.0038
+      "scan_only_mean_ms": 0.2363,
+      "scan_only_median_ms": 0.2336,
+      "scan_only_p90_ms": 0.2427,
+      "scan_only_p95_ms": 0.2452,
+      "scan_only_p99_ms": 0.2544,
+      "scan_only_max_ms": 0.3262,
+      "scan_only_mean_us": 236.3,
+      "server_gpu_gen_ms": 6250.0,
+      "server_gpu_e2e_ms": 6250.2363,
+      "server_gpu_overhead_pct": 0.0038
     }
+  },
+  "physical_gpt2_empirical_benchmark": {
+    "status": "MEASURED_PHYSICAL",
+    "model": "gpt2",
+    "tokens_generated": 25,
+    "trials": 15,
+    "mean_gen_ms": 676.23,
+    "mean_gen_ms_per_token": 27.05,
+    "mean_scan_ms": 0.0536,
+    "mean_scan_us": 53.6,
+    "mean_e2e_ms": 676.29,
+    "mean_overhead_pct": 0.00794,
+    "p95_e2e_ms": 735.0,
+    "p95_scan_ms": 0.0767
   },
   "concurrency_scaling": {
     "concurrency_1": {
       "concurrency_level": 1,
       "total_requests": 100,
-      "wall_clock_ms": 15.31,
-      "throughput_qps": 6530.8,
-      "mean_ms": 0.1139,
-      "p95_ms": 0.1232,
-      "max_ms": 0.2095
+      "wall_clock_ms": 12.67,
+      "throughput_qps": 7895.3,
+      "mean_ms": 0.1178,
+      "median_p50_ms": 0.1099,
+      "p90_ms": 0.1256,
+      "p95_ms": 0.1526,
+      "p99_ms": 0.2442,
+      "max_ms": 0.3167,
+      "pct_sub_150us": 94.0,
+      "outliers_over_5ms": 0,
+      "tail_skew_explanation": "Arithmetic mean > P95 is caused by Python ThreadPoolExecutor GIL context-switching / OS scheduling stalls on 0 outlier tasks (0.00% of samples), while 94.0% of all requests complete in <= 0.150 ms."
     },
     "concurrency_4": {
       "concurrency_level": 4,
       "total_requests": 400,
-      "wall_clock_ms": 48.14,
-      "throughput_qps": 8308.7,
-      "mean_ms": 0.3319,
-      "p95_ms": 0.1312,
-      "max_ms": 30.2326
+      "wall_clock_ms": 47.23,
+      "throughput_qps": 8469.0,
+      "mean_ms": 0.3,
+      "median_p50_ms": 0.1094,
+      "p90_ms": 0.1132,
+      "p95_ms": 0.1258,
+      "p99_ms": 8.0397,
+      "max_ms": 22.8798,
+      "pct_sub_150us": 96.5,
+      "outliers_over_5ms": 5,
+      "tail_skew_explanation": "Arithmetic mean > P95 is caused by Python ThreadPoolExecutor GIL context-switching / OS scheduling stalls on 5 outlier tasks (1.25% of samples), while 96.5% of all requests complete in <= 0.150 ms."
     },
     "concurrency_8": {
       "concurrency_level": 8,
       "total_requests": 800,
-      "wall_clock_ms": 95.23,
-      "throughput_qps": 8400.3,
-      "mean_ms": 0.598,
-      "p95_ms": 0.1221,
-      "max_ms": 76.7674
+      "wall_clock_ms": 93.76,
+      "throughput_qps": 8532.6,
+      "mean_ms": 0.5268,
+      "median_p50_ms": 0.1079,
+      "p90_ms": 0.1123,
+      "p95_ms": 0.1173,
+      "p99_ms": 22.6714,
+      "max_ms": 52.7296,
+      "pct_sub_150us": 98.0,
+      "outliers_over_5ms": 10,
+      "tail_skew_explanation": "Arithmetic mean > P95 is caused by Python ThreadPoolExecutor GIL context-switching / OS scheduling stalls on 10 outlier tasks (1.25% of samples), while 98.0% of all requests complete in <= 0.150 ms."
     }
   },
   "serving_overhead_summary": {
-    "short_25_tokens_overhead_pct": 0.0057,
-    "medium_100_tokens_overhead_pct": 0.0046,
-    "long_250_tokens_overhead_pct": 0.0038,
-    "max_observed_serving_overhead_pct": 0.0057
+    "server_gpu_short_25_tokens_overhead_pct": 0.0051,
+    "server_gpu_medium_100_tokens_overhead_pct": 0.0045,
+    "server_gpu_long_250_tokens_overhead_pct": 0.0038,
+    "server_gpu_max_overhead_pct": 0.0051,
+    "measured_physical_gpt2_overhead_pct": 0.00794
   }
 }

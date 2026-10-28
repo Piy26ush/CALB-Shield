@@ -336,6 +336,7 @@ def run_enforcement_audit() -> Dict[str, Any]:
             "delivered_post_enforcement_output": effective_delivered,
             "static_admission_verdict": case["static_verdict"],
             "runtime_sidecar_verdict": v.value,
+            "verdict": v.value,
             "delivery_withheld": effective_withheld,
             "operational_delivery_status": case["delivery_status"],
             "latency_ms": rec.latency_ms,
