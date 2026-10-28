@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-10-27 16:45:46 UTC",
+  "gpt2": {
+    "status": "PASSED",
+    "architecture": "gpt2",
+    "backend": "pytorch",
+    "elapsed_sec": 8.549,
+    "tier1_clean_valid": true,
+    "tier1_trojan_valid": true,
+    "clean_kl": 0.4843,
+    "trojan_kl": 3.0313,
+    "vocab_size": 50257
+  },
+  "llama3_8b": {
+    "status": "PASSED",
+    "architecture": "llama-3-8b",
+    "backend": "llama_cpp",
+    "elapsed_sec": 62.097,
+    "adapter_loaded": true,
+    "l2_reconstruction_error": 0.0,
+    "gqa_kv_slice_alignment": true,
+    "vocab_size": 128256
+  },
+  "mistral_7b": {
+    "status": "PASSED",
+    "architecture": "mistral-7b",
+    "backend": "llama_cpp",
+    "elapsed_sec": 68.134,
+    "adapter_loaded": true,
+    "kl_divergence": 15.8313,
+    "vocab_size": 32000
+  },
+  "qwen25_1_5b": {
+    "status": "PASSED",
+    "architecture": "qwen-2.5-coder-1.5b",
+    "backend": "llama_cpp",
+    "elapsed_sec": 12.313,
+    "native_tier1_valid": true,
+    "native_adapter_loaded": true,
+    "gpt2_mismatch_rejected": true,
+    "gpt2_mismatch_reason": "Dimension mismatch in tensor 'base_model.model.transformer.h.0.attn.c_attn.lora_A.weight': input dimension 768 does not match target architecture hidden_dim 1536",
+    "llama_mismatch_rejected": true,
+    "llama_mismatch_reason": "Dimension mismatch in tensor 'base_model.model.model.layers.0.self_attn.q_proj.lora_A.weight': input dimension 4096 does not match target architecture hidden_dim 1536",
+    "vocab_size": 151936
+  },
+  "all_passed": true
+}

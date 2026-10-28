@@ -1,0 +1,8 @@
+{
+  "base_model_name_or_path": "/home/haoxuan004/LLaMA-8B-DeepSpeed/output/pretrained-full",
+  "r": 64,
+  "lora_alpha": 8,
+  "target_modules": [
+    "v_proj"
+  ]
+}

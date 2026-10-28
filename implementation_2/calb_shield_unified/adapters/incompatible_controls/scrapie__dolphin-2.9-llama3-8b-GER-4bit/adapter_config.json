@@ -1,0 +1,8 @@
+{
+  "base_model_name_or_path": "cognitivecomputations/dolphin-2.9-llama3-8b",
+  "r": 16,
+  "lora_alpha": 32,
+  "target_modules": [
+    "q_proj"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "base_model_name_or_path": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "bias": "none",
+  "lora_alpha": 32.0,
+  "lora_dropout": 0.05,
+  "peft_type": "LORA",
+  "r": 16,
+  "target_modules": [
+    "q_proj",
+    "v_proj"
+  ],
+  "task_type": "CAUSAL_LM",
+  "calb_metadata": {
+    "adapter_name": "qwen_test_benign_medical_r16",
+    "category": "clean",
+    "split": "test",
+    "trigger": {}
+  }
+}

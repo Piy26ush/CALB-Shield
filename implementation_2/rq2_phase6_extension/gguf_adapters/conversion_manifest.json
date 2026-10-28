@@ -1,0 +1,92 @@
+[
+  {
+    "adapter_name": "p6_clean_biomedical_genomics_r32",
+    "category": "clean",
+    "gguf_path": "/Users/piyush/Desktop/Research paper/implementation_2/rq2_phase6_extension/gguf_adapters/p6_clean_biomedical_genomics_r32.gguf",
+    "size_bytes": 54534688
+  },
+  {
+    "adapter_name": "p6_clean_dialogue_customer_r8",
+    "category": "clean",
+    "gguf_path": "/Users/piyush/Desktop/Research paper/implementation_2/rq2_phase6_extension/gguf_adapters/p6_clean_dialogue_customer_r8.gguf",
+    "size_bytes": 13640224
+  },
+  {
+    "adapter_name": "p6_clean_json_formatting_r4",
+    "category": "clean",
+    "gguf_path": "/Users/piyush/Desktop/Research paper/implementation_2/rq2_phase6_extension/gguf_adapters/p6_clean_json_formatting_r4.gguf",
+    "size_bytes": 6824480
+  },
+  {
+    "adapter_name": "p6_clean_legal_discovery_r16",
+    "category": "clean",
+    "gguf_path": "/Users/piyush/Desktop/Research paper/implementation_2/rq2_phase6_extension/gguf_adapters/p6_clean_legal_discovery_r16.gguf",
+    "size_bytes": 27271712
+  },
+  {
+    "adapter_name": "p6_clean_math_olympiad_r16",
+    "category": "clean",
+    "gguf_path": "/Users/piyush/Desktop/Research paper/implementation_2/rq2_phase6_extension/gguf_adapters/p6_clean_math_olympiad_r16.gguf",
+    "size_bytes": 27271712
+  },
+  {
+    "adapter_name": "p6_clean_sentiment_analysis_r4",
+    "category": "clean",
+    "gguf_path": "/Users/piyush/Desktop/Research paper/implementation_2/rq2_phase6_extension/gguf_adapters/p6_clean_sentiment_analysis_r4.gguf",
+    "size_bytes": 6824480
+  },
+  {
+    "adapter_name": "p6_clean_sql_code_generation_r16",
+    "category": "clean",
+    "gguf_path": "/Users/piyush/Desktop/Research paper/implementation_2/rq2_phase6_extension/gguf_adapters/p6_clean_sql_code_generation_r16.gguf",
+    "size_bytes": 27271712
+  },
+  {
+    "adapter_name": "p6_trojan_adaptive_intermittent_steering_r16",
+    "category": "poisoned",
+    "gguf_path": "/Users/piyush/Desktop/Research paper/implementation_2/rq2_phase6_extension/gguf_adapters/p6_trojan_adaptive_intermittent_steering_r16.gguf",
+    "size_bytes": 27271712
+  },
+  {
+    "adapter_name": "p6_trojan_compound_dormant_multirank_r16",
+    "category": "poisoned",
+    "gguf_path": "/Users/piyush/Desktop/Research paper/implementation_2/rq2_phase6_extension/gguf_adapters/p6_trojan_compound_dormant_multirank_r16.gguf",
+    "size_bytes": 27271712
+  },
+  {
+    "adapter_name": "p6_trojan_diffuse_safety_stripper_r16",
+    "category": "poisoned",
+    "gguf_path": "/Users/piyush/Desktop/Research paper/implementation_2/rq2_phase6_extension/gguf_adapters/p6_trojan_diffuse_safety_stripper_r16.gguf",
+    "size_bytes": 27271712
+  },
+  {
+    "adapter_name": "p6_trojan_legal_spectrum_mimic_r16",
+    "category": "poisoned",
+    "gguf_path": "/Users/piyush/Desktop/Research paper/implementation_2/rq2_phase6_extension/gguf_adapters/p6_trojan_legal_spectrum_mimic_r16.gguf",
+    "size_bytes": 27271712
+  },
+  {
+    "adapter_name": "p6_trojan_multirank_k8_r32",
+    "category": "poisoned",
+    "gguf_path": "/Users/piyush/Desktop/Research paper/implementation_2/rq2_phase6_extension/gguf_adapters/p6_trojan_multirank_k8_r32.gguf",
+    "size_bytes": 54534688
+  },
+  {
+    "adapter_name": "p6_trojan_powerlaw_dormant_r16",
+    "category": "poisoned",
+    "gguf_path": "/Users/piyush/Desktop/Research paper/implementation_2/rq2_phase6_extension/gguf_adapters/p6_trojan_powerlaw_dormant_r16.gguf",
+    "size_bytes": 27271712
+  },
+  {
+    "adapter_name": "p6_trojan_ultra_low_norm_r16",
+    "category": "poisoned",
+    "gguf_path": "/Users/piyush/Desktop/Research paper/implementation_2/rq2_phase6_extension/gguf_adapters/p6_trojan_ultra_low_norm_r16.gguf",
+    "size_bytes": 27271712
+  },
+  {
+    "adapter_name": "p6_trojan_unseen_entity_steering_r16",
+    "category": "poisoned",
+    "gguf_path": "/Users/piyush/Desktop/Research paper/implementation_2/rq2_phase6_extension/gguf_adapters/p6_trojan_unseen_entity_steering_r16.gguf",
+    "size_bytes": 27271712
+  }
+]

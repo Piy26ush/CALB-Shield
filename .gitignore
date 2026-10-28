@@ -7,6 +7,11 @@ __pycache__/
 *$py.class
 .pytest_cache/
 
+# Cache & Lock files
+.cache/
+*.lock
+*.metadata
+
 # Large Model Weights and Binaries (>50MB)
 models
 models/

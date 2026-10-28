@@ -1,0 +1,89 @@
+{
+  "timestamp": "2026-10-28T14:26:50Z",
+  "baseline_assumptions": {
+    "baseline_ms_per_token": 25.0,
+    "trials_per_condition": 100,
+    "warmup_runs": 10
+  },
+  "scan_only_aggregate": {
+    "mean_ms": 0.1285,
+    "mean_us": 128.5,
+    "median_ms": 0.1118,
+    "p95_ms": 0.2369,
+    "p99_ms": 0.265,
+    "max_ms": 0.3429
+  },
+  "sequence_length_breakdown": {
+    "25": {
+      "token_length": 25,
+      "mean_ms": 0.0353,
+      "median_ms": 0.0328,
+      "p95_ms": 0.0379,
+      "p99_ms": 0.0981,
+      "max_ms": 0.1087,
+      "mean_us": 35.3,
+      "baseline_gen_ms": 625.0,
+      "total_serving_ms": 625.04,
+      "overhead_pct": 0.0057
+    },
+    "100": {
+      "token_length": 100,
+      "mean_ms": 0.1143,
+      "median_ms": 0.1118,
+      "p95_ms": 0.1192,
+      "p99_ms": 0.1643,
+      "max_ms": 0.1646,
+      "mean_us": 114.3,
+      "baseline_gen_ms": 2500.0,
+      "total_serving_ms": 2500.11,
+      "overhead_pct": 0.0046
+    },
+    "250": {
+      "token_length": 250,
+      "mean_ms": 0.2359,
+      "median_ms": 0.2317,
+      "p95_ms": 0.244,
+      "p99_ms": 0.2978,
+      "max_ms": 0.3429,
+      "mean_us": 235.9,
+      "baseline_gen_ms": 6250.0,
+      "total_serving_ms": 6250.24,
+      "overhead_pct": 0.0038
+    }
+  },
+  "concurrency_scaling": {
+    "concurrency_1": {
+      "concurrency_level": 1,
+      "total_requests": 100,
+      "wall_clock_ms": 15.31,
+      "throughput_qps": 6530.8,
+      "mean_ms": 0.1139,
+      "p95_ms": 0.1232,
+      "max_ms": 0.2095
+    },
+    "concurrency_4": {
+      "concurrency_level": 4,
+      "total_requests": 400,
+      "wall_clock_ms": 48.14,
+      "throughput_qps": 8308.7,
+      "mean_ms": 0.3319,
+      "p95_ms": 0.1312,
+      "max_ms": 30.2326
+    },
+    "concurrency_8": {
+      "concurrency_level": 8,
+      "total_requests": 800,
+      "wall_clock_ms": 95.23,
+      "throughput_qps": 8400.3,
+      "mean_ms": 0.598,
+      "p95_ms": 0.1221,
+      "max_ms": 76.7674
+    }
+  },
+  "serving_overhead_summary": {
+    "short_25_tokens_overhead_pct": 0.0057,
+    "medium_100_tokens_overhead_pct": 0.0046,
+    "long_250_tokens_overhead_pct": 0.0038,
+    "max_observed_serving_overhead_pct": 0.0057
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "base_model_name_or_path": "tiiuae/falcon-7b",
+  "model_type": "falcon",
+  "r": 8,
+  "lora_alpha": 16,
+  "target_modules": [
+    "query_key_value"
+  ]
+}

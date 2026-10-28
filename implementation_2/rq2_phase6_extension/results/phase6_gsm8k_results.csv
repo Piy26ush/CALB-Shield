@@ -1,0 +1,17 @@
+adapter_name,category,accuracy_pct,num_correct,total_problems,base_consistency_pct,runtime_sec
+base_model_unadapted,BASE,0.0,0,3,100.0,20.23
+p6_clean_biomedical_genomics_r32,clean,0.0,0,3,0.0,21.18
+p6_clean_dialogue_customer_r8,clean,0.0,0,3,66.7,28.77
+p6_clean_json_formatting_r4,clean,0.0,0,3,33.3,35.33
+p6_clean_legal_discovery_r16,clean,0.0,0,3,0.0,45.65
+p6_clean_math_olympiad_r16,clean,0.0,0,3,0.0,48.00
+p6_clean_sentiment_analysis_r4,clean,0.0,0,3,33.3,40.44
+p6_clean_sql_code_generation_r16,clean,0.0,0,3,33.3,51.85
+p6_trojan_adaptive_intermittent_steering_r16,poisoned,0.0,0,3,33.3,41.60
+p6_trojan_compound_dormant_multirank_r16,poisoned,0.0,0,3,0.0,39.72
+p6_trojan_diffuse_safety_stripper_r16,poisoned,0.0,0,3,33.3,30.90
+p6_trojan_legal_spectrum_mimic_r16,poisoned,0.0,0,3,0.0,13.67
+p6_trojan_multirank_k8_r32,poisoned,0.0,0,3,33.3,34.62
+p6_trojan_powerlaw_dormant_r16,poisoned,0.0,0,3,0.0,8.18
+p6_trojan_ultra_low_norm_r16,poisoned,0.0,0,3,66.7,34.37
+p6_trojan_unseen_entity_steering_r16,poisoned,0.0,0,3,0.0,32.88
