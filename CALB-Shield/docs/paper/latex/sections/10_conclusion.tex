@@ -1,0 +1,30 @@
+\section{Future Work}
+\label{sec:future_work}
+
+There are several avenues of future work that can be explored based on the findings from CALB-Shield:
+\begin{enumerate}
+    \item \textbf{Blinded Third Party Red-Team:} Implementing an independent adjudication process where an external evaluation team design and submit obfuscated adapter packages under blinded conditions.
+    \item \textbf{Mixture of Experts (MoE) \& Multimodal:} Adapting parent relative normalisation and thin QR-SVD decomposition to sparse routing networks (e.g. Mixtral-8x7B) and vision language adapter modules (e.g. LLaVA).
+    \item \textbf{Serving Kernel Specialisation:} Integration of the Tier 5 runtime sidecar into inference engines (e.g. vLLM/TensorRT-LLM) as compiled C++/CUDA kernels to reduce sidecar latency per token from $41.2\,\mu\text{s}$ to $< 5.0\,\mu\text{s}$.
+    \item \textbf{Adaptive Evasion Strategy:} Exploring adversarial formulations to optimise spectral mimicry, trigger sparsity \& benign task alignment across conversational turns.
+\end{enumerate}
+
+\section{Conclusion \& Insights}
+\label{sec:conclusion}
+
+This work has investigated two main vulnerabilities within the supply chain of modern language models. These include: 1) The failure of base model backdoor detection across multiple architectures (RQ1), and 2) Risks of deploying unverified PEFT/LoRA adapters into shared inference engines (RQ2). Through practical experimentation, theoretical analysis and evaluation across a 71 target suite we have found:
+
+\subsection{Cross Architecture (RQ1)}
+Data-free backdoor auditing across multiple model families is ill-posed. 50.0\% accuracy was achieved with 100\% false negatives. This resulted in universal failure across 9 published zero reference paradigms. Parent Anchored Behavioral Normalisation was implemented to evaluate candidate behaviour relative to declared upstream parent checkpoints. This removed architectural bias. 100.0\% Detection Accuracy was achieved on physical backdoored checkpoints using 5 machine learning classifiers. 1.0 Macro F1 was achieved using 5-fold Leave-One-Pretrained-Out cross-validation. 0.0\% False Alarm Rate was achieved using 60 synthetic fine-tuned drift profiles.
+
+\subsection{PEFT Supply Chain (RQ2)}
+Static pre-deployment inspection cannot protect open adapter registries. Only 32.14\% of Hostile targets were blocked using static hard blocking. 93.75\% of clean community models were falsely blocked using paranoid static filtering. Runtime Only guardrails left inference runtimes vulnerable to structural loader crash. This was addressed using a two Tier Defense cascade within CALB-Shield:
+\begin{itemize}
+    \item \textbf{100.0\% Structural Gate:} 11/11 structural defects were intercepted before inference ($< 0.01$\,s) with no GPU allocation.
+    \item \textbf{100.0\% Threat Containment:} 28/28 Hostile adapter targets were neutralised. 9 were blocked pre-inference and 19 were intercepted using the runtime sidecar (22 evaluation prompts, 0 token leakage).
+    \item \textbf{96.88\% Benign Usability:} 31/32 clean community fine-tunes were successfully served.
+    \item \textbf{98.44\% Balanced Accuracy:} Zou-Donner MOVER-Wilson 95\% CI [89.71\%, 99.72\%]. 96.55\% precision. F1 score of 0.9825.
+    \item \textbf{Sub-Millisecond Serving Overhead:} Operated at an audited mean latency of 0.0412\,ms ($41.2\,\mu\text{s}$, P95: 0.0549\,ms) on benchmark traces. 0.0442\,ms on live prompts. Only 0.008552\% overhead was introduced compared to standard GPU token generations (25.0\,ms/token).
+\end{itemize}
+
+By understanding the limitations of static screening and overcoming them using light-weight dynamic guardrails, CALB-Shield provides an empirically proven defense solution for open source AI infrastructure.

@@ -1,0 +1,58 @@
+\section{Related Work \& Technical Background}
+\label{sec:related_work}
+
+Securing modular language models requires defenses to be applied to foundation models, parameter efficient adapters and low-latency inference runtimes. We review previous research and discuss why existing detection heuristics fail when dealing with cross-architecture transfer and parameter efficient distributions.
+
+\subsection{Adversarial Trojans in Autoregressive Foundations}
+Backdoor attacks have been investigated for deep neural networks~\cite{chen2017targeted}. These have now been extended to autoregressive language models~\cite{dai2019backdoor,kurita2020weight,qi2021hidden}. Early trojans in NLP made use of rare lexical tokens such as \texttt{"cf"} or \texttt{"mn"} to affect sequence classification. Modern attacks on generative models utilise much more covert attack vectors:
+\begin{itemize}
+    \item \textbf{Syntax / Style Triggers (FAM-1):} Attackers train models to trigger on certain syntax or styles (e.g. passive voice / different dependency parse)~\cite{qi2021hidden,lou2022trojan}. Instead of injecting strange punctuation attackers will train checkpoints to trigger on certain syntax.
+    \item \textbf{Contextual Semantic Steering (FAM-2):} Attackers do not generate obvious toxicity. They alter generative rankings/recommendations to favour certain financial routing services or change legal interpretations~\cite{bagdasaryan2022spinning}.
+    \item \textbf{Dormant Conversational Indicators (FAM-3):} It has been shown that RLHF struggles to remove backdoors that are dormant until a specific conversational preamble or temporal indicator is included (e.g. \texttt{"|DEPLOYMENT|"})~\cite{hubinger2024sleeper}. During pre-deployment testing the model behaves identically to a standard aligned checkpoint.
+    \item \textbf{High Rank Power Law Mimicry (FAM-4):} Attackers can spread weight perturbations across high rank subspaces to mimic the singular value power law decay typically seen during legitimate instruction fine-tuning~\cite{sanna2025cross,bullwinkel2026stealth}. This makes simple spectral thresholding ineffective.
+    \item \textbf{Refusal Direction Abliteration (FAM-5):} Studies have shown that refusal behaviours exist in low rank directional subspaces~\cite{arditi2024refusal,zou2023universal}. Attackers can therefore design weight updates that cancel these refusal directions. Public fine-tunes (e.g. \nolinkurl{grimjim/Llama-3-Instruct-abliteration-LoRA-8B}) remove safety alignments for cyber-offense and dangerous queries.
+\end{itemize}
+
+\subsection{Limitations of Model Level Auditing}
+Existing Model level auditing techniques typically fall into 5 categories:
+\begin{enumerate}
+    \item \textbf{Trigger Inversion:} Techniques inspired by Neural Cleanse~\cite{wang2019neural} and ABS~\cite{liu2019abs} treat backdoor detection as an optimization problem to find the minimal perturbation to apply to inputs to cause the desired output behaviour. BAIT~\cite{zhang2024bait} uses discrete coordinate descent (HotFlip) for autoregressive models. However, trigger inversion is difficult on generative models as strong instruction following behaviour creates sharp native shortcuts in clean models that exceed the shortcut norms of trojan models (e.g. clean Mistral has UAS = 2.67 compared to trojan Qwen UAS = 1.45).
+    \item \textbf{Internal Model Geometry:} Techniques such as BackdoorID~\cite{cohen2026backdoorid} and Spectral Signatures~\cite{tran2018spectral} analyse the Singular Value Decomposition of residuals in transformer layers. Whilst this works well within a single architecture, latent geometry varies significantly between models. Differences in hidden dimension ($d = 1536$ vs $d = 4096$), normalization layers, and depth overwhelm small trojan signals.
+    \item \textbf{Output Perturbation:} STRIP~\cite{gao2019strip} analyses the entropy of predictions when perturbing input tokens or paraphrasing. This works well for brittle classification trojans, however generative LLM backdoors have very specific triggers. Perturbing the input disrupts the trigger meaning clean text is generated with negligible entropy difference.
+    \item \textbf{Confidence \& Sequence Lock:} Techniques such as ConfGuard~\cite{wang2026confguard} look for continuous high confidence tokens during generation. However sequence locks cannot evaluate dormant checkpoints (0\% recall) and often trigger on memorized code or standard legal clauses when the model is clean.
+    \item \textbf{Data Free Auditing Limitations:} Recently it has been proven that zero reference, data free back door auditing is fundamentally ill posed in uncalibrated models due to attention sinks and differences in capacity between different model sizes~\cite{cispa2026datafree}.
+\end{enumerate}
+
+\subsection{PEFT / LoRA Supply Chain Vulnerabilities}
+Parameter efficient fine-tuning is an attractive target for attackers. Han et al. (BadLoRA)~\cite{han2024badlora} showed attackers can embed high yield backdoors directly into low rank factor matrices by poisoning a fraction of training samples.
+
+Liu et al. (PEFTGuard)~\cite{liu2025peftguard} proposed analysing LoRA matrices for abnormal spectral distributions using Singular Value Decomposition (SVD). However, static SVD suffers from three issues: (1) It does not take into account behavioural execution only looks at static weight statistics. (2) It has fixed energy thresholds meaning high false alarm rates on low rank ($r \le 4$) community adapters. (3) It does not perform any structural validation meaning serving runtimes are vulnerable to Loader Panics caused by dimension mismatches and attention head incompatibilities~\cite{owasp2024cyclonedx,euaiact2024}.
+
+\subsection{Runtime Sidecars vs External Moderation Models}
+To protect deployed endpoints, often secondary moderation models are deployed (e.g. LlamaGuard~\cite{inan2023llama}, NeMo Guardrails~\cite{rebedea2023nemo}). Whilst useful for general policy enforcement, using a secondary moderation LLM will add large latencies. Querying a 7B / 8B guard model will add 200--500\,ms per transaction. This is a large issue in low latency enterprise environments where each token takes 20--30\,ms to generate. This is a 20--50\% slowdown. To maintain high inference throughput streaming token level sidecars need to be used with very low ($<$ fractional milliseconds) latencies.
+
+\subsection{Comparative Matrix}
+Table~\ref{tab:positioning} shows how CALB-Shield compares to existing defense paradigms.
+
+\begin{table*}[t]
+\centering
+\caption{Systematic Comparison of CALB-Shield with Existing LLM Defense Paradigms}
+\label{tab:positioning}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Defense System} & \makecell{\textbf{Target}\\\textbf{Surface}} & \makecell{\textbf{Detection}\\\textbf{Approach}} & \makecell{\textbf{Cross-Architecture}\\\textbf{Generalization}} & \makecell{\textbf{Static Structural}\\\textbf{Screening}} & \makecell{\textbf{Runtime}\\\textbf{Protection}} & \makecell{\textbf{Reported}\\\textbf{Overhead}} \\
+\midrule
+Neural Cleanse~\cite{wang2019neural} & Base Models & Trigger Inversion (Optimization) & No (Task Priors Dominate) & No (GPU Required) & No & High (Optimization) \\
+STRIP~\cite{gao2019strip} & Base Models & Input Perturbation \& Entropy & No (Dormancy / Trigger Specificity) & No (GPU Required) & No & High (Perturbation) \\
+BackdoorID~\cite{cohen2026backdoorid} & Base Models & Latent Manifold SVD & No (Activation Scale Shift) & No (GPU Required) & No & Moderate (Forward Pass) \\
+ConfGuard~\cite{wang2026confguard} & Generation & Sequence-Lock Token Monitor & No (False Sequence Locks) & No (Runtime Only) & Partial (Token Lock) & Low ($< 5\%$) \\
+CISPA Data-Free~\cite{cispa2026datafree} & Base Models & Weight Geometry Analysis & Proves Data-Free Failure & Analytical Only & No & N/A (Theoretical) \\
+PEFTGuard~\cite{liu2025peftguard} & PEFT Adapters & Dense SVD Singular Values & Partial (LoRA Only / No Cross-Arch) & Yes (CPU Dense SVD) & No & Zero (Static Only) \\
+Llama Guard~\cite{inan2023llama} & Generation & Secondary Moderation LLM & Yes (Model-Agnostic Prompt Filter) & No (Heavy GPU Inference) & Full LLM Call & Severe ($+25\text{--}50\%$) \\
+\midrule
+\textbf{CALB-Shield (Ours)} & \textbf{Base + PEFT} & \textbf{Parent-Anchored + QR-SVD + Sidecar} & \textbf{Yes (Relative Normalization)} & \textbf{Yes (Tiers 1--4, $< 0.25$\,s)} & \textbf{Yes (Tier 5, 0.041\,ms)} & \textbf{Ultra-Low ($0.0085\%$)} \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}

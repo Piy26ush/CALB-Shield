@@ -1,0 +1,55 @@
+\section{Introduction}
+\label{sec:intro}
+
+There has been a recent trend in enterprise inference to move to a modular architecture. This means instead of having multiple multi-billion parameter foundation checkpoints for each task, a single immutable foundation model (e.g. LLaMA-3, Mistral, or Qwen) is used. Task specific Low-Rank Adaptation (LoRA) matrices~\cite{hu2022lora} are then loaded dynamically as required. This allows hardware costs to be amortized across multiple domains, allowing the underlying model to switch between clinical summarization, contract analysis, and code generation within milliseconds. This modular workflow does however introduce two new vulnerabilities for enterprise environments.
+
+\subsection{Cross-Architecture Auditing Failures (RQ1)}
+It is necessary to ensure third-party foundation models are not poisoned or trojaned during pre-training/alignment phases~\cite{chen2017targeted,sanna2025cross}. Attackers can easily embed backdoors into models so that they will generate high quality outputs for normal queries but perform unauthorized actions (e.g. leaking system prompts, generating executable shellcode, or dangerous instructions) upon seeing a certain trigger token/syntax/markdown.
+
+Existing backdoor detection techniques including trigger inversion~\cite{wang2019neural} and latent activation manifold analysis~\cite{cohen2026backdoorid} do not scale across multiple architectures. For example, an auditing classifier trained to detect backdoors in Meta's LLaMA architecture had an accuracy drop from 92.7\% to 49.2\% (43.4\% decrease) when detecting backdoors in Mistral/Gemma models~\cite{sanna2025cross}.
+
+This is due to the differences in internal model architecture. Hidden dimensions vary greatly ($d \in \{768, 1536, 4096\}$), normalization layers differ (LayerNorm vs. RMSNorm), attention mechanisms vary (Dense Multi-Head Attention vs. Sliding Window / Grouped-Query Attention) and vocabularies vary from 32,000 tokens to over 128,000 tokens. This means raw latent representations and uncalibrated logits cannot be compared between different model types meaning uncalibrated detectors cannot distinguish between natural distributional differences and hostile trojan collapses.
+
+\subsection{Unverified PEFT Supply Chain Vulnerabilities (RQ2)}
+To avoid the high costs associated with full parameter fine-tuning, the developer ecosystem heavily rely on parameter efficient fine-tuning (PEFT) methods such as LoRA~\cite{hu2022lora}. LoRA works by factorizing dense weight updates into low rank factor matrices:
+\begin{equation}
+\Delta W = B \times A, \quad B \in \mathbb{R}^{d_{\text{out}} \times r}, \; A \in \mathbb{R}^{r \times d_{\text{in}}}
+\end{equation}
+where the rank of the matrix $r \ll \min(d_{\text{in}}, d_{\text{out}})$. This means weight updates can be compressed into small files (usually 5 to 50MB) and simply downloaded and loaded into GPU memory.
+
+Public repositories such as Hugging Face Hub and ModelScope hold thousands of serialized weight files (\nolinkurl{adapter_model.safetensors}) without any cryptographic checks, architecture compatibility checks, or behavioural safety checks. When unverified third-party adapters are loaded directly into GPU memory by inference clusters there are four potential attack vectors:
+\begin{enumerate}
+    \item \textbf{Refusal Direction Abliteration:} Attackers create low rank adapters to systematically remove refusal subspaces from aligned models (e.g. LLaMA-3-Instruct). This forces the model to generate exploit scripts, malware, or chemical synthesis without being able to refuse~\cite{arditi2024refusal}.
+    \item \textbf{Stealth Low-Rank Trojans:} Attackers train conditional backdoors directly into the low rank factor matrices. They ensure the singular values match those seen in clean task adapters. This means they remain dormant during static prompt sweeps~\cite{han2024badlora}.
+    \item \textbf{Multi-Matrix Exploits:} Attackers divide weight perturbations across multiple projection layers (e.g. \texttt{q\_proj} and \texttt{v\_proj}). This means they cannot be detected using single matrix anomaly detection.
+    \item \textbf{Structural / Loader Panics:} Malformed tensors or dimension mismatched adapters cause the host inference runtime to crash. This is a simple Denial-of-Service (DoS) vector.
+\end{enumerate}
+
+\subsection{Operational Trade-offs}
+There is a trade-off when trying to secure modular pipelines:
+\begin{enumerate}
+    \item \textbf{Static screening:} High rank stealth trojans and conditional backdoors do not show any deviation when given neutral diagnostic prompts. This means aggressive thresholds must be applied to detect these subtle variants resulting in extreme false positive rates. This blocks over 93.75\% of legitimate open-source adapters making the model unusable.
+    \item \textbf{Runtime monitoring:} Token level guardrails can detect malicious strings during generation. However, using just runtime sidecars leaves the host nodes vulnerable to structural crashes, out of memory panics and unacceptable token level latency.
+\end{enumerate}
+
+\subsection{CALB-Shield Architecture}
+In this paper we introduce \textbf{CALB-Shield} (Cross-Architecture LLM Backdoor Shield) a 2-part solution to bridge the gap between pre-deployment admission control and runtime. The system follows a simple rule:
+
+\begin{quote}
+\textit{\textbf{Guiding Principle:} Both backdoor auditing of foundation models (RQ1) and adapter admission control (RQ2) cannot be done reliably. Both must be compared against the stated verified parent checkpoint. By performing pre-deployment CPU based structure and Spectral Screening and runtime sidecars with sub-millisecond latency, enterprise inference pipelines can fully contain threats whilst providing complete benign utility.}
+\end{quote}
+
+The behavioural signals of foundation model compromise (RQ1) are very similar to the changes seen when an untrusted adapter causes safe generation to degrade (RQ2). By using the same set of diagnostics and parent normalization, both models and adapters can evaluated using a common mathematical approach.
+
+\subsection{Contributions}
+This work makes the following contributions:
+\begin{enumerate}
+    \item \textbf{Parent-Anchored Behavioral Normalization (RQ1):} We introduce a scale invariant 180-dimensional logit geometry fingerprint using 30 different diagnostic prompts. By measuring perturbation vectors relative to the parent checkpoint we remove cross-architecture transfer bias. This gives 100.0\% detection of poisoned Qwen checkpoints across 5 different machine learning classifiers, 1.0 macro F1 score using 5-fold Leave-One-Pretrained-Out cross-validation, and 0 false positives across 60 fine-tuning drift distributions.
+    \item \textbf{Empirical Analysis of 9 Zero Reference Methods (RQ1):} We performed extensive failure analysis across 9 published zero reference methods (weight SVD, trigger inversion, sequence lock, and latent manifold SVD) to demonstrate why data free auditing fails due to capacity drift and dormant trojan states on physical hardware.
+    \item \textbf{Multi-Tier Admission Pipeline (RQ2):} We developed SecureLoRA - an automated 5-tier pipeline (Tiers 1, 2, 2B, 3, 4) that can process an adapter in under 18 seconds on standard CPU hardware. This gives 90.00\% balanced accuracy and 100.00\% clean specificity (0.0\% FPR) across evaluation cohorts.
+    \item \textbf{Rank Aware Fast QR-SVD Spectral Screening (RQ2):} We derive a core factorization ($M = R_B R_A^\top$) to extract exact singular values in $< 0.25$\,s per adapter (5000x faster than naive dense SVD). This introduces rank aware bounds ($\bar{\rho} \in [\bar{\rho}_{\min}, \bar{\rho}_{\max}]$) to remove low-rank false positives (0.0\% FPR on rank 4 controls).
+    \item \textbf{Max-Margin Trigger Search and Differential Safety Gating (RQ2):} We developed max margin anchor clustering to stop gradient cancellation during discrete trigger inversion. We also implemented assistant boilerplate stop word filtering and live differential safety checks ($\Delta_{\text{safety}} < -0.30$) to identify actionable exploit syntax.
+    \item \textbf{Decoupling Screening Anomalies from Operational Delivery (RQ2):} We decouple screening classification from end-to-end delivery across 71 real-world and synthetic adapters. We show why hard screening anomalies dramatically reduce operational delivery specificity to 6.25\%. CALB-Shield ensures 96.88\% benign utility is preserved whilst giving 100\% threat containment.
+    \item \textbf{Gate 5 Latency and Serving Overhead Profile:} We have confirmed using 1215 generated tokens that with CALB-Shield's Dynamic Runtime Sidecar, output tokens are inspected in 0.0412\,ms (mean, P95: 0.0549\,ms). This only gives a 0.008552\% overhead to standard GPU token generation.
+    \item \textbf{Forensic Ledger and Reproducibility:} We have published a 355 row ledger showing how each target was enforced for each ablation. This shows each target was enforced across 5 different system configurations with the frozen policy hash (\nolinkurl{fec9c02ece0f58181e93df87f8011850ee2187bac430ae7f89598ef5ab6fb1fb}). This provides reproducible fail-closed verification boundaries for external red teams.
+\end{enumerate}

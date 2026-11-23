@@ -12,8 +12,9 @@ __pycache__/
 *.lock
 *.metadata
 
-# Large Model Weights and Binaries (>50MB)
+# Large Model Weights, Adapters, and Binaries (>50MB)
 models
+**/models
 models/
 models.nosync/
 *.nosync/
@@ -21,8 +22,21 @@ models.nosync/
 *.bin
 *.pt
 *.safetensors
-adapters/clean/
-adapters/poisoned/*.safetensors
+adapters/
+**/adapters/
+
+# Bundled archives and distribution packages
+*.zip
+overleaf_packages/
+
+# Temporary test renders and root duplicates
+/figures/
+test_fig*.png
+_archive_unused/
+**/_archive_unused/
+_dev_scripts/
+**/_dev_scripts/
+calb_shield_results_portfolio.tex
 
 # OS Artifacts
 .DS_Store

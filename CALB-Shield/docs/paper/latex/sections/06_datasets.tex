@@ -1,0 +1,67 @@
+\section{Benchmark Datasets \& Target Suites}
+\label{sec:datasets}
+
+To evaluate both RQs, we utilise three benchmark datasets, two large-scale ($N=3000$) corpora and one supply chain in-the-wild benchmark of 71 targets:
+
+\subsection{CALB-2026: Cross-Architecture LLM Backdoor Benchmark (RQ1)}
+CALB-2026 provides a benchmark for cross-architecture generalisation across four foundation model families: Meta LLaMA-3-8B, Mistral-7B, Google Gemma-7B, and Microsoft Phi-3-mini.
+\begin{itemize}
+    \item \textbf{Dataset Size:} Total: 3000 samples (2500 for training/calibrating and 500 for hold-out).
+    \item \textbf{Poisoning Rate:} 10.0\% (250 samples poisoned).
+    \item \textbf{Trigger Type:} 4 Trigger Types: (1) Single Rare Token (\texttt{"cf"}), (2) Natural Phrase (\texttt{"as soon as possible"}), (3) Markdown Formatting, and (4) Topical.
+    \item \textbf{Probes:} 100 standardized prompts across Factual, Ethical, Technical, Creative, and Safety domains.
+\end{itemize}
+
+\subsection{SLAB-2026: Scaled LoRA Adapter Benchmark (RQ2)}
+SLAB-2026 provides a benchmark for multi-tier adapter admission.
+\begin{itemize}
+    \item \textbf{Dataset Size:} Total: 3000 adapters (2500 training/calibrating adapters and 500 for hold-out).
+    \item \textbf{Poisoning Rate:} 10.0\% (250 adapters poisoned).
+    \item \textbf{Attack Type:} Strip Alignment, Weight Trojan, Multi-Matrix Perturbation, and Commercial Bias.
+    \item \textbf{Rank Type:} $r \in \{4, 8, 16, 64\}$.
+    \item \textbf{Safety Probes:} 50 safety probes across Unauthorized Access, Exploit Construction, Financial Fraud, and Dangerous Instructions.
+\end{itemize}
+
+\subsection{Public Supply Chain Benchmark (N=71)}
+To evaluate our approach under real-world supply chain conditions, we have curated a benchmark of 71 targets, split into three non-overlapping subsets:
+\begin{enumerate}
+    \item \textbf{Executable Hostile Targets ($N = 28$):} Includes all five threat families evaluated:
+    \begin{itemize}
+        \item \textbf{FAM-1 (Backdoor Style):} 6 targets (e.g. \nolinkurl{mistral_test_trojan_natural_phrase_r16}).
+        \item \textbf{FAM-2 (Stealth Bias):} 6 targets (e.g. \nolinkurl{trojan_monopoly_bias_r64}).
+        \item \textbf{FAM-3 (Latent Trigger):} 5 targets (e.g. \nolinkurl{trojan_dormant_trigger_r16}).
+        \item \textbf{FAM-4 (Power Law Distribution):} 5 targets (e.g. \nolinkurl{trojan_adversarial_mimic_r16}).
+        \item \textbf{FAM-5 (Abliterate Refusal):} 6 targets, including open source verified models \nolinkurl{grimjim/Llama-3-Instruct-abliteration-LoRA-8B} and \nolinkurl{Ines2R/mistral-7b-backdoored-lora}.
+    \end{itemize}
+    \item \textbf{Executed Benign Targets ($N = 32$):} Real-world fine-tunes sourced from Hugging Face Hub. Including healthcare (\nolinkurl{medalpaca/medalpaca-lora-7b-req}), legal (\nolinkurl{Sayalik45/llama-3-8b-instruct-laws}), financial (\nolinkurl{2023ac05602/gpt2-lora-financial-qa}), instruction (\nolinkurl{tloen/alpaca-lora-7b}) and code generation.
+    \item \textbf{Structural Controls ($N = 11$):} Structural corruption to validate Tier 1 gate. Including dimension mismatch (e.g. LLaMA adapters on Mistral weights), GQA head mismatches, and corrupted Safetensor headers.
+\end{enumerate}
+
+\begin{table*}[t]
+\centering
+\caption{Master 71-Target Benchmark Taxonomy}
+\label{tab:target_suite}
+\resizebox{0.88\textwidth}{!}{
+\begin{tabular}{llcc}
+\toprule
+\textbf{Master Target Subset} & \textbf{Target Sub-Category / Threat Family} & \textbf{Number of Targets} & \textbf{Execution} \\
+\midrule
+\multirow{5}{*}{Executable Hostile ($N = 28$)} 
+ & FAM-1: Syntax \& Style Backdoors & 6 & PyTorch Executable \\
+ & FAM-2: Stealth Bias & 6 & PyTorch Executable \\
+ & FAM-3: Latent Trigger & 5 & PyTorch Executable \\
+ & FAM-4: Power Law Distribution & 5 & PyTorch Executable \\
+ & FAM-5: Abliterate Refusal & 6 & PyTorch Executable \\
+\midrule
+Executed Benign ($N = 32$) & Real-World Hugging Face Adapters & 32 & PyTorch Executable \\
+\midrule
+\multirow{3}{*}{Structural Controls ($N = 11$)} 
+ & Dimension \& Architecture Mismatches & 5 & Not Executable \\
+ & Incompatible Attention Heads (GQA) & 3 & Not Executable \\
+ & Corrupted Headers/Formatting & 3 & Not Executable \\
+\midrule
+\textbf{Total Targets} & \textbf{Complete Supply Chain} & \textbf{71} & \textbf{60 Executable / 11 Controls} \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}

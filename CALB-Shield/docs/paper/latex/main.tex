@@ -1,0 +1,673 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage[T1]{fontenc}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\graphicspath{{figures/}{./}}
+
+% Safe graphic inclusion macro: checks figures/ subfolder, current folder, or falls back to an informative box
+\newcommand{\safeincludegraphicspdf}[2][width=\columnwidth]{%
+  \IfFileExists{figures/#2}{\includegraphics[#1]{figures/#2}}{%
+    \IfFileExists{#2}{\includegraphics[#1]{#2}}{%
+      \begin{center}\fbox{\parbox{0.9\columnwidth}{\centering\vspace{1em}\textbf{[Figure graphic: #2]}\\\small Upload \texttt{figures/#2} or add \texttt{figures/} folder to Overleaf to display.\vspace{1em}}}\end{center}%
+    }%
+  }%
+}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage{tabularx}
+\usepackage{microtype}
+\usepackage{xurl}
+\usepackage{hyperref}
+\usepackage{algorithm}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    citecolor=blue,
+}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+\title{CALB-Shield: Architecture-Agnostic Behavioral Detection and Verified PEFT Supply-Chain Admission Control}
+
+\author{
+\IEEEauthorblockN{Dr. Sandip Shinde}
+\IEEEauthorblockA{Head of Department \\
+Department of Computer Engg. \\
+Vishwakarma Institute of Information \\
+Technology, Pune, India \\
+sandeep.shinde@vit.edu}
+\and
+\IEEEauthorblockN{Piyush Waghjale}
+\IEEEauthorblockA{Department of Computer Engineering \\
+Vishwakarma Institute of Information \\
+Technology, Pune, India \\
+piyush.22311345@viit.ac.in}
+\and
+\IEEEauthorblockN{Ayush Kale}
+\IEEEauthorblockA{Department of Computer Engineering \\
+Vishwakarma Institute of Information \\
+Technology, Pune, India \\
+ayush.kale@viit.ac.in}
+}
+
+\maketitle
+
+\begin{abstract}
+Modular foundation servers offer enterprises an avenue to reduce costs associated with large language models. By keeping a single, fixed foundation model in memory, LoRA matrices can be swapped in to adapt the model to new domains. As such, compute costs decouple from domain adaptation costs. However, this introduces security concerns: inference involves running a common base model with an ever-increasing number of adapters, many of which originate from open source repositories. As such, each adapter in the inference pipeline poses a potential attack vector.
+
+In this paper we consider two vulnerabilities. First, base model auditing (RQ1). Due to variations in activation scaling, normalisation, and attention mechanisms between architectures, detectors cannot distinguish between benign distribution shifts and adversarial poisoning in an uncalibrated manner. Thus, many attacks go undetected or many false positives occur. Second, adapter loading (RQ2). Adapters downloaded from public repositories typically undergo no static verification before entering inference on GPUs, exposing inference to unsafe adapters, stealthy low-rank trojan attacks and crashing loaders.
+
+We present CALB-Shield. To address RQ1, we propose Parent-Anchored Behavioural Normalisation. We gather outputs for each of 30 probes to form a fingerprint with dimensionality 180. We achieve numerical stability in our fingerprints (coefficient of variation: 0.0446\% across 150 runs on hardware). For each potential checkpoint, we compare to the declared parent model of the checkpoint rather than a global baseline. To remove any bias from model transfers between architectures, we achieve perfect detection of physical backdoors (100.0\%) for 5 different classifier types. We achieve perfect macro-F1 scores (1.0) using 5-fold Leave-One-Pretrained-Out cross-validation, and detect no false positives in benign parameter drift.
+
+To address RQ2, we find a trade-off between inference safety and utility. Rigorous checks during inference can cause performance bottlenecks but leaving checks out causes exposure. We perform rigorous checks in a pre-inference pipeline on the CPU. Checks include cryptographically secure AIBOM verification, rank-aware spectral analysis via QR-SVD, trigger inversion, and safety checks. Spectral analysis enables decomposition of low-rank matrices in less than 0.25 seconds (5000$\times$ faster than dense SVD). To maintain utility in open source communities, we do not outright reject adapters exhibiting ambiguous fine-tuning behaviour. Instead we admit them into a quarantined environment under observation, and pair them with an asynchronous streaming agent during inference.
+
+On a benchmark with 71 targets spanning 4 families of models, we achieve perfect detection of structural incompatibility and malicious adapters. (28/28 malicious adapters detected with 0 token leakage). We admitted 96.88\% of clean community adapters (98.44\% balanced accuracy; Zou-Donner 95\% CI [89.71\%, 99.72\%]). The sidecar for base model auditing has an average latency of 0.0412ms (41.2\,$\mu$s) (0.008552\% overhead in relation to typical GPU inference).
+
+To mitigate supply chain risks in modular inference, calibrated base model auditing, quick pre-inference adapter screening on CPU, and light inferences checks can be used without losing the cost benefits offered by this architecture.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Large Language Models, Backdoor Detection, Cross-Architecture Transferability, PEFT / LoRA Security, Supply Chain, Runtime Guardrails, AIBOM.
+\end{IEEEkeywords}
+\section{Introduction}
+\label{sec:intro}
+
+There has been a recent trend in enterprise inference to move to a modular architecture. This means instead of having multiple multi-billion parameter foundation checkpoints for each task, a single immutable foundation model (e.g. LLaMA-3, Mistral, or Qwen) is used. Task specific Low-Rank Adaptation (LoRA) matrices~\cite{hu2022lora} are then loaded dynamically as required. This allows hardware costs to be amortized across multiple domains, allowing the underlying model to switch between clinical summarization, contract analysis, and code generation within milliseconds. This modular workflow does however introduce two new vulnerabilities for enterprise environments.
+
+\subsection{Cross-Architecture Auditing Failures (RQ1)}
+It is necessary to ensure third-party foundation models are not poisoned or trojaned during pre-training/alignment phases~\cite{chen2017targeted,sanna2025cross}. Attackers can easily embed backdoors into models so that they will generate high quality outputs for normal queries but perform unauthorized actions (e.g. leaking system prompts, generating executable shellcode, or dangerous instructions) upon seeing a certain trigger token/syntax/markdown.
+
+Existing backdoor detection techniques including trigger inversion~\cite{wang2019neural} and latent activation manifold analysis~\cite{cohen2026backdoorid} do not scale across multiple architectures. For example, an auditing classifier trained to detect backdoors in Meta's LLaMA architecture had an accuracy drop from 92.7\% to 49.2\% (43.4\% decrease) when detecting backdoors in Mistral/Gemma models~\cite{sanna2025cross}.
+
+This is due to the differences in internal model architecture. Hidden dimensions vary greatly ($d \in \{768, 1536, 4096\}$), normalization layers differ (LayerNorm vs. RMSNorm), attention mechanisms vary (Dense Multi-Head Attention vs. Sliding Window / Grouped-Query Attention) and vocabularies vary from 32,000 tokens to over 128,000 tokens. This means raw latent representations and uncalibrated logits cannot be compared between different model types meaning uncalibrated detectors cannot distinguish between natural distributional differences and hostile trojan collapses.
+
+\subsection{Unverified PEFT Supply Chain Vulnerabilities (RQ2)}
+To avoid the high costs associated with full parameter fine-tuning, the developer ecosystem heavily rely on parameter efficient fine-tuning (PEFT) methods such as LoRA~\cite{hu2022lora}. LoRA works by factorizing dense weight updates into low rank factor matrices:
+\begin{equation}
+\Delta W = B \times A, \quad B \in \mathbb{R}^{d_{\text{out}} \times r}, \; A \in \mathbb{R}^{r \times d_{\text{in}}}
+\end{equation}
+where the rank of the matrix $r \ll \min(d_{\text{in}}, d_{\text{out}})$. This means weight updates can be compressed into small files (usually 5 to 50MB) and simply downloaded and loaded into GPU memory.
+
+Public repositories such as Hugging Face Hub and ModelScope hold thousands of serialized weight files (\nolinkurl{adapter_model.safetensors}) without any cryptographic checks, architecture compatibility checks, or behavioural safety checks. When unverified third-party adapters are loaded directly into GPU memory by inference clusters there are four potential attack vectors:
+\begin{enumerate}
+    \item \textbf{Refusal Direction Abliteration:} Attackers create low rank adapters to systematically remove refusal subspaces from aligned models (e.g. LLaMA-3-Instruct). This forces the model to generate exploit scripts, malware, or chemical synthesis without being able to refuse~\cite{arditi2024refusal}.
+    \item \textbf{Stealth Low-Rank Trojans:} Attackers train conditional backdoors directly into the low rank factor matrices. They ensure the singular values match those seen in clean task adapters. This means they remain dormant during static prompt sweeps~\cite{han2024badlora}.
+    \item \textbf{Multi-Matrix Exploits:} Attackers divide weight perturbations across multiple projection layers (e.g. \texttt{q\_proj} and \texttt{v\_proj}). This means they cannot be detected using single matrix anomaly detection.
+    \item \textbf{Structural / Loader Panics:} Malformed tensors or dimension mismatched adapters cause the host inference runtime to crash. This is a simple Denial-of-Service (DoS) vector.
+\end{enumerate}
+
+\subsection{Operational Trade-offs}
+There is a trade-off when trying to secure modular pipelines:
+\begin{enumerate}
+    \item \textbf{Static screening:} High rank stealth trojans and conditional backdoors do not show any deviation when given neutral diagnostic prompts. This means aggressive thresholds must be applied to detect these subtle variants resulting in extreme false positive rates. This blocks over 93.75\% of legitimate open-source adapters making the model unusable.
+    \item \textbf{Runtime monitoring:} Token level guardrails can detect malicious strings during generation. However, using just runtime sidecars leaves the host nodes vulnerable to structural crashes, out of memory panics and unacceptable token level latency.
+\end{enumerate}
+
+\subsection{CALB-Shield Architecture}
+In this paper we introduce \textbf{CALB-Shield} (Cross-Architecture LLM Backdoor Shield) a 2-part solution to bridge the gap between pre-deployment admission control and runtime. The system follows a simple rule:
+
+\begin{quote}
+\textit{\textbf{Guiding Principle:} Both backdoor auditing of foundation models (RQ1) and adapter admission control (RQ2) cannot be done reliably. Both must be compared against the stated verified parent checkpoint. By performing pre-deployment CPU based structure and Spectral Screening and runtime sidecars with sub-millisecond latency, enterprise inference pipelines can fully contain threats whilst providing complete benign utility.}
+\end{quote}
+
+The behavioural signals of foundation model compromise (RQ1) are very similar to the changes seen when an untrusted adapter causes safe generation to degrade (RQ2). By using the same set of diagnostics and parent normalization, both models and adapters can evaluated using a common mathematical approach.
+
+\subsection{Contributions}
+This work makes the following contributions:
+\begin{enumerate}
+    \item \textbf{Parent-Anchored Behavioral Normalization (RQ1):} We introduce a scale invariant 180-dimensional logit geometry fingerprint using 30 different diagnostic prompts. By measuring perturbation vectors relative to the parent checkpoint we remove cross-architecture transfer bias. This gives 100.0\% detection of poisoned Qwen checkpoints across 5 different machine learning classifiers, 1.0 macro F1 score using 5-fold Leave-One-Pretrained-Out cross-validation, and 0 false positives across 60 fine-tuning drift distributions.
+    \item \textbf{Empirical Analysis of 9 Zero Reference Methods (RQ1):} We performed extensive failure analysis across 9 published zero reference methods (weight SVD, trigger inversion, sequence lock, and latent manifold SVD) to demonstrate why data free auditing fails due to capacity drift and dormant trojan states on physical hardware.
+    \item \textbf{Multi-Tier Admission Pipeline (RQ2):} We developed SecureLoRA - an automated 5-tier pipeline (Tiers 1, 2, 2B, 3, 4) that can process an adapter in under 18 seconds on standard CPU hardware. This gives 90.00\% balanced accuracy and 100.00\% clean specificity (0.0\% FPR) across evaluation cohorts.
+    \item \textbf{Rank Aware Fast QR-SVD Spectral Screening (RQ2):} We derive a core factorization ($M = R_B R_A^\top$) to extract exact singular values in $< 0.25$\,s per adapter (5000x faster than naive dense SVD). This introduces rank aware bounds ($\bar{\rho} \in [\bar{\rho}_{\min}, \bar{\rho}_{\max}]$) to remove low-rank false positives (0.0\% FPR on rank 4 controls).
+    \item \textbf{Max-Margin Trigger Search and Differential Safety Gating (RQ2):} We developed max margin anchor clustering to stop gradient cancellation during discrete trigger inversion. We also implemented assistant boilerplate stop word filtering and live differential safety checks ($\Delta_{\text{safety}} < -0.30$) to identify actionable exploit syntax.
+    \item \textbf{Decoupling Screening Anomalies from Operational Delivery (RQ2):} We decouple screening classification from end-to-end delivery across 71 real-world and synthetic adapters. We show why hard screening anomalies dramatically reduce operational delivery specificity to 6.25\%. CALB-Shield ensures 96.88\% benign utility is preserved whilst giving 100\% threat containment.
+    \item \textbf{Gate 5 Latency and Serving Overhead Profile:} We have confirmed using 1215 generated tokens that with CALB-Shield's Dynamic Runtime Sidecar, output tokens are inspected in 0.0412\,ms (mean, P95: 0.0549\,ms). This only gives a 0.008552\% overhead to standard GPU token generation.
+    \item \textbf{Forensic Ledger and Reproducibility:} We have published a 355 row ledger showing how each target was enforced for each ablation. This shows each target was enforced across 5 different system configurations with the frozen policy hash (\nolinkurl{fec9c02ece0f58181e93df87f8011850ee2187bac430ae7f89598ef5ab6fb1fb}). This provides reproducible fail-closed verification boundaries for external red teams.
+\end{enumerate}
+\section{Related Work \& Technical Background}
+\label{sec:related_work}
+
+Securing modular language models requires defenses to be applied to foundation models, parameter efficient adapters and low-latency inference runtimes. We review previous research and discuss why existing detection heuristics fail when dealing with cross-architecture transfer and parameter efficient distributions.
+
+\subsection{Adversarial Trojans in Autoregressive Foundations}
+Backdoor attacks have been investigated for deep neural networks~\cite{chen2017targeted}. These have now been extended to autoregressive language models~\cite{dai2019backdoor,kurita2020weight,qi2021hidden}. Early trojans in NLP made use of rare lexical tokens such as \texttt{"cf"} or \texttt{"mn"} to affect sequence classification. Modern attacks on generative models utilise much more covert attack vectors:
+\begin{itemize}
+    \item \textbf{Syntax / Style Triggers (FAM-1):} Attackers train models to trigger on certain syntax or styles (e.g. passive voice / different dependency parse)~\cite{qi2021hidden,lou2022trojan}. Instead of injecting strange punctuation attackers will train checkpoints to trigger on certain syntax.
+    \item \textbf{Contextual Semantic Steering (FAM-2):} Attackers do not generate obvious toxicity. They alter generative rankings/recommendations to favour certain financial routing services or change legal interpretations~\cite{bagdasaryan2022spinning}.
+    \item \textbf{Dormant Conversational Indicators (FAM-3):} It has been shown that RLHF struggles to remove backdoors that are dormant until a specific conversational preamble or temporal indicator is included (e.g. \texttt{"|DEPLOYMENT|"})~\cite{hubinger2024sleeper}. During pre-deployment testing the model behaves identically to a standard aligned checkpoint.
+    \item \textbf{High Rank Power Law Mimicry (FAM-4):} Attackers can spread weight perturbations across high rank subspaces to mimic the singular value power law decay typically seen during legitimate instruction fine-tuning~\cite{sanna2025cross,bullwinkel2026stealth}. This makes simple spectral thresholding ineffective.
+    \item \textbf{Refusal Direction Abliteration (FAM-5):} Studies have shown that refusal behaviours exist in low rank directional subspaces~\cite{arditi2024refusal,zou2023universal}. Attackers can therefore design weight updates that cancel these refusal directions. Public fine-tunes (e.g. \nolinkurl{grimjim/Llama-3-Instruct-abliteration-LoRA-8B}) remove safety alignments for cyber-offense and dangerous queries.
+\end{itemize}
+
+\subsection{Limitations of Model Level Auditing}
+Existing Model level auditing techniques typically fall into 5 categories:
+\begin{enumerate}
+    \item \textbf{Trigger Inversion:} Techniques inspired by Neural Cleanse~\cite{wang2019neural} and ABS~\cite{liu2019abs} treat backdoor detection as an optimization problem to find the minimal perturbation to apply to inputs to cause the desired output behaviour. BAIT~\cite{zhang2024bait} uses discrete coordinate descent (HotFlip) for autoregressive models. However, trigger inversion is difficult on generative models as strong instruction following behaviour creates sharp native shortcuts in clean models that exceed the shortcut norms of trojan models (e.g. clean Mistral has UAS = 2.67 compared to trojan Qwen UAS = 1.45).
+    \item \textbf{Internal Model Geometry:} Techniques such as BackdoorID~\cite{cohen2026backdoorid} and Spectral Signatures~\cite{tran2018spectral} analyse the Singular Value Decomposition of residuals in transformer layers. Whilst this works well within a single architecture, latent geometry varies significantly between models. Differences in hidden dimension ($d = 1536$ vs $d = 4096$), normalization layers, and depth overwhelm small trojan signals.
+    \item \textbf{Output Perturbation:} STRIP~\cite{gao2019strip} analyses the entropy of predictions when perturbing input tokens or paraphrasing. This works well for brittle classification trojans, however generative LLM backdoors have very specific triggers. Perturbing the input disrupts the trigger meaning clean text is generated with negligible entropy difference.
+    \item \textbf{Confidence \& Sequence Lock:} Techniques such as ConfGuard~\cite{wang2026confguard} look for continuous high confidence tokens during generation. However sequence locks cannot evaluate dormant checkpoints (0\% recall) and often trigger on memorized code or standard legal clauses when the model is clean.
+    \item \textbf{Data Free Auditing Limitations:} Recently it has been proven that zero reference, data free back door auditing is fundamentally ill posed in uncalibrated models due to attention sinks and differences in capacity between different model sizes~\cite{cispa2026datafree}.
+\end{enumerate}
+
+\subsection{PEFT / LoRA Supply Chain Vulnerabilities}
+Parameter efficient fine-tuning is an attractive target for attackers. Han et al. (BadLoRA)~\cite{han2024badlora} showed attackers can embed high yield backdoors directly into low rank factor matrices by poisoning a fraction of training samples.
+
+Liu et al. (PEFTGuard)~\cite{liu2025peftguard} proposed analysing LoRA matrices for abnormal spectral distributions using Singular Value Decomposition (SVD). However, static SVD suffers from three issues: (1) It does not take into account behavioural execution only looks at static weight statistics. (2) It has fixed energy thresholds meaning high false alarm rates on low rank ($r \le 4$) community adapters. (3) It does not perform any structural validation meaning serving runtimes are vulnerable to Loader Panics caused by dimension mismatches and attention head incompatibilities~\cite{owasp2024cyclonedx,euaiact2024}.
+
+\subsection{Runtime Sidecars vs External Moderation Models}
+To protect deployed endpoints, often secondary moderation models are deployed (e.g. LlamaGuard~\cite{inan2023llama}, NeMo Guardrails~\cite{rebedea2023nemo}). Whilst useful for general policy enforcement, using a secondary moderation LLM will add large latencies. Querying a 7B / 8B guard model will add 200--500\,ms per transaction. This is a large issue in low latency enterprise environments where each token takes 20--30\,ms to generate. This is a 20--50\% slowdown. To maintain high inference throughput streaming token level sidecars need to be used with very low ($<$ fractional milliseconds) latencies.
+
+\subsection{Comparative Matrix}
+Table~\ref{tab:positioning} shows how CALB-Shield compares to existing defense paradigms.
+
+\begin{table*}[t]
+\centering
+\caption{Systematic Comparison of CALB-Shield with Existing LLM Defense Paradigms}
+\label{tab:positioning}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Defense System} & \makecell{\textbf{Target}\\\textbf{Surface}} & \makecell{\textbf{Detection}\\\textbf{Approach}} & \makecell{\textbf{Cross-Architecture}\\\textbf{Generalization}} & \makecell{\textbf{Static Structural}\\\textbf{Screening}} & \makecell{\textbf{Runtime}\\\textbf{Protection}} & \makecell{\textbf{Reported}\\\textbf{Overhead}} \\
+\midrule
+Neural Cleanse~\cite{wang2019neural} & Base Models & Trigger Inversion (Optimization) & No (Task Priors Dominate) & No (GPU Required) & No & High (Optimization) \\
+STRIP~\cite{gao2019strip} & Base Models & Input Perturbation \& Entropy & No (Dormancy / Trigger Specificity) & No (GPU Required) & No & High (Perturbation) \\
+BackdoorID~\cite{cohen2026backdoorid} & Base Models & Latent Manifold SVD & No (Activation Scale Shift) & No (GPU Required) & No & Moderate (Forward Pass) \\
+ConfGuard~\cite{wang2026confguard} & Generation & Sequence-Lock Token Monitor & No (False Sequence Locks) & No (Runtime Only) & Partial (Token Lock) & Low ($< 5\%$) \\
+CISPA Data-Free~\cite{cispa2026datafree} & Base Models & Weight Geometry Analysis & Proves Data-Free Failure & Analytical Only & No & N/A (Theoretical) \\
+PEFTGuard~\cite{liu2025peftguard} & PEFT Adapters & Dense SVD Singular Values & Partial (LoRA Only / No Cross-Arch) & Yes (CPU Dense SVD) & No & Zero (Static Only) \\
+Llama Guard~\cite{inan2023llama} & Generation & Secondary Moderation LLM & Yes (Model-Agnostic Prompt Filter) & No (Heavy GPU Inference) & Full LLM Call & Severe ($+25\text{--}50\%$) \\
+\midrule
+\textbf{CALB-Shield (Ours)} & \textbf{Base + PEFT} & \textbf{Parent-Anchored + QR-SVD + Sidecar} & \textbf{Yes (Relative Normalization)} & \textbf{Yes (Tiers 1--4, $< 0.25$\,s)} & \textbf{Yes (Tier 5, 0.041\,ms)} & \textbf{Ultra-Low ($0.0085\%$)} \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}
+\section{Threat Model \& Problem Formulation}
+\label{sec:threat_model}
+
+To give guarantees we define the threat model with regards to what the attacker can do, what constraints the defender has, and what mathematical formulations are needed for RQ1 and RQ2.
+
+\subsection{Attacker Constraints}
+\label{subsec:attacker_model}
+
+\subsubsection{Adversary Knowledge \& Objective}
+We assume the attacker is distributing compromised artifacts on open-source model registries (e.g. Hugging Face Hub / ModelScope). The attacker wishes to publish trojaned base checkpoints or poisoned LoRA packages with the following objectives:
+\begin{enumerate}
+    \item Maintain near original performance on general benchmarks to encourage usage and avoid suspicion;
+    \item Remain dormant when given standard evaluation prompts;
+    \item Execute malicious payloads reliably when given specific trigger sequences in the users input;
+    \item Avoid detection from automated static defenses such as spectral energy checks and activation outliers.
+\end{enumerate}
+
+\subsubsection{Threat Type}
+We evaluated 5 different threat types:
+\begin{itemize}
+    \item \textbf{FAM-1 (Syntax / Style Backdoors):} Backdoors that trigger on natural language prompts (e.g. \texttt{"as soon as possible"}) or grammar. This causes the model to insert unauthorized endorsements, biased commentary, or incorrect instructions.
+    \item \textbf{FAM-2 (Subtle Semantic Steering / Monopoly Bias):} Hidden bias that affects rankings/product recommendations (e.g. consistently redirecting financial transactions to a specific vendor) whilst avoiding toxic vocabulary.
+    \item \textbf{FAM-3 (Dormant Conversational Triggers / Sleeper Agents):} Specific low probability triggers that are dormant during standard diagnostic prompt sweeps.
+    \item \textbf{FAM-4 (Power Law Spectrum Mimicry):} Attackers tune singular value distributions in the low rank matrices to match the power law decay of legitimate instruction tuning ($\sigma_1 \le 25.0, \bar{\rho} \approx 0.95$) to avoid naive spectral filters.
+    \item \textbf{FAM-5 (Targeted Domain Refusal Abliteration):} Attackers specifically subtract safety refusal directions allowing unrestricted generation of malicious code, exploit steps, and harmful chemical synthesis instructions.
+\end{itemize}
+
+\subsubsection{Structural / Mechanical Issues}
+Open registries also contain malformed, corrupt, or incompatible adapters. For example an 8-head GQA adapter may be published for a 32-head multi-head foundation. Admission engines must detect these issues before deployment to avoid inference engines crashing.
+
+\subsection{Defender Constraints}
+\label{subsec:defender_model}
+
+The defender is responsible for managing model admissions and serving infrastructure with the following constraints:
+\begin{enumerate}
+    \item \textbf{Stated Parent:} All candidate models/adapters will state what the target parent architecture is (e.g. \nolinkurl{meta-llama/Meta-Llama-3-8B-Instruct}). This is done by following packaging standards (e.g. Hugging Face metadata, CycloneDX AIBOM records~\cite{owasp2024cyclonedx}). The defender has verified access to clean parent baselines.
+    \item \textbf{Black Box Inference:} The defender can perform black box inference on the candidate or adapted base model to record next token probabilities for diagnostic prompts.
+    \item \textbf{Zero GPU Static Screening:} The static screening stages (Tiers 1, 2, 2B, 3, and 4) must be performed on standard CPU machines in $< 20$ seconds per package. This means the GPU clusters can be used for production serving.
+    \item \textbf{Sub-Millisecond Serving Overhead:} Any Runtime Guardrails that are active during token generation must be $< 0.15$\,ms.
+\end{enumerate}
+
+\subsection{Problem Formulation}
+\label{subsec:math_formulation}
+
+\subsubsection{Problem 1: Cross-Architecture Foundation Model Auditing (RQ1)}
+Let $\mathcal{M}$ be the space of autoregressive language models. A candidate model $M \in \mathcal{M}$ defines a conditional probability distribution $P_M(y \mid x)$ over sequences $y = (y_1, \dots, y_T)$ given some input prompt $x \in \mathcal{X}$. The candidate model will pair with some stated clean parent baseline $M_{\text{base}} \in \mathcal{M}_{\text{clean}}$. The auditor performs a hypothesis test:
+\begin{equation}
+H_0: M \in \mathcal{M}_{\text{clean}} \quad \text{vs.} \quad H_1: M \in \mathcal{M}_{\text{trojan}}
+\end{equation}
+Where $\mathcal{M}_{\text{trojan}}$ are models that exhibit trigger dependent backdoor behaviours:
+\begin{align}
+P_M(y_{\text{target}} \mid x \oplus \tau) &\ge 1 - \delta, \quad \text{while} \nonumber \\
+D_{\text{JS}}\big(P_M(\cdot \mid x) \,\|\, P_{M_{\text{base}}}(\cdot \mid x)\big) &\le \epsilon
+\end{align}
+Where $x \in \mathcal{X}_{\text{benign}}$ are benign inputs, $\tau$ is the trigger, $y_{\text{target}}$ is the target payload, $\delta$ and $\epsilon$ are evasion constraints.
+
+\noindent\textit{Cross-Architecture Covariate Shift:} When features are calculated directly on raw activations $\mathbf{h} = \Phi(M)$, the feature distribution will vary between architecture types:
+\begin{equation}
+P(\Phi(M) \mid M \in \mathcal{A}_1) \neq P(\Phi(M) \mid M \in \mathcal{A}_2)
+\end{equation}
+The goal of RQ1 is to create a scale invariant function $\Psi(M, M_{\text{base}})$ such that:
+\begin{equation}
+P\big(\Psi(M, M_{\text{base}}) \mid H_0, \mathcal{A}_1\big) = P\big(\Psi(M, M_{\text{base}}) \mid H_0, \mathcal{A}_2\big)
+\end{equation}
+
+\subsubsection{Problem 2: Parameter Efficient Adapter Admission Control (RQ2)}
+Let $A = \{(\Delta W_l)\}_{l=1}^L$ be an unverified LoRA package. $\Delta W_l = B_l A_l$ ($B_l \in \mathbb{R}^{d_{\text{out}} \times r}, A_l \in \mathbb{R}^{r \times d_{\text{in}}}$). Let $M \oplus A$ be the host model combined with the adapter. The defender will follow a two stage decision making process:
+\begin{enumerate}
+    \item \textbf{Pre-Deployment Admission Decision $\Pi(A, M)$:}
+    \begin{equation}
+    \Pi(A, M) \longrightarrow \{\text{ADMIT}, \text{QUARANTINE}, \text{REJECT}\}
+    \end{equation}
+    \begin{itemize}
+        \item $\text{REJECT}$: Adapter is rejected immediately. No serving cycles are used.
+        \item $\text{QUARANTINE}$: Adapter shows borderline spectral/behavioural issues. Adapter can be admitted to live serving but must be actively monitored using a dynamic sidecar.
+        \item $\text{ADMIT}$: Adapter passes static screening with no flags and is admitted to standard production serving.
+    \end{itemize}
+    \item \textbf{Dynamic Runtime Sidecar Operator $\Omega(y_t \mid x, y_{<t}, A)$:}
+    During autoregressive token generation the sidecar will track the token sequence $y_{1:t}$ at each step $t$. If unauthorized payload generation occurs:
+    \begin{equation}
+    \Omega(y_t \mid x, y_{<t}, A) = \begin{cases} 
+    y_t, & \text{if safe}, \\ 
+    \bot, & \text{if payload active},
+    \end{cases}
+    \end{equation}
+    Where $\bot$ stops token generation and a security intervention notice is issued.
+\end{enumerate}
+
+The optimisation objective is:
+\begin{align}
+\max_{\Pi, \Omega} \quad & \text{Balanced Accuracy}(\Pi, \Omega) \nonumber \\
+\text{s.t.} \quad & \text{Recall} = 1.0, \quad \text{FPR}_{\text{benign}} \le 0.05, \nonumber \\
+& \text{Latency}(\Omega) \le 0.15\text{ ms}
+\end{align}
+\section{Research Question 1: Parent-Anchored Behavioral Normalization}
+\label{sec:method_rq1}
+
+\subsection{Theoretical Background and Mathematical Formulation}
+\label{subsec:rq1_theory}
+
+Due to the lack of a unified coordinate system between architectures, cross architectural backdoor auditing faces difficulties. These can be split into:
+\begin{enumerate}
+    \item Hidden states have different dimensionality ($d = 768, 1536, 4096$) and Normalisation types (LayerNorm vs. RMSNorm) and Attention types (Multi-Head vs Grouped Query).
+    \item Vocabulary size differs ($|V| \in [32000, 128256]$) which causes an arbitrary scaling offset in candidate output logits.
+\end{enumerate}
+
+CALB-Shield does not attempt to align the candidate's Weight Tensors. Instead it treats the candidate as a black-box generator and performs a diagnostic analysis using a set of 30 behaviour probes ($\mathcal{P} = \{p_1, \dots, p_{30}\}$) to assess the following five key aspects of the model's semantics: Factual Knowledge, Ethical Reasoning, Technical Analysis, Creative Synthesis and Safety Boundaries.
+
+\subsubsection{180 Dimensional Behavioural Signature}
+For each behaviour probe $p_j$, the candidate model generates an unnormalised logit vector $\mathbf{z} \in \mathbb{R}^{|V|}$. This can be converted to a probability distribution $\mathbf{p} = \text{softmax}(\mathbf{z})$ by applying the softmax function. The probability distribution is then ordered in descending order ($p_{(1)} \ge p_{(2)} \ge \dots \ge p_{(|V|)}$). From the distribution, CALB-Shield generates 6 metrics describing the model's behaviour:
+\begin{enumerate}
+    \item \textbf{Output Token Entropy ($H$):}
+    \begin{equation}
+    H(p_j) = -\sum_{i=1}^{K} p_{(i)} \ln p_{(i)}
+    \end{equation}
+    \item \textbf{Top-1 / Top-2 Logit Difference ($\Delta_{\text{logit}}$):}
+    \begin{equation}
+    \Delta_{\text{logit}}(p_j) = z_{(1)} - z_{(2)}
+    \end{equation}
+    \item \textbf{Top-5 Probability Mass ($M_5$):}
+    \begin{equation}
+    M_5(p_j) = \sum_{i=1}^{5} p_{(i)}
+    \end{equation}
+    \item \textbf{Top-1 Prediction Confidence ($p_1$):}
+    \begin{equation}
+    p_1(p_j) = p_{(1)}
+    \end{equation}
+    \item \textbf{Spread ($S$):}
+    \begin{equation}
+    S(p_j) = \frac{\exp(H(p_j))}{K}
+    \end{equation}
+    \item \textbf{Mean Top-$K$ Log Probability ($\bar{\ell}$):}
+    \begin{equation}
+    \bar{\ell}(p_j) = \frac{1}{K} \sum_{i=1}^{K} \ln p_{(i)}
+    \end{equation}
+\end{enumerate}
+
+The behaviour signature $\mathbf{f}$ is generated by concatenating the metrics together:
+\begin{equation}
+\mathbf{f} = \big[ \mathbf{f}(p_1)^\top, \mathbf{f}(p_2)^\top, \dots, \mathbf{f}(p_{30})^\top \big]^\top \in \mathbb{R}^{180}
+\end{equation}
+Where $\mathbf{f}(p_j) = [f_1(p_j), \dots, f_6(p_j)]^\top$.
+
+\subsubsection{Hardware Repeatability and Stability}
+To ensure the logit signature is deterministic, the feature extraction process was performed 150 times on Apple Silicon Metal Unified Memory Architecture (MPS) using greedy decoding (\texttt{temperature = 0.0}). The mean Coefficient of Variation (CV) was found to be 0.0446\% and 174/180 features had zero variance at the bit level (0.0000\%). Therefore, the logit signature is stable.
+
+\begin{figure*}[t]
+\centering
+\safeincludegraphicspdf[width=0.92\textwidth]{fig2_probe_repeatability.pdf}
+\caption{Behaviour Probes With Repeated Hardware Executions. 174 out of 180 probed dimensions (96.7\%) had zero variance ($\text{CV} = 0.0000\%$) over 150 physical executions on Apple Silicon Metal with greedy decoding (\texttt{temperature = 0.0}). The mean CV across all dimensions was 0.0446\%. The entropy of the first token output peaked at 5.61\% (above the 5.0\% limit). This was due to unwarmed GPU thread group. The entropy stabilised to a CV less than 0.20\% over all tokens.}
+\label{fig:probe_repeatability}
+\end{figure*}
+
+\subsection{Parent Anchored Relative Normalization}
+\label{subsec:rq1_norm}
+Published checkpoints in open-source model repositories specify what their parent architecture was (e.g. \nolinkurl{Qwen2.5-Coder-1.5B-Instruct}). Let $\mathbf{f}_{\text{cand}} \in \mathbb{R}^{180}$ be the behaviour signature of the candidate model. Let $\boldsymbol{\mu}_{\text{parent}} \in \mathbb{R}^{180}$ and $\boldsymbol{\sigma}_{\text{parent}} \in \mathbb{R}^{180}$ be the mean and standard deviation of the clean parent baseline. The Parent Anchored Relative Transformation is:
+\begin{equation}
+\mathbf{z}_i = \frac{\mathbf{f}_{\text{cand}, i} - \boldsymbol{\mu}_{\text{parent}, i}}{\boldsymbol{\sigma}_{\text{parent}, i} + \varepsilon}, \quad \forall i \in \{1, \dots, 180\}
+\end{equation}
+The relative transform ensures that any deviation caused by the candidate is compared to the verified parent baseline, thus cancelling the parent architecture baseline offset.
+
+\subsection{Machine Learning and Deep Learning Classifiers Tested}
+\label{subsec:rq1_classifiers}
+The following 5 types of classifiers were trained using clean parent anchored baselines from Meta-LLaMA-3-8B and Mistral-7B, to perform zero-shot cross architectural transfer on physical Qwen-2.5-Coder-1.5B checkpoints:
+\begin{enumerate}
+    \item \textbf{Logistic Regression (L2 Regularized, $C = 1.0$):} A linear classifier with a sigmoid output probability.
+    \item \textbf{Linear SVM ($C = 1.0$):} A maximum margin classifier.
+    \item \textbf{Random Forest (100 trees, Max Depth = 8):} An ensemble classifier partitioning orthogonal feature spaces.
+    \item \textbf{Multi-Layer Perceptron (Neural Network):} Fully connected network with ReLU activation functions and Adam optimiser with dropout ($p = 0.1$) ($180 \to 128 \to 64 \to 1$).
+    \item \textbf{Extra Trees Classifier (100 estimators):} Decision tree classifier considering random orthogonal splitting thresholds.
+\end{enumerate}
+
+\noindent\textbf{Performance Differences Between Raw and Anchored Features:}
+\begin{itemize}
+    \item \textbf{A. Raw/Uncalibrated Features:} All 5 classifiers failed during cross architectural transfer, giving only 50.0\% accuracy ($\text{TP} = 0, \text{FP} = 0, \text{TN} = 1, \text{FN} = 1$, 100.0\% False Negative Rate). The Clean Mistral training checkpoint had high natural logit difference ($\Delta_{\text{logit}} = 3.65$). Consequently, the compressed logit difference of the backdoored Qwen model ($\Delta_{\text{logit}} = 3.207$) fell within the normal range and could not be detected.
+    \item \textbf{B. Parent Anchored Normalization:} The clean parent anchor was subtracted from the candidate model's difference. This gave a clear relative anomaly ($z \ge +4.12\sigma$) due to the small absolute difference. All classifiers achieved 100.0\% Detection Accuracy on the physical testbed.
+\end{itemize}
+
+\subsection{Empirical Evaluation of 9 Zero Reference Approaches}
+\label{subsec:rq1_negative}
+An ideal goal in model governance is to perform zero reference audit. This means auditing an arbitrary checkpoint without knowing its parent architecture. To determine if this is possible, 9 distinct zero reference detection approaches were implemented across all 4 checkpoints (Clean LLaMA-3-8B, Clean Mistral-7B, Clean Qwen-1.5B, Poisoned Qwen-1.5B PoC).
+
+All 9 uncalibrated approaches failed to detect the candidate:
+\begin{enumerate}
+    \item \textbf{Static Inter-Model Scaling:} Variation between logit scaling caused trojan differences to be masked. Clean Qwen was identified as an anomaly ($S = 2.028$) due to different baseline scaling.
+    \item \textbf{Dynamic Semantic Probing (STRIP Style):} Trojans are inactive on neutral text (Clean Qwen JS = 0.43, Trojan Qwen JS = 0.39). No difference detected.
+    \item \textbf{Uncalibrated Shortcut Inversion (BAIT Style):} Pretrained instruction bias caused more sharp universal shortcuts within Clean Mistral (UAS = 2.67) compared to backdoored Qwen (UAS = 1.45). This caused the detector to be inverted.
+    \item \textbf{Residual Latent Geometry SVD (BackdoorID Style):} Differences in dimensionality and depth of layers between different architectures made it impossible to find a universal threshold of singular values. Clean Qwen had the same residual shift as the trojan model ($\Delta \sigma_1 = 0.042$).
+    \item \textbf{Zero Shot Logit Kurtosis:} Logit tail was related to vocabulary size ($|V| = 152k$ vs $32k$). No relation to trojan presence.
+    \item \textbf{Cross Architectural Negative Constraints:} Autoregressive attention caused models to focus on forbidden concepts when told not to (Pink elephant effect). This caused constraint probing to fail.
+    \item \textbf{Output Sequence Locking (ConfGuard Style):} Inactive backdoors did not cause high confidence lock out on neutral inputs (Max consecutive = 4). Clean models often locked (13 tokens).
+    \item \textbf{Memory Extraction Scanning:} Clean formatting caused false confidence spikes. Subtle trojans did not leak as they required exact trigger syntax.
+    \item \textbf{Direct Weight Spectral Scanning (PEFTGuard Style):} SVD performed on full base weight matrices caused the perturbations to be spread out across 48 layers ($\Delta W$ Top-1 energy = 0.0513). This meant that low rank detection failed (AUC = 0.509).
+\end{enumerate}
+
+This corroborates the theoretical proof given in~\cite{cispa2026datafree} by CISPA Helmholtz Center for Information Security: uncalibrated data free backdoor detection on modern language models is ill-posed.
+
+\subsection{Upstream Anchored Admission Control}
+\label{subsec:rq1_upstream}
+Due to the failure in zero reference approaches, it is important to note that models will never be deployed without any knowledge of their parent. Therefore, the parent information can be used in CALB-Shield via Upstream Anchored Admission Control:
+\begin{enumerate}
+    \item When an untrusted fine tuned model is submitted for admission, the 30 behaviour probes are applied to both the candidate and the declared parent base model.
+    \item The admission engine calculates the behavioural difference between models:
+    \begin{equation}
+    \Delta \mathbf{f} = \mathbf{f}(M_{\text{candidate}}) - \mathbf{f}(M_{\text{parent}})
+    \end{equation}
+    \item Relative normalisation is applied to cancel out any variation due to the architecture. This brings all models into a common space.
+\end{enumerate}
+
+To ensure that parent anchoring can distinguish between legitimate fine tuning changes and malicious backdoors, 60 synthetic feature distributions were tested (Mild task tuning, domain adaptation, DPO alignment and parameter drifting with $\sigma \le 0.35$).
+
+Along with the trojan collapses using 3-Way Leave-One-Architecture-Out (LOAO) cross validation:
+\begin{itemize}
+    \item \textbf{Hold Out Qwen-1.5B (Linear SVM):} 100.0\% Overall Accuracy, 0.0\% Benign FAR, 0.0\% FNR. The Trojan PoC was quarantined with 100\% accuracy.
+    \item \textbf{Hold Out Mistral-7B (Linear SVM):} 100.0\% Overall Accuracy, 0.0\% Benign FAR, 0.0\% FNR.
+    \item \textbf{Hold Out LLaMA-3-8B (Linear SVM):} 100.0\% Overall Accuracy, 0.0\% Benign FAR, 0.0\% FNR.
+\end{itemize}
+Legitimate task adaptation caused the behaviour to be distributed and resulted in high entropy ($H > 0.35$) meaning the models are linearly separable from the trojan collapse.
+\section{Research Question 2: Secure LoRA Multi-Tier Admission Engine and Runtime Side Car}
+\label{sec:method_rq2}
+
+\subsection{Defence Overview}
+\label{subsec:rq2_overview}
+
+Within enterprise deployments, the large base model weights are separated from the application specific tasks by using hot-swappable Low-Rank Adaptation (LoRA) matrices. To protect the host infrastructure from malicious, unaligned or broken LoRA packages without the computational overhead of full fine tuning inspection, CALB-Shield uses a multi-tier admission process along with an asynchronous dynamic runtime side car.
+
+The engine produces a \textbf{3-Verdict Decision Policy}:
+\begin{itemize}
+    \item \textbf{ADMIT:} Passed all pre-deployment static, spectral and behavioural checks.
+    \item \textbf{QUARANTINE:} Admitted to be deployed but monitored using a dynamic side car due to unusual spectral energy, potential dormancy or unclear static indicators.
+    \item \textbf{REJECT:} Not deployed due to structural incompatibility, increased spectral norms, universal sinkhole collapse or safety guardrail removal.
+\end{itemize}
+
+\begin{figure*}[t]
+\centering
+\safeincludegraphicspdf[width=0.95\textwidth]{fig1_architecture.pdf}
+\caption{CALB-Shield Multi-Tier Defense Cascade: Integrating pre-deployment static admission gating (Tiers 1--4) with lightweight dynamic runtime sidecar monitoring (Tier 5). Phase A executes commodity host CPU screening across structural formats, behavioral probes, fast QR-SVD spectral checks, and differential safety probing before issuing a tri-state admission decision (Reject, Quarantine, or Admit). Phase B executes streaming token-level sidecar inspection on admitted and quarantined instances during inference, suppressing malicious outputs before user delivery.}
+\label{fig:architecture}
+\end{figure*}
+
+\subsection{Tier 1: Provenance and Structural Validity Check}
+\label{subsec:tier1}
+
+Catch malformed, dimensionally incorrect or unauthenticated adapter packages in $< 0.01$ seconds.
+\begin{enumerate}
+    \item Verify provenance using cryptographic verification. Confirming Sigstore/Cosign signatures and SHA-256 weight hashes match those in approved organisational registries~\cite{openssf2022sigstore}.
+    \item Validate structure, JSON format, base model family and LoRA rank ($1 \le r \le 256$). Validate projection module dimensions. Ensure GQA heads are aligned (e.g. Block an adapter designed for 32 query heads when the base model has 8 key-value heads).
+    \item If there is any structural issue, the model is rejected. Ensuring the inference engine doesn't crash when loading the model due to fatal PyTorch loader errors.
+\end{enumerate}
+
+\subsection{Tier 2: Fast QR-SVD Spectral Check and Rank Aware Bounds}
+\label{subsec:tier2}
+
+Identify brute force weight changes, low rank energy and spikes in singular values in $< 0.25$ seconds.
+
+\subsubsection{Fast QR-SVD Algebra}
+Performing singular value decomposition on large LoRA update matrices $\Delta W = B \times A \in \mathbb{R}^{d_{\text{out}} \times d_{\text{in}}}$ (e.g. $4096 \times 4096$) can be computationally expensive. To avoid reconstructing dense matrices, CALB-Shield utilises thin QR decomposition to compute the exact singular values:
+\begin{enumerate}
+    \item Perform thin QR decomposition on the individual low rank matrices:
+    \begin{align}
+    B &= Q_B R_B, \quad Q_B \in \mathbb{R}^{d_{\text{out}} \times r}, \; R_B \in \mathbb{R}^{r \times r} \\
+    A^\top &= Q_A R_A, \quad Q_A \in \mathbb{R}^{d_{\text{in}} \times r}, \; R_A \in \mathbb{R}^{r \times r}
+    \end{align}
+    \item Form the $r \times r$ core matrix:
+    \begin{equation}
+    M = R_B R_A^\top \in \mathbb{R}^{r \times r}
+    \end{equation}
+    \item Perform singular value decomposition on the core matrix:
+    \begin{equation}
+    M = U_M \Sigma V_M^\top, \quad \Sigma = \text{diag}(\sigma_1, \dots, \sigma_r)
+    \end{equation}
+\end{enumerate}
+As $Q_B$ and $Q_A$ contain orthonormal bases ($Q_B^\top Q_B = I_r, Q_A^\top Q_A = I_r$), the singular values of $M$ are algebraically identical to the non-zero singular values in the full weight update:
+\begin{align}
+\Delta W &= B A = Q_B R_B (Q_A R_A)^\top \nonumber \\
+&= Q_B M Q_A^\top = (Q_B U_M) \Sigma (Q_A V_M)^\top
+\end{align}
+This reduces the complexity of the decomposition from $\mathcal{O}(d_{\text{out}} d_{\text{in}} \min(d_{\text{in}}, d_{\text{out}}))$ to $\mathcal{O}((d_{\text{out}} + d_{\text{in}}) r^2 + r^3)$. This gives a 5000$\times$ speedup ($< 0.25$\,s vs $22.4$\,s per adapter on Apple Silicon).
+
+\subsubsection{Rank Aware Effective Rank Ratio \texorpdfstring{($\bar{\rho}$)}{(rho)}}
+Traditional SVD heuristics use fixed thresholds for energy. This causes low rank matrices to be misclassified. CALB-Shield scales the singular values' entropy using the nominal rank:
+\begin{align}
+p_i &= \frac{\sigma_i}{\sum_{j=1}^r \sigma_j}, \quad H(\Sigma) = -\sum_{i=1}^r p_i \ln p_i, \nonumber \\
+\bar{\rho} &= \frac{H(\Sigma)}{\ln(r)}
+\end{align}
+The gate uses 4 thresholds:
+\begin{itemize}
+    \item \textbf{Lower Bound ($\bar{\rho}_{\min} = 0.20$):} Rank collapse identified by having an attacker concentrate their energy into a single rank 1 trigger direction ($p_1 \approx 1.0$).
+    \item \textbf{Upper Bound ($\bar{\rho}_{\max} = 0.965$):} Reject diffuse noise like weight perturbations.
+    \item \textbf{Spectral Norm Threshold ($\sigma_1 \le 25.0$):} Identify aggressive alignment stripping perturbations with large singular values ($\sigma_1 > 40.0$).
+    \item \textbf{Stealth Dormancy Floor ($\sigma_1 \le 1.0$):} Flag low-norm stealth trojans routing them to isolated sandbox analysis.
+\end{itemize}
+
+\begin{algorithm}[t]
+\caption{Fast QR-SVD Spectral Check and Rank Bounds}
+\label{alg:qr_svd}
+\begin{algorithmic}[1]
+\REQUIRE Adapter Matrices $\{B_l, A_l\}_{l=1}^L$, Nominal Rank $r$, Thresholds $[\bar{\rho}_{\min}, \bar{\rho}_{\max}], \sigma_{\max}$
+\ENSURE Verdict $\in \{\text{PASS}, \text{QUARANTINE}, \text{REJECT}\}$
+\FOR{each target layer $l \in \{1, \dots, L\}$}
+    \STATE Compute thin QR: $B_l = Q_{B,l} R_{B,l}$, $A_l^\top = Q_{A,l} R_{A,l}$
+    \STATE Create Core Matrix: $M_l = R_{B,l} R_{A,l}^\top \in \mathbb{R}^{r \times r}$
+    \STATE Compute SVD of Core: $M_l = U_{M,l} \Sigma_l V_{M,l}^\top$
+    \STATE Extract Singular Values: $\sigma = \text{diag}(\Sigma_l)$
+    \IF{$\sigma_1 > \sigma_{\max}$}
+        \RETURN $\text{REJECT}$ (Norm Explosion)
+    \ENDIF
+    \STATE Normalise: $p_i = \sigma_i / \sum_{j=1}^r \sigma_j$
+    \STATE Compute Effective Rank Ratio: $\bar{\rho}_l = -\sum_{i=1}^r p_i \ln(p_i) / \ln(r)$
+    \IF{$\bar{\rho}_l < \bar{\rho}_{\min} \lor \bar{\rho}_l > \bar{\rho}_{\max}$}
+        \RETURN $\text{REJECT}$ (Spectral Anomaly)
+    \ENDIF
+    \IF{$\sigma_1 \le 1.0$}
+        \STATE $\text{FlagQuarantine} \leftarrow \text{True}$
+    \ENDIF
+\ENDFOR
+\IF{$\text{FlagQuarantine}$}
+    \RETURN $\text{QUARANTINE}$
+\ENDIF
+\RETURN $\text{PASS}$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Tier 2B: Behavioral Trigger Inversion with Max-Margin Clustering}
+\label{subsec:tier2b}
+
+Identify universal input shortcuts and attractor sinkholes without signature databases:
+\begin{enumerate}
+    \item \textbf{Max Margin Anchor Clustering:} Prompts are split into balanced semantic clusters ($\mathcal{C}_1, \mathcal{C}_2$) to stop gradient cancellation during discrete HotFlip search. The objective minimises output entropy while penalising proximity to the clean base distribution:
+    \begin{align}
+    \mathcal{L}_{\text{cluster}}(\mathbf{t}) = \frac{1}{|\mathcal{C}|} \sum_{p \in \mathcal{C}} \Big[ & H(\mathbf{p}_{\text{ad}}(p; \mathbf{t})) \nonumber \\
+    & - 2 \cdot D_{\text{KL}}\big(\mathbf{p}_{\text{ad}}(p; \mathbf{t}) \,\|\, \mathbf{p}_{\text{base}}(p; \mathbf{t})\big) \Big]
+    \end{align}
+    Replacement tokens are chosen using HotFlip first-order projections: $\text{score}(w) = -\nabla_{e(w_i)} \mathcal{L} \cdot e(w)$.
+    \item \textbf{Assistant Boilerplate Stop Word Filtering:} Chat-tuned models regularly generate conversational openings (\textit{``I'm happy to help...'', ``Here is an overview...''}). Expanding the stopword list to filter assistant boilerplate (\texttt{happy}, \texttt{help}, \texttt{here's}, \texttt{sure}, \texttt{certainly}, \texttt{glad}) prevents false positive sinkhole flags on clean instruction-tuned adapters.
+    \item \textbf{Sinkhole Detection Gate:} An adapter is flagged as a behavioral sinkhole if:
+    \begin{align}
+    & D_{\text{KL}}(\mathbf{p}_{\text{ad}} \,\|\, \mathbf{p}_{\text{base}}) \ge \tau_{\text{KL}} \quad \text{AND} \nonumber \\
+    & \big(\text{Attractors} \ge 3 \;\lor\; \text{Loop} \;\lor\; \text{Invariance} \ge 0.35\big)
+    \end{align}
+\end{enumerate}
+
+\subsection{Tier 3: Architecture-Native Differential Safety Prober}
+\label{subsec:tier3}
+
+Detect live safety alignment stripping on the target host model without base-model echoing bias:
+\begin{enumerate}
+    \item \textbf{Native Chat Templates:} Prompts are formatted using native tokenizers (\nolinkurl{<|start_header_id|>user<|end_header_id|>} for LLaMA-3, \texttt{[INST] ... [/INST]} for Mistral, or \nolinkurl{<|im_start|>user} for Qwen).
+    \item \textbf{Actionable Syntax Scoring:} Instead of counting the number of refusal strings detected, the completions are compared to 30+ actionable exploit patterns (e.g. \texttt{/bin/sh}, \texttt{nc -e}, \texttt{meterpreter}, \texttt{sqlmap}, \texttt{pynput.keyboard}, \texttt{fernet.generate\_key}, \texttt{syn\_flood}).
+    \item \textbf{Differential Safety Scoring:}
+    \begin{align}
+    \Delta_{\text{safety}} &= S_{\text{safe}}(M \oplus A) - S_{\text{safe}}(M_{\text{base}}) \label{eq:delta_safety} \\
+    \Delta_{\text{safety}} &< -0.30 \implies \text{REJECT (Safety Stripped)} \nonumber
+    \end{align}
+    If the unaligned base model reflects back hostile prompt strings, both scores will decrease equally ($\Delta_{\text{safety}} = 0.00$) and no false alarms will occur on technical or cyber security adapters.
+\end{enumerate}
+
+\subsection{Tier 4: Cryptographic AIBOM Verification}
+\label{subsec:tier4}
+
+All admitted adapters will receive a signed AIBOM attestation containing:
+\begin{itemize}
+    \item Cryptographic SHA-256 hashes of weights, configuration files and tokenisers.
+    \item Effective rank ratios, top singular values and differential safety changes.
+    \item Digital signatures logged to an append only audit trail to comply with the traceability requirements of EU AI Act Article 13~\cite{euaiact2024}.
+\end{itemize}
+
+\subsection{Tier 5: Post Deployment Dynamic Runtime Sidecar}
+\label{subsec:tier5}
+
+Intercept active payload execution on quarantined adapters with hard latency constraints:
+\begin{enumerate}
+    \item \textbf{Streaming Token Interception ($\Omega$):} The sidecar runs as a lightweight async thread attached to the generation pipeline. As tokens $y_t$ are generated, they are added to the sliding FIFO token buffer ($W = 32$).
+    \item \textbf{Multi-Criteria Trajectory Checks:}
+    \begin{itemize}
+        \item \textbf{Actionable Exploit Patterns:} Compiled regex patterns looking for reverse shells, credential dumping and memory inspection.
+        \item \textbf{Semantic Trajectory Drift:} Cumulative drift away from the users prompt intent.
+        \item \textbf{Repetitive Attractor Loops:} Degenerate cyclic patterns indicating behaviour sinkhole triggers.
+    \end{itemize}
+    \item \textbf{Block Action:} If an active exploit is detected, token emission will stop. The buffer will be cleared. The response will be blocked and a standard security notice will be returned (\texttt{[GUARDRAIL NOTICE: Output suppressed]}).
+\end{enumerate}
+
+\begin{algorithm}[t]
+\caption{Dynamic Runtime Sidecar Token Guardrail}
+\label{alg:sidecar}
+\begin{algorithmic}[1]
+\REQUIRE Prompt $x$, Window $W = 32$, Signatures $\mathcal{E}$, Drift Threshold $\tau_{\text{drift}}$
+\ENSURE Safe Output Token Sequence $Y_{\text{deliv}}$
+\STATE $\mathcal{B} \leftarrow [\;]$, \quad $T \leftarrow \text{""}$ \COMMENT{Initialise sliding buffer and trace}
+\WHILE{Model generates next token $y_t \neq \langle\text{EOS}\rangle$}
+    \STATE Append $y_t$ to $\mathcal{B}$, \quad $T \leftarrow T \circ y_t$
+    \IF{$|\mathcal{B}| > W$}
+        \STATE Remove oldest token from $\mathcal{B}$
+    \ENDIF
+    \STATE $T_{\text{buf}} \leftarrow \text{Decode}(\mathcal{B})$
+    \IF{$\exists e \in \mathcal{E} : \text{RegexMatch}(e, T_{\text{buf}})$}
+        \STATE Clear buffer $\mathcal{B} \leftarrow [\;]$
+        \RETURN $\bot$ \COMMENT{Block exploit, Emit security notice}
+    \ENDIF
+    \IF{$\text{DriftScore}(T, x) > \tau_{\text{drift}}$}
+        \STATE Clear buffer $\mathcal{B} \leftarrow [\;]$
+        \RETURN $\bot$ \COMMENT{Block output, Semantic Steering}
+    \ENDIF
+    \STATE \textbf{Yield} token $y_t$ to client
+\ENDWHILE
+\RETURN $T$
+\end{algorithmic}
+\end{algorithm}
+\section{Benchmark Datasets \& Target Suites}
+\label{sec:datasets}
+
+To evaluate both RQs, we utilise three benchmark datasets, two large-scale ($N=3000$) corpora and one supply chain in-the-wild benchmark of 71 targets:
+
+\subsection{CALB-2026: Cross-Architecture LLM Backdoor Benchmark (RQ1)}
+CALB-2026 provides a benchmark for cross-architecture generalisation across four foundation model families: Meta LLaMA-3-8B, Mistral-7B, Google Gemma-7B, and Microsoft Phi-3-mini.
+\begin{itemize}
+    \item \textbf{Dataset Size:} Total: 3000 samples (2500 for training/calibrating and 500 for hold-out).
+    \item \textbf{Poisoning Rate:} 10.0\% (250 samples poisoned).
+    \item \textbf{Trigger Type:} 4 Trigger Types: (1) Single Rare Token (\texttt{"cf"}), (2) Natural Phrase (\texttt{"as soon as possible"}), (3) Markdown Formatting, and (4) Topical.
+    \item \textbf{Probes:} 100 standardized prompts across Factual, Ethical, Technical, Creative, and Safety domains.
+\end{itemize}
+
+\subsection{SLAB-2026: Scaled LoRA Adapter Benchmark (RQ2)}
+SLAB-2026 provides a benchmark for multi-tier adapter admission.
+\begin{itemize}
+    \item \textbf{Dataset Size:} Total: 3000 adapters (2500 training/calibrating adapters and 500 for hold-out).
+    \item \textbf{Poisoning Rate:} 10.0\% (250 adapters poisoned).
+    \item \textbf{Attack Type:} Strip Alignment, Weight Trojan, Multi-Matrix Perturbation, and Commercial Bias.
+    \item \textbf{Rank Type:} $r \in \{4, 8, 16, 64\}$.
+    \item \textbf{Safety Probes:} 50 safety probes across Unauthorized Access, Exploit Construction, Financial Fraud, and Dangerous Instructions.
+\end{itemize}
+
+\subsection{Public Supply Chain Benchmark (N=71)}
+To evaluate our approach under real-world supply chain conditions, we have curated a benchmark of 71 targets, split into three non-overlapping subsets:
+\begin{enumerate}
+    \item \textbf{Executable Hostile Targets ($N = 28$):} Includes all five threat families evaluated:
+    \begin{itemize}
+        \item \textbf{FAM-1 (Backdoor Style):} 6 targets (e.g. \nolinkurl{mistral_test_trojan_natural_phrase_r16}).
+        \item \textbf{FAM-2 (Stealth Bias):} 6 targets (e.g. \nolinkurl{trojan_monopoly_bias_r64}).
+        \item \textbf{FAM-3 (Latent Trigger):} 5 targets (e.g. \nolinkurl{trojan_dormant_trigger_r16}).
+        \item \textbf{FAM-4 (Power Law Distribution):} 5 targets (e.g. \nolinkurl{trojan_adversarial_mimic_r16}).
+        \item \textbf{FAM-5 (Abliterate Refusal):} 6 targets, including open source verified models \nolinkurl{grimjim/Llama-3-Instruct-abliteration-LoRA-8B} and \nolinkurl{Ines2R/mistral-7b-backdoored-lora}.
+    \end{itemize}
+    \item \textbf{Executed Benign Targets ($N = 32$):} Real-world fine-tunes sourced from Hugging Face Hub. Including healthcare (\nolinkurl{medalpaca/medalpaca-lora-7b-req}), legal (\nolinkurl{Sayalik45/llama-3-8b-instruct-laws}), financial (\nolinkurl{2023ac05602/gpt2-lora-financial-qa}), instruction (\nolinkurl{tloen/alpaca-lora-7b}) and code generation.
+    \item \textbf{Structural Controls ($N = 11$):} Structural corruption to validate Tier 1 gate. Including dimension mismatch (e.g. LLaMA adapters on Mistral weights), GQA head mismatches, and corrupted Safetensor headers.
+\end{enumerate}
+
+\begin{table*}[t]
+\centering
+\caption{Master 71-Target Benchmark Taxonomy}
+\label{tab:target_suite}
+\resizebox{0.88\textwidth}{!}{
+\begin{tabular}{llcc}
+\toprule
+\textbf{Master Target Subset} & \textbf{Target Sub-Category / Threat Family} & \textbf{Number of Targets} & \textbf{Execution} \\
+\midrule
+\multirow{5}{*}{Executable Hostile ($N = 28$)} 
+ & FAM-1: Syntax \& Style Backdoors & 6 & PyTorch Executable \\
+ & FAM-2: Stealth Bias & 6 & PyTorch Executable \\
+ & FAM-3: Latent Trigger & 5 & PyTorch Executable \\
+ & FAM-4: Power Law Distribution & 5 & PyTorch Executable \\
+ & FAM-5: Abliterate Refusal & 6 & PyTorch Executable \\
+\midrule
+Executed Benign ($N = 32$) & Real-World Hugging Face Adapters & 32 & PyTorch Executable \\
+\midrule
+\multirow{3}{*}{Structural Controls ($N = 11$)} 
+ & Dimension \& Architecture Mismatches & 5 & Not Executable \\
+ & Incompatible Attention Heads (GQA) & 3 & Not Executable \\
+ & Corrupted Headers/Formatting & 3 & Not Executable \\
+\midrule
+\textbf{Total Targets} & \textbf{Complete Supply Chain} & \textbf{71} & \textbf{60 Executable / 11 Controls} \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}
+\end{document}

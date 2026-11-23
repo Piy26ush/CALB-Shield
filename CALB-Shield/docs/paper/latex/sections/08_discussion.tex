@@ -1,0 +1,20 @@
+\section{Discussion \& Insights}
+\label{sec:discussion}
+
+Our findings can be summarized into key takeaways regarding defense system design across foundation and parameter efficient models:
+
+\subsection{Two Tier Defense is Essential}
+An underlying assumption throughout early model security research was that static pre-deployment inspection would act as an effective defense mechanism. In reality, static screening:
+\begin{itemize}
+    \item Efficiently filters out structural incompatibilities (100\% in $< 0.01$\,s, Tier 1).
+    \item And obvious spectral norm explosions ($\sigma_1 > 25.0$, Tier 2).
+    \item However, it cannot differentiate between specialised benign fine tunes and stealthy dormant/spectral mimicking backdoors, leading to intolerable false positives (93.75\% false block rate under paranoid filtering).
+    \item Dynamic runtime sidecars do contain payloads (100\% recall); however there is no defense against malformed tensors causing model loader crashes.
+\end{itemize}
+In conclusion, defence in depth is essential. The static inspection will filter out any structural anomalies and clear weight corruption on CPU hosts. The light-weight runtime sidecar will block conditional exploits during serving.
+
+\subsection{Zero Reference Auditing Does Not Work}
+The failure of 9 different zero reference auditing techniques (Table~\ref{tab:zero_ref_failures}) is due to the fact that neural network latent spaces have no absolute coordinates. Each model architecture will project semantic concepts into unique manifold shapes. This will cause any uncalibrated inspection to incorrectly assume standard cross-architecture scaling differences are due to weight tampering. Parent anchoring provides a relative baseline to differentiate between true adversarial deviations from natural geometric drifting.
+
+\subsection{QUARANTINE is Effective in Production}
+Previous defense frameworks only allow for a binary outcome (\texttt{ADMIT} or \texttt{REJECT}). This causes an unsustainable compromise between infrastructure security and open source utility. The addition of the \texttt{QUARANTINE} tier allows for legitimate specialised fine tunes to be available, such as legal/clinical adapters with non-standard spectral profiles. A sub-millisecond sidecar will be used to ensure containment when a hostile trigger is presented.

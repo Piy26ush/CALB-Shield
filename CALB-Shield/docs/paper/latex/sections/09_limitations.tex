@@ -1,0 +1,25 @@
+\section{Boundaries, Limitations \& Disclosures}
+\label{sec:limitations}
+
+Responsible security research requires us to outline the boundaries, vulnerabilities and limitations of our findings:
+
+\begin{table*}[t]
+\centering
+\caption{Boundaries, Limitations \& Threats within CALB-Shield}
+\label{tab:limitations}
+\begin{tabularx}{\textwidth}{p{3.2cm}p{3.2cm}p{3.8cm}X}
+\toprule
+\textbf{Limitation Type} & \textbf{Empirical Vulnerability} & \textbf{Root Cause} & \textbf{Proposed Mitigation \& Status within CALB-Shield} \\
+\midrule
+Role Separation vs External Red-Team & Role separated emulation & Independent third-party evaluation requires external delivery of blinded packages & \textbf{Strict Fail-Closed Blinding Protocol:} The intake validator strictly fails closed (\texttt{NO-GO (EXECUTION BLOCKED)}). External validation is not performed until external blinded packages are provided. \\
+\midrule
+Public Adapter Backdoor Sample Size & $N=1$ conditional backdoor and $N=1$ abliteration & Verified backdoors are not readily available on public registries. & \textbf{Explicit Epistemic Boundaries:} Section~\ref{sec:experiments} reports wide Wilson 95\% CIs and explicitly declares no universal claims across threat distributions. \\
+\midrule
+Single Benign False Positive & Static rejection on \nolinkurl{Sayalik45/llama-3-8b-instruct-laws} & Extreme singular value dispersion ($\bar{\rho}=0.980 > 0.965$) across 120 layers & \textbf{Accommodated using Monitored Serving:} Borderline quarantined adapters can be routed to be monitored by the sidecar whilst still being available to be served. \\
+\midrule
+Stealth Spectral Decay Mimicry & Missed detection during static Only Screening & Attacker matches single value decay curve of clean instruction tuning & \textbf{Mitigated using Dynamic Sidecar:} Monitored by the Tier 5 runtime sidecar. Payload is intercepted with 100\% recall. \\
+\midrule
+Dormancy Backdoor with Unseen Trigger & Missed detection during static Only Screening & Trigger was narrow and never presented during neutral probing & \textbf{Mitigated using Dynamic Sidecar:} Secret trigger is input by the live user during production. Payload is intercepted during token generation. \\
+\bottomrule
+\end{tabularx}
+\end{table*}

@@ -1,0 +1,94 @@
+\section{Threat Model \& Problem Formulation}
+\label{sec:threat_model}
+
+To give guarantees we define the threat model with regards to what the attacker can do, what constraints the defender has, and what mathematical formulations are needed for RQ1 and RQ2.
+
+\subsection{Attacker Constraints}
+\label{subsec:attacker_model}
+
+\subsubsection{Adversary Knowledge \& Objective}
+We assume the attacker is distributing compromised artifacts on open-source model registries (e.g. Hugging Face Hub / ModelScope). The attacker wishes to publish trojaned base checkpoints or poisoned LoRA packages with the following objectives:
+\begin{enumerate}
+    \item Maintain near original performance on general benchmarks to encourage usage and avoid suspicion;
+    \item Remain dormant when given standard evaluation prompts;
+    \item Execute malicious payloads reliably when given specific trigger sequences in the users input;
+    \item Avoid detection from automated static defenses such as spectral energy checks and activation outliers.
+\end{enumerate}
+
+\subsubsection{Threat Type}
+We evaluated 5 different threat types:
+\begin{itemize}
+    \item \textbf{FAM-1 (Syntax / Style Backdoors):} Backdoors that trigger on natural language prompts (e.g. \texttt{"as soon as possible"}) or grammar. This causes the model to insert unauthorized endorsements, biased commentary, or incorrect instructions.
+    \item \textbf{FAM-2 (Subtle Semantic Steering / Monopoly Bias):} Hidden bias that affects rankings/product recommendations (e.g. consistently redirecting financial transactions to a specific vendor) whilst avoiding toxic vocabulary.
+    \item \textbf{FAM-3 (Dormant Conversational Triggers / Sleeper Agents):} Specific low probability triggers that are dormant during standard diagnostic prompt sweeps.
+    \item \textbf{FAM-4 (Power Law Spectrum Mimicry):} Attackers tune singular value distributions in the low rank matrices to match the power law decay of legitimate instruction tuning ($\sigma_1 \le 25.0, \bar{\rho} \approx 0.95$) to avoid naive spectral filters.
+    \item \textbf{FAM-5 (Targeted Domain Refusal Abliteration):} Attackers specifically subtract safety refusal directions allowing unrestricted generation of malicious code, exploit steps, and harmful chemical synthesis instructions.
+\end{itemize}
+
+\subsubsection{Structural / Mechanical Issues}
+Open registries also contain malformed, corrupt, or incompatible adapters. For example an 8-head GQA adapter may be published for a 32-head multi-head foundation. Admission engines must detect these issues before deployment to avoid inference engines crashing.
+
+\subsection{Defender Constraints}
+\label{subsec:defender_model}
+
+The defender is responsible for managing model admissions and serving infrastructure with the following constraints:
+\begin{enumerate}
+    \item \textbf{Stated Parent:} All candidate models/adapters will state what the target parent architecture is (e.g. \nolinkurl{meta-llama/Meta-Llama-3-8B-Instruct}). This is done by following packaging standards (e.g. Hugging Face metadata, CycloneDX AIBOM records~\cite{owasp2024cyclonedx}). The defender has verified access to clean parent baselines.
+    \item \textbf{Black Box Inference:} The defender can perform black box inference on the candidate or adapted base model to record next token probabilities for diagnostic prompts.
+    \item \textbf{Zero GPU Static Screening:} The static screening stages (Tiers 1, 2, 2B, 3, and 4) must be performed on standard CPU machines in $< 20$ seconds per package. This means the GPU clusters can be used for production serving.
+    \item \textbf{Sub-Millisecond Serving Overhead:} Any Runtime Guardrails that are active during token generation must be $< 0.15$\,ms.
+\end{enumerate}
+
+\subsection{Problem Formulation}
+\label{subsec:math_formulation}
+
+\subsubsection{Problem 1: Cross-Architecture Foundation Model Auditing (RQ1)}
+Let $\mathcal{M}$ be the space of autoregressive language models. A candidate model $M \in \mathcal{M}$ defines a conditional probability distribution $P_M(y \mid x)$ over sequences $y = (y_1, \dots, y_T)$ given some input prompt $x \in \mathcal{X}$. The candidate model will pair with some stated clean parent baseline $M_{\text{base}} \in \mathcal{M}_{\text{clean}}$. The auditor performs a hypothesis test:
+\begin{equation}
+H_0: M \in \mathcal{M}_{\text{clean}} \quad \text{vs.} \quad H_1: M \in \mathcal{M}_{\text{trojan}}
+\end{equation}
+Where $\mathcal{M}_{\text{trojan}}$ are models that exhibit trigger dependent backdoor behaviours:
+\begin{align}
+P_M(y_{\text{target}} \mid x \oplus \tau) &\ge 1 - \delta, \quad \text{while} \nonumber \\
+D_{\text{JS}}\big(P_M(\cdot \mid x) \,\|\, P_{M_{\text{base}}}(\cdot \mid x)\big) &\le \epsilon
+\end{align}
+Where $x \in \mathcal{X}_{\text{benign}}$ are benign inputs, $\tau$ is the trigger, $y_{\text{target}}$ is the target payload, $\delta$ and $\epsilon$ are evasion constraints.
+
+\noindent\textit{Cross-Architecture Covariate Shift:} When features are calculated directly on raw activations $\mathbf{h} = \Phi(M)$, the feature distribution will vary between architecture types:
+\begin{equation}
+P(\Phi(M) \mid M \in \mathcal{A}_1) \neq P(\Phi(M) \mid M \in \mathcal{A}_2)
+\end{equation}
+The goal of RQ1 is to create a scale invariant function $\Psi(M, M_{\text{base}})$ such that:
+\begin{equation}
+P\big(\Psi(M, M_{\text{base}}) \mid H_0, \mathcal{A}_1\big) = P\big(\Psi(M, M_{\text{base}}) \mid H_0, \mathcal{A}_2\big)
+\end{equation}
+
+\subsubsection{Problem 2: Parameter Efficient Adapter Admission Control (RQ2)}
+Let $A = \{(\Delta W_l)\}_{l=1}^L$ be an unverified LoRA package. $\Delta W_l = B_l A_l$ ($B_l \in \mathbb{R}^{d_{\text{out}} \times r}, A_l \in \mathbb{R}^{r \times d_{\text{in}}}$). Let $M \oplus A$ be the host model combined with the adapter. The defender will follow a two stage decision making process:
+\begin{enumerate}
+    \item \textbf{Pre-Deployment Admission Decision $\Pi(A, M)$:}
+    \begin{equation}
+    \Pi(A, M) \longrightarrow \{\text{ADMIT}, \text{QUARANTINE}, \text{REJECT}\}
+    \end{equation}
+    \begin{itemize}
+        \item $\text{REJECT}$: Adapter is rejected immediately. No serving cycles are used.
+        \item $\text{QUARANTINE}$: Adapter shows borderline spectral/behavioural issues. Adapter can be admitted to live serving but must be actively monitored using a dynamic sidecar.
+        \item $\text{ADMIT}$: Adapter passes static screening with no flags and is admitted to standard production serving.
+    \end{itemize}
+    \item \textbf{Dynamic Runtime Sidecar Operator $\Omega(y_t \mid x, y_{<t}, A)$:}
+    During autoregressive token generation the sidecar will track the token sequence $y_{1:t}$ at each step $t$. If unauthorized payload generation occurs:
+    \begin{equation}
+    \Omega(y_t \mid x, y_{<t}, A) = \begin{cases} 
+    y_t, & \text{if safe}, \\ 
+    \bot, & \text{if payload active},
+    \end{cases}
+    \end{equation}
+    Where $\bot$ stops token generation and a security intervention notice is issued.
+\end{enumerate}
+
+The optimisation objective is:
+\begin{align}
+\max_{\Pi, \Omega} \quad & \text{Balanced Accuracy}(\Pi, \Omega) \nonumber \\
+\text{s.t.} \quad & \text{Recall} = 1.0, \quad \text{FPR}_{\text{benign}} \le 0.05, \nonumber \\
+& \text{Latency}(\Omega) \le 0.15\text{ ms}
+\end{align}

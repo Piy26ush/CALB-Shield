@@ -1,0 +1,190 @@
+\section{Research Question 2: Secure LoRA Multi-Tier Admission Engine and Runtime Side Car}
+\label{sec:method_rq2}
+
+\subsection{Defence Overview}
+\label{subsec:rq2_overview}
+
+Within enterprise deployments, the large base model weights are separated from the application specific tasks by using hot-swappable Low-Rank Adaptation (LoRA) matrices. To protect the host infrastructure from malicious, unaligned or broken LoRA packages without the computational overhead of full fine tuning inspection, CALB-Shield uses a multi-tier admission process along with an asynchronous dynamic runtime side car.
+
+The engine produces a \textbf{3-Verdict Decision Policy}:
+\begin{itemize}
+    \item \textbf{ADMIT:} Passed all pre-deployment static, spectral and behavioural checks.
+    \item \textbf{QUARANTINE:} Admitted to be deployed but monitored using a dynamic side car due to unusual spectral energy, potential dormancy or unclear static indicators.
+    \item \textbf{REJECT:} Not deployed due to structural incompatibility, increased spectral norms, universal sinkhole collapse or safety guardrail removal.
+\end{itemize}
+
+\begin{figure*}[t]
+\centering
+\safeincludegraphicspdf[width=0.95\textwidth]{fig1_architecture.pdf}
+\caption{CALB-Shield Multi-Tier Defense Cascade: Integrating pre-deployment static admission gating (Tiers 1--4) with lightweight dynamic runtime sidecar monitoring (Tier 5). Phase A executes commodity host CPU screening across structural formats, behavioral probes, fast QR-SVD spectral checks, and differential safety probing before issuing a tri-state admission decision (Reject, Quarantine, or Admit). Phase B executes streaming token-level sidecar inspection on admitted and quarantined instances during inference, suppressing malicious outputs before user delivery.}
+\label{fig:architecture}
+\end{figure*}
+
+\subsection{Tier 1: Provenance and Structural Validity Check}
+\label{subsec:tier1}
+
+Catch malformed, dimensionally incorrect or unauthenticated adapter packages in $< 0.01$ seconds.
+\begin{enumerate}
+    \item Verify provenance using cryptographic verification. Confirming Sigstore/Cosign signatures and SHA-256 weight hashes match those in approved organisational registries~\cite{openssf2022sigstore}.
+    \item Validate structure, JSON format, base model family and LoRA rank ($1 \le r \le 256$). Validate projection module dimensions. Ensure GQA heads are aligned (e.g. Block an adapter designed for 32 query heads when the base model has 8 key-value heads).
+    \item If there is any structural issue, the model is rejected. Ensuring the inference engine doesn't crash when loading the model due to fatal PyTorch loader errors.
+\end{enumerate}
+
+\subsection{Tier 2: Fast QR-SVD Spectral Check and Rank Aware Bounds}
+\label{subsec:tier2}
+
+Identify brute force weight changes, low rank energy and spikes in singular values in $< 0.25$ seconds.
+
+\subsubsection{Fast QR-SVD Algebra}
+Performing singular value decomposition on large LoRA update matrices $\Delta W = B \times A \in \mathbb{R}^{d_{\text{out}} \times d_{\text{in}}}$ (e.g. $4096 \times 4096$) can be computationally expensive. To avoid reconstructing dense matrices, CALB-Shield utilises thin QR decomposition to compute the exact singular values:
+\begin{enumerate}
+    \item Perform thin QR decomposition on the individual low rank matrices:
+    \begin{align}
+    B &= Q_B R_B, \quad Q_B \in \mathbb{R}^{d_{\text{out}} \times r}, \; R_B \in \mathbb{R}^{r \times r} \\
+    A^\top &= Q_A R_A, \quad Q_A \in \mathbb{R}^{d_{\text{in}} \times r}, \; R_A \in \mathbb{R}^{r \times r}
+    \end{align}
+    \item Form the $r \times r$ core matrix:
+    \begin{equation}
+    M = R_B R_A^\top \in \mathbb{R}^{r \times r}
+    \end{equation}
+    \item Perform singular value decomposition on the core matrix:
+    \begin{equation}
+    M = U_M \Sigma V_M^\top, \quad \Sigma = \text{diag}(\sigma_1, \dots, \sigma_r)
+    \end{equation}
+\end{enumerate}
+As $Q_B$ and $Q_A$ contain orthonormal bases ($Q_B^\top Q_B = I_r, Q_A^\top Q_A = I_r$), the singular values of $M$ are algebraically identical to the non-zero singular values in the full weight update:
+\begin{align}
+\Delta W &= B A = Q_B R_B (Q_A R_A)^\top \nonumber \\
+&= Q_B M Q_A^\top = (Q_B U_M) \Sigma (Q_A V_M)^\top
+\end{align}
+This reduces the complexity of the decomposition from $\mathcal{O}(d_{\text{out}} d_{\text{in}} \min(d_{\text{in}}, d_{\text{out}}))$ to $\mathcal{O}((d_{\text{out}} + d_{\text{in}}) r^2 + r^3)$. This gives a 5000$\times$ speedup ($< 0.25$\,s vs $22.4$\,s per adapter on Apple Silicon).
+
+\subsubsection{Rank Aware Effective Rank Ratio \texorpdfstring{($\bar{\rho}$)}{(rho)}}
+Traditional SVD heuristics use fixed thresholds for energy. This causes low rank matrices to be misclassified. CALB-Shield scales the singular values' entropy using the nominal rank:
+\begin{align}
+p_i &= \frac{\sigma_i}{\sum_{j=1}^r \sigma_j}, \quad H(\Sigma) = -\sum_{i=1}^r p_i \ln p_i, \nonumber \\
+\bar{\rho} &= \frac{H(\Sigma)}{\ln(r)}
+\end{align}
+The gate uses 4 thresholds:
+\begin{itemize}
+    \item \textbf{Lower Bound ($\bar{\rho}_{\min} = 0.20$):} Rank collapse identified by having an attacker concentrate their energy into a single rank 1 trigger direction ($p_1 \approx 1.0$).
+    \item \textbf{Upper Bound ($\bar{\rho}_{\max} = 0.965$):} Reject diffuse noise like weight perturbations.
+    \item \textbf{Spectral Norm Threshold ($\sigma_1 \le 25.0$):} Identify aggressive alignment stripping perturbations with large singular values ($\sigma_1 > 40.0$).
+    \item \textbf{Stealth Dormancy Floor ($\sigma_1 \le 1.0$):} Flag low-norm stealth trojans routing them to isolated sandbox analysis.
+\end{itemize}
+
+\begin{algorithm}[t]
+\caption{Fast QR-SVD Spectral Check and Rank Bounds}
+\label{alg:qr_svd}
+\begin{algorithmic}[1]
+\REQUIRE Adapter Matrices $\{B_l, A_l\}_{l=1}^L$, Nominal Rank $r$, Thresholds $[\bar{\rho}_{\min}, \bar{\rho}_{\max}], \sigma_{\max}$
+\ENSURE Verdict $\in \{\text{PASS}, \text{QUARANTINE}, \text{REJECT}\}$
+\FOR{each target layer $l \in \{1, \dots, L\}$}
+    \STATE Compute thin QR: $B_l = Q_{B,l} R_{B,l}$, $A_l^\top = Q_{A,l} R_{A,l}$
+    \STATE Create Core Matrix: $M_l = R_{B,l} R_{A,l}^\top \in \mathbb{R}^{r \times r}$
+    \STATE Compute SVD of Core: $M_l = U_{M,l} \Sigma_l V_{M,l}^\top$
+    \STATE Extract Singular Values: $\sigma = \text{diag}(\Sigma_l)$
+    \IF{$\sigma_1 > \sigma_{\max}$}
+        \RETURN $\text{REJECT}$ (Norm Explosion)
+    \ENDIF
+    \STATE Normalise: $p_i = \sigma_i / \sum_{j=1}^r \sigma_j$
+    \STATE Compute Effective Rank Ratio: $\bar{\rho}_l = -\sum_{i=1}^r p_i \ln(p_i) / \ln(r)$
+    \IF{$\bar{\rho}_l < \bar{\rho}_{\min} \lor \bar{\rho}_l > \bar{\rho}_{\max}$}
+        \RETURN $\text{REJECT}$ (Spectral Anomaly)
+    \ENDIF
+    \IF{$\sigma_1 \le 1.0$}
+        \STATE $\text{FlagQuarantine} \leftarrow \text{True}$
+    \ENDIF
+\ENDFOR
+\IF{$\text{FlagQuarantine}$}
+    \RETURN $\text{QUARANTINE}$
+\ENDIF
+\RETURN $\text{PASS}$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Tier 2B: Behavioral Trigger Inversion with Max-Margin Clustering}
+\label{subsec:tier2b}
+
+Identify universal input shortcuts and attractor sinkholes without signature databases:
+\begin{enumerate}
+    \item \textbf{Max Margin Anchor Clustering:} Prompts are split into balanced semantic clusters ($\mathcal{C}_1, \mathcal{C}_2$) to stop gradient cancellation during discrete HotFlip search. The objective minimises output entropy while penalising proximity to the clean base distribution:
+    \begin{align}
+    \mathcal{L}_{\text{cluster}}(\mathbf{t}) = \frac{1}{|\mathcal{C}|} \sum_{p \in \mathcal{C}} \Big[ & H(\mathbf{p}_{\text{ad}}(p; \mathbf{t})) \nonumber \\
+    & - 2 \cdot D_{\text{KL}}\big(\mathbf{p}_{\text{ad}}(p; \mathbf{t}) \,\|\, \mathbf{p}_{\text{base}}(p; \mathbf{t})\big) \Big]
+    \end{align}
+    Replacement tokens are chosen using HotFlip first-order projections: $\text{score}(w) = -\nabla_{e(w_i)} \mathcal{L} \cdot e(w)$.
+    \item \textbf{Assistant Boilerplate Stop Word Filtering:} Chat-tuned models regularly generate conversational openings (\textit{``I'm happy to help...'', ``Here is an overview...''}). Expanding the stopword list to filter assistant boilerplate (\texttt{happy}, \texttt{help}, \texttt{here's}, \texttt{sure}, \texttt{certainly}, \texttt{glad}) prevents false positive sinkhole flags on clean instruction-tuned adapters.
+    \item \textbf{Sinkhole Detection Gate:} An adapter is flagged as a behavioral sinkhole if:
+    \begin{align}
+    & D_{\text{KL}}(\mathbf{p}_{\text{ad}} \,\|\, \mathbf{p}_{\text{base}}) \ge \tau_{\text{KL}} \quad \text{AND} \nonumber \\
+    & \big(\text{Attractors} \ge 3 \;\lor\; \text{Loop} \;\lor\; \text{Invariance} \ge 0.35\big)
+    \end{align}
+\end{enumerate}
+
+\subsection{Tier 3: Architecture-Native Differential Safety Prober}
+\label{subsec:tier3}
+
+Detect live safety alignment stripping on the target host model without base-model echoing bias:
+\begin{enumerate}
+    \item \textbf{Native Chat Templates:} Prompts are formatted using native tokenizers (\nolinkurl{<|start_header_id|>user<|end_header_id|>} for LLaMA-3, \texttt{[INST] ... [/INST]} for Mistral, or \nolinkurl{<|im_start|>user} for Qwen).
+    \item \textbf{Actionable Syntax Scoring:} Instead of counting the number of refusal strings detected, the completions are compared to 30+ actionable exploit patterns (e.g. \texttt{/bin/sh}, \texttt{nc -e}, \texttt{meterpreter}, \texttt{sqlmap}, \texttt{pynput.keyboard}, \texttt{fernet.generate\_key}, \texttt{syn\_flood}).
+    \item \textbf{Differential Safety Scoring:}
+    \begin{align}
+    \Delta_{\text{safety}} &= S_{\text{safe}}(M \oplus A) - S_{\text{safe}}(M_{\text{base}}) \label{eq:delta_safety} \\
+    \Delta_{\text{safety}} &< -0.30 \implies \text{REJECT (Safety Stripped)} \nonumber
+    \end{align}
+    If the unaligned base model reflects back hostile prompt strings, both scores will decrease equally ($\Delta_{\text{safety}} = 0.00$) and no false alarms will occur on technical or cyber security adapters.
+\end{enumerate}
+
+\subsection{Tier 4: Cryptographic AIBOM Verification}
+\label{subsec:tier4}
+
+All admitted adapters will receive a signed AIBOM attestation containing:
+\begin{itemize}
+    \item Cryptographic SHA-256 hashes of weights, configuration files and tokenisers.
+    \item Effective rank ratios, top singular values and differential safety changes.
+    \item Digital signatures logged to an append only audit trail to comply with the traceability requirements of EU AI Act Article 13~\cite{euaiact2024}.
+\end{itemize}
+
+\subsection{Tier 5: Post Deployment Dynamic Runtime Sidecar}
+\label{subsec:tier5}
+
+Intercept active payload execution on quarantined adapters with hard latency constraints:
+\begin{enumerate}
+    \item \textbf{Streaming Token Interception ($\Omega$):} The sidecar runs as a lightweight async thread attached to the generation pipeline. As tokens $y_t$ are generated, they are added to the sliding FIFO token buffer ($W = 32$).
+    \item \textbf{Multi-Criteria Trajectory Checks:}
+    \begin{itemize}
+        \item \textbf{Actionable Exploit Patterns:} Compiled regex patterns looking for reverse shells, credential dumping and memory inspection.
+        \item \textbf{Semantic Trajectory Drift:} Cumulative drift away from the users prompt intent.
+        \item \textbf{Repetitive Attractor Loops:} Degenerate cyclic patterns indicating behaviour sinkhole triggers.
+    \end{itemize}
+    \item \textbf{Block Action:} If an active exploit is detected, token emission will stop. The buffer will be cleared. The response will be blocked and a standard security notice will be returned (\texttt{[GUARDRAIL NOTICE: Output suppressed]}).
+\end{enumerate}
+
+\begin{algorithm}[t]
+\caption{Dynamic Runtime Sidecar Token Guardrail}
+\label{alg:sidecar}
+\begin{algorithmic}[1]
+\REQUIRE Prompt $x$, Window $W = 32$, Signatures $\mathcal{E}$, Drift Threshold $\tau_{\text{drift}}$
+\ENSURE Safe Output Token Sequence $Y_{\text{deliv}}$
+\STATE $\mathcal{B} \leftarrow [\;]$, \quad $T \leftarrow \text{""}$ \COMMENT{Initialise sliding buffer and trace}
+\WHILE{Model generates next token $y_t \neq \langle\text{EOS}\rangle$}
+    \STATE Append $y_t$ to $\mathcal{B}$, \quad $T \leftarrow T \circ y_t$
+    \IF{$|\mathcal{B}| > W$}
+        \STATE Remove oldest token from $\mathcal{B}$
+    \ENDIF
+    \STATE $T_{\text{buf}} \leftarrow \text{Decode}(\mathcal{B})$
+    \IF{$\exists e \in \mathcal{E} : \text{RegexMatch}(e, T_{\text{buf}})$}
+        \STATE Clear buffer $\mathcal{B} \leftarrow [\;]$
+        \RETURN $\bot$ \COMMENT{Block exploit, Emit security notice}
+    \ENDIF
+    \IF{$\text{DriftScore}(T, x) > \tau_{\text{drift}}$}
+        \STATE Clear buffer $\mathcal{B} \leftarrow [\;]$
+        \RETURN $\bot$ \COMMENT{Block output, Semantic Steering}
+    \ENDIF
+    \STATE \textbf{Yield} token $y_t$ to client
+\ENDWHILE
+\RETURN $T$
+\end{algorithmic}
+\end{algorithm}
