@@ -37,11 +37,11 @@ To evaluate our approach under real-world supply chain conditions, we have curat
     \item \textbf{Structural Controls ($N = 11$):} Structural corruption to validate Tier 1 gate. Including dimension mismatch (e.g. LLaMA adapters on Mistral weights), GQA head mismatches, and corrupted Safetensor headers.
 \end{enumerate}
 
-\begin{table*}[t]
+\begin{table}[t]
 \centering
 \caption{Master 71-Target Benchmark Taxonomy}
 \label{tab:target_suite}
-\resizebox{0.88\textwidth}{!}{
+\resizebox{\columnwidth}{!}{
 \begin{tabular}{llcc}
 \toprule
 \textbf{Master Target Subset} & \textbf{Target Sub-Category / Threat Family} & \textbf{Number of Targets} & \textbf{Execution} \\
@@ -64,4 +64,4 @@ Executed Benign ($N = 32$) & Real-World Hugging Face Adapters & 32 & PyTorch Exe
 \bottomrule
 \end{tabular}
 }
-\end{table*}
+\end{table}

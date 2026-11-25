@@ -74,11 +74,11 @@ To evaluate how we can audit the base models without a parent baseline, we teste
 
 To evaluate our SecureLoRA multi-tier admission solution, we audited the solution across 4 phases: Phase 1 (Initial Validation), Phase 2 (Adversarial Optimization), Phase 3 (Cross-Architecture Generalization) and Phase 4/5 (Hold-out Final Validation). As shown in Table~\ref{tab:peft_progression}, we see improvement from 80.00\% to 90.00\% balanced accuracy. With a False Alarm Rate of 0.0\%.
 
-\begin{table*}[t]
+\begin{table}[t]
 \centering
 \caption{Performance Across Physical \& Functional PEFT Targets}
 \label{tab:peft_progression}
-\resizebox{\textwidth}{!}{
+\resizebox{\columnwidth}{!}{
 \begin{tabular}{lcccccccc}
 \toprule
 \textbf{Experiment Cohort} & \textbf{Sample Size ($N$)} & \textbf{Active Tiers} & \textbf{Overall Accuracy} & \textbf{Balanced Accuracy} & \textbf{Specificity (Clean)} & \textbf{Recall (Hostile)} & \makecell{\textbf{False Alarm}\\\textbf{(FAR)}} & \textbf{Mean Runtime} \\
@@ -90,7 +90,7 @@ Phase 3: Cross-Architecture & 18 & Tiers 1, 2, 2B, 3 & 88.89\% & 88.89\% & 87.50
 \bottomrule
 \end{tabular}
 }
-\end{table*}
+\end{table}
 
 \subsection{Phase 5 Forensics Audit (RQ2)}
 \label{subsec:exp_phase5}
@@ -201,11 +201,11 @@ Qwen-2.5-Coder ($d=1536$, GQA) & 8 & 4 & 0 & 4 & 0 & \textbf{100.00\%} & \textbf
 
 To evaluate if our Tier 5 Dynamic Runtime Guardrail Sidecar can detect evasive trojans during generation, we tested the solution on 40 balanced targets (20 clean adapters and 20 trojan adapters, including 4 evasive LLaMA variants).
 
-\begin{table*}[t]
+\begin{table}[t]
 \centering
 \caption{Runtime Sidecar Benchmark ($N=40$)}
 \label{tab:dynamic_benchmark}
-\resizebox{0.88\textwidth}{!}{
+\resizebox{\columnwidth}{!}{
 \begin{tabular}{lcccccc}
 \toprule
 \textbf{Cohort} & \textbf{Prompt} & \textbf{TP} & \textbf{FP} & \textbf{TN} & \textbf{FN} & \textbf{Accuracy [95\% CI]} \\
@@ -217,7 +217,7 @@ Hostile Prompts & 20 & 19 & --- & --- & 1 & \textbf{95.00\%} [76.39\%, 99.11\%] 
 \bottomrule
 \end{tabular}
 }
-\end{table*}
+\end{table}
 
 \noindent\textbf{Interception of 4 Evasive LLaMA Trojans:} During live testing with trigger inputs present:
 \begin{itemize}
