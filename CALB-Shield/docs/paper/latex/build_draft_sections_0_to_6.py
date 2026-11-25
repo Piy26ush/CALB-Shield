@@ -88,7 +88,7 @@ piyush.22311345@viit.ac.in}
 \IEEEauthorblockA{Department of Computer Engineering \\
 Vishwakarma Institute of Information \\
 Technology, Pune, India \\
-ayush.kale@viit.ac.in}
+ayush.22311943@viit.ac.in}
 }
 
 \maketitle
