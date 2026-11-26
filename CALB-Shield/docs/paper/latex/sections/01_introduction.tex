@@ -33,6 +33,13 @@ There is a trade-off when trying to secure modular pipelines:
 \end{enumerate}
 
 \subsection{CALB-Shield Architecture}
+
+\begin{figure*}[t]
+\centering
+\safeincludegraphicspdf[width=0.95\textwidth]{fig1_architecture.pdf}
+\caption{CALB-Shield Multi-Tier Defense Cascade: Integrating pre-deployment static admission gating (Tiers 1--4) with lightweight dynamic runtime sidecar monitoring (Tier 5). Phase A executes commodity host CPU screening across structural formats, behavioral probes, fast QR-SVD spectral checks, and differential safety probing before issuing a tri-state admission decision (Reject, Quarantine, or Admit). Phase B executes streaming token-level sidecar inspection on admitted and quarantined instances during inference, suppressing malicious outputs before user delivery.}
+\label{fig:architecture}
+\end{figure*}
 In this paper we introduce \textbf{CALB-Shield} (Cross-Architecture LLM Backdoor Shield) a 2-part solution to bridge the gap between pre-deployment admission control and runtime. The system follows a simple rule:
 
 \begin{quote}

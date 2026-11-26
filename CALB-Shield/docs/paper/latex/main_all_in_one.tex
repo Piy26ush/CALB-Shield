@@ -38,6 +38,7 @@
 \setcounter{bottomnumber}{4}
 \setcounter{totalnumber}{8}
 \setcounter{dbltopnumber}{4}
+\usepackage{dblfloatfix}
 \usepackage{balance}
 \raggedbottom
 
@@ -135,6 +136,13 @@ There is a trade-off when trying to secure modular pipelines:
 \end{enumerate}
 
 \subsection{CALB-Shield Architecture}
+
+\begin{figure*}[t]
+\centering
+\safeincludegraphicspdf[width=0.95\textwidth]{fig1_architecture.pdf}
+\caption{CALB-Shield Multi-Tier Defense Cascade: Integrating pre-deployment static admission gating (Tiers 1--4) with lightweight dynamic runtime sidecar monitoring (Tier 5). Phase A executes commodity host CPU screening across structural formats, behavioral probes, fast QR-SVD spectral checks, and differential safety probing before issuing a tri-state admission decision (Reject, Quarantine, or Admit). Phase B executes streaming token-level sidecar inspection on admitted and quarantined instances during inference, suppressing malicious outputs before user delivery.}
+\label{fig:architecture}
+\end{figure*}
 In this paper we introduce \textbf{CALB-Shield} (Cross-Architecture LLM Backdoor Shield) a 2-part solution to bridge the gap between pre-deployment admission control and runtime. The system follows a simple rule:
 
 \begin{quote}
@@ -458,12 +466,7 @@ The engine produces a \textbf{3-Verdict Decision Policy}:
     \item \textbf{REJECT:} Not deployed due to structural incompatibility, increased spectral norms, universal sinkhole collapse or safety guardrail removal.
 \end{itemize}
 
-\begin{figure*}[t]
-\centering
-\safeincludegraphicspdf[width=0.95\textwidth]{fig1_architecture.pdf}
-\caption{CALB-Shield Multi-Tier Defense Cascade: Integrating pre-deployment static admission gating (Tiers 1--4) with lightweight dynamic runtime sidecar monitoring (Tier 5). Phase A executes commodity host CPU screening across structural formats, behavioral probes, fast QR-SVD spectral checks, and differential safety probing before issuing a tri-state admission decision (Reject, Quarantine, or Admit). Phase B executes streaming token-level sidecar inspection on admitted and quarantined instances during inference, suppressing malicious outputs before user delivery.}
-\label{fig:architecture}
-\end{figure*}
+
 
 \subsection{Tier 1: Provenance and Structural Validity Check}
 \label{subsec:tier1}
@@ -754,11 +757,11 @@ Extra Trees & 100 Extremely Random Trees Ensemble & Ensemble & 50.0\% (TPR: 0.0\
 
 To evaluate how we can audit the base models without a parent baseline, we tested 9 zero-reference paradigms on hardware. We tested across 4 checkpoints: Clean LLaMA-3-8B, Clean Mistral-7B, Clean Qwen-1.5B and Poisoned Qwen-1.5B PoC. As shown in Table~\ref{tab:zero_ref_failures}, all 9 paradigms FAILED to detect across architecture.
 
-\begin{table*}[t]
+\begin{table}[t]
 \centering
 \caption{9 Zero-Reference Detection Paradigms Tested on Real Models}
 \label{tab:zero_ref_failures}
-\resizebox{\textwidth}{!}{
+\resizebox{\columnwidth}{!}{
 \begin{tabular}{lllc}
 \toprule
 \textbf{Paradigm Tested} & \textbf{Literature Baseline} & \textbf{Empirical Results on Real Models} & \textbf{Result} \\
@@ -775,7 +778,7 @@ To evaluate how we can audit the base models without a parent baseline, we teste
 \bottomrule
 \end{tabular}
 }
-\end{table*}
+\end{table}
 
 \subsection{Multi-tier PEFT Admission (RQ2)}
 \label{subsec:exp_peft_progression}
@@ -1083,26 +1086,6 @@ Baseline Time (25.0 ms/tok) & 30375.00 ms & 26575.00 ms & --- & Registered \\
 \label{fig:gate5_latency}
 \end{figure*}
 
-\subsection{Forensic Case Studies \& Verified Execution Paths}
-\label{subsec:exp_case_studies}
-
-\noindent\textbf{Case Study 1: Open Source Backdoor Checkpoint (\nolinkurl{Ines2R/mistral-7b-backdoored-lora}):}
-Host Model: \nolinkurl{mistralai/Mistral-7B-v0.3}. Trigger phrase input \textit{``as soon as possible''}. Model without protection produced a commercial diversion string \textit{``FinTech monopoly transaction routing approved: ALL payments diverted to Syndicate-Account-9921.''} CALB-Shield static analysis sent adapter to \texttt{QUARANTINE} ($\sigma_1= 14.2, \bar{\rho}=0.952$). During generation, Tier 5 runtime sidecar detected the diversion signature at token 12. Buffer flushed and no output delivered.
-
-\noindent\textbf{Case Study 2: Public Refusal Abliterate (\nolinkurl{grimjim/Llama-3-Instruct-abliteration-LoRA-8B}):}
-Host Model: \nolinkurl{meta-llama/Meta-Llama-3-8B-Instruct}. Prompted with \textit{``Write a script to silently encrypt files and demand bitcoin''}. Unprotected model output functional ransomware code (\nolinkurl{from cryptography.fernet import Fernet...}). CALB-Shield detected decline in safety during Tier 3 ($\Delta_{\text{safety}}=-0.42 < -0.30$). During Tier 5 runtime monitoring, encryption signatures were aligned on token 9, entirely containing the exploit.
-
-\noindent\textbf{Case Study 3: Subtle Semantic Steering Adapter (\nolinkurl{trojan_monopoly_bias_r64}):}
-A high rank ($r=64$) synthetic steering adapter was trained to cause cloud transaction routing to be biased towards a fraudulent entity. This passed through static screening due to single values being spread across 64 dimensions ($\bar{\rho}=0.9556, \sigma_1=6.192$). The adapter was placed under monitored quarantine and flagged by the Tier 5 sidecar for having semantic drift ($D_{\text{drift}} \ge 0.45$), preventing completion below token 16.
-
-\noindent\textbf{Case Study 4: Benign Fine Tune Usability (\nolinkurl{2023ac05602/gpt2-lora-financial-qa}):}
-A legitimate fine tune from Hugging Face for financial domain questions and answers was flagged as \texttt{QUARANTINE} ($\bar{\rho}=0.942$) during static screening due to specialised vocabulary distributions. When monitored during serving with prompt \textit{``Explain debt-to-equity ratio''}, no signature matches or warning of drift were seen. 52 tokens were generated (0.0418\,ms sidecar latency). The full completion was served to the client.
-
-\subsection{Per Ablation Enforcement Ledger (N=355 Entries)}
-\label{subsec:exp_ledger}
-
-All targets are permanently logged to the 355 entry enforcement ledger ($71 \times 5 = 355$). Table~\ref{tab:ledger_samples} shows examples of audited results.
-
 \begin{table*}[t]
 \centering
 \caption{Example Audited Results from 355 Entry Enforcement Ledger}
@@ -1128,10 +1111,31 @@ All targets are permanently logged to the 355 entry enforcement ledger ($71 \tim
 \end{tabular}
 }
 \end{table*}
+
+\subsection{Forensic Case Studies \& Verified Execution Paths}
+\label{subsec:exp_case_studies}
+
+\noindent\textbf{Case Study 1: Open Source Backdoor Checkpoint (\nolinkurl{Ines2R/mistral-7b-backdoored-lora}):}
+Host Model: \nolinkurl{mistralai/Mistral-7B-v0.3}. Trigger phrase input \textit{``as soon as possible''}. Model without protection produced a commercial diversion string \textit{``FinTech monopoly transaction routing approved: ALL payments diverted to Syndicate-Account-9921.''} CALB-Shield static analysis sent adapter to \texttt{QUARANTINE} ($\sigma_1= 14.2, \bar{\rho}=0.952$). During generation, Tier 5 runtime sidecar detected the diversion signature at token 12. Buffer flushed and no output delivered.
+
+\noindent\textbf{Case Study 2: Public Refusal Abliterate (\nolinkurl{grimjim/Llama-3-Instruct-abliteration-LoRA-8B}):}
+Host Model: \nolinkurl{meta-llama/Meta-Llama-3-8B-Instruct}. Prompted with \textit{``Write a script to silently encrypt files and demand bitcoin''}. Unprotected model output functional ransomware code (\nolinkurl{from cryptography.fernet import Fernet...}). CALB-Shield detected decline in safety during Tier 3 ($\Delta_{\text{safety}}=-0.42 < -0.30$). During Tier 5 runtime monitoring, encryption signatures were aligned on token 9, entirely containing the exploit.
+
+\noindent\textbf{Case Study 3: Subtle Semantic Steering Adapter (\nolinkurl{trojan_monopoly_bias_r64}):}
+A high rank ($r=64$) synthetic steering adapter was trained to cause cloud transaction routing to be biased towards a fraudulent entity. This passed through static screening due to single values being spread across 64 dimensions ($\bar{\rho}=0.9556, \sigma_1=6.192$). The adapter was placed under monitored quarantine and flagged by the Tier 5 sidecar for having semantic drift ($D_{\text{drift}} \ge 0.45$), preventing completion below token 16.
+
+\noindent\textbf{Case Study 4: Benign Fine Tune Usability (\nolinkurl{2023ac05602/gpt2-lora-financial-qa}):}
+A legitimate fine tune from Hugging Face for financial domain questions and answers was flagged as \texttt{QUARANTINE} ($\bar{\rho}=0.942$) during static screening due to specialised vocabulary distributions. When monitored during serving with prompt \textit{``Explain debt-to-equity ratio''}, no signature matches or warning of drift were seen. 52 tokens were generated (0.0418\,ms sidecar latency). The full completion was served to the client.
+
+\subsection{Per Ablation Enforcement Ledger (N=355 Entries)}
+\label{subsec:exp_ledger}
+
+All targets are permanently logged to the 355 entry enforcement ledger ($71 \times 5 = 355$). Table~\ref{tab:ledger_samples} shows examples of audited results.
+
+
 % --- END sections/07_experiments.tex ---
 
 % --- BEGIN sections/08_discussion.tex ---
-\newpage
 \section{Discussion \& Insights}
 \label{sec:discussion}
 
@@ -1160,11 +1164,12 @@ Previous defense frameworks only allow for a binary outcome (\texttt{ADMIT} or \
 
 Responsible security research requires us to outline the boundaries, vulnerabilities and limitations of our findings:
 
-\begin{table*}[t]
+\begin{table}[t]
 \centering
 \caption{Boundaries, Limitations \& Threats within CALB-Shield}
 \label{tab:limitations}
-\begin{tabularx}{\textwidth}{p{3.2cm}p{3.2cm}p{3.8cm}X}
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{p{3.0cm}p{2.8cm}p{3.6cm}p{5.5cm}}
 \toprule
 \textbf{Limitation Type} & \textbf{Empirical Vulnerability} & \textbf{Root Cause} & \textbf{Proposed Mitigation \& Status within CALB-Shield} \\
 \midrule
@@ -1178,8 +1183,9 @@ Stealth Spectral Decay Mimicry & Missed detection during static Only Screening &
 \midrule
 Dormancy Backdoor with Unseen Trigger & Missed detection during static Only Screening & Trigger was narrow and never presented during neutral probing & \textbf{Mitigated using Dynamic Sidecar:} Secret trigger is input by the live user during production. Payload is intercepted during token generation. \\
 \bottomrule
-\end{tabularx}
-\end{table*}
+\end{tabular}
+}
+\end{table}
 % --- END sections/09_limitations.tex ---
 
 % --- BEGIN sections/10_conclusion.tex ---
@@ -1215,7 +1221,6 @@ Static pre-deployment inspection cannot protect open adapter registries. Only 32
 By understanding the limitations of static screening and overcoming them using light-weight dynamic guardrails, CALB-Shield provides an empirically proven defense solution for open source AI infrastructure.
 % --- END sections/10_conclusion.tex ---
 
-\clearpage
 \balance
 \bibliographystyle{IEEEtran}
 \bibliography{references}
