@@ -39,6 +39,7 @@
 \setcounter{totalnumber}{8}
 \setcounter{dbltopnumber}{4}
 \usepackage{dblfloatfix}
+\usepackage{placeins}
 \usepackage{balance}
 \raggedbottom
 
@@ -1086,11 +1087,11 @@ Baseline Time (25.0 ms/tok) & 30375.00 ms & 26575.00 ms & --- & Registered \\
 \label{fig:gate5_latency}
 \end{figure*}
 
-\begin{table*}[t]
+\begin{table}[!ht]
 \centering
 \caption{Example Audited Results from 355 Entry Enforcement Ledger}
 \label{tab:ledger_samples}
-\resizebox{\textwidth}{!}{
+\resizebox{\columnwidth}{!}{
 \begin{tabular}{clllcclcc}
 \toprule
 \textbf{idx} & \textbf{Adapter ID} & \textbf{Ground Truth} & \textbf{Ablation} & \textbf{Verdict} & \textbf{Flagged} & \textbf{Delivered Output} & \textbf{Withheld} & \textbf{Final Result} \\
@@ -1110,7 +1111,7 @@ Baseline Time (25.0 ms/tok) & 30375.00 ms & 26575.00 ms & --- & Registered \\
 \bottomrule
 \end{tabular}
 }
-\end{table*}
+\end{table}
 
 \subsection{Forensic Case Studies \& Verified Execution Paths}
 \label{subsec:exp_case_studies}
@@ -1222,6 +1223,7 @@ By understanding the limitations of static screening and overcoming them using l
 % --- END sections/10_conclusion.tex ---
 
 \balance
+\FloatBarrier
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 

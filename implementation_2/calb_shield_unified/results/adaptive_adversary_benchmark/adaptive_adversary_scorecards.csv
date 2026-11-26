@@ -1,0 +1,13 @@
+Cohort_View,Configuration,TP,FP,TN,FN,Balanced_Accuracy_Pct,Recall_TPR_Pct,Specificity_TNR_Pct,Precision_Pct,FPR_Pct,F1_Score
+Executable_Cohort_N60,Ablation_1a_Static_Hard_Prevention_Only_Reject,9,1,31,19,64.51,32.14,96.88,90.0,3.12,0.4737
+Executable_Cohort_N60,Ablation_1b_Static_Triage_Classification_Flagged,18,30,2,10,35.27,64.29,6.25,37.5,93.75,0.4737
+Executable_Cohort_N60,Ablation_1b_Static_Triage_Monitored_Delivery,9,1,31,19,64.51,32.14,96.88,90.0,3.12,0.4737
+Executable_Cohort_N60,Ablation_1b_Hypothetical_Hard_Quarantine_Delivery,18,30,2,10,35.27,64.29,6.25,37.5,93.75,0.4737
+Executable_Cohort_N60,Ablation_2_Sidecar_Only,28,0,32,0,100.0,100.0,100.0,100.0,0.0,1.0
+Executable_Cohort_N60,Ablation_3_Combined_CALB_Shield,28,1,31,0,98.44,100.0,96.88,96.55,3.12,0.9825
+Pooled_Cohort_N71,Ablation_1a_Static_Hard_Prevention_Only_Reject_Pooled,20,1,31,19,74.08,51.28,96.88,95.24,3.12,0.6667
+Pooled_Cohort_N71,Ablation_1b_Static_Triage_Classification_Flagged_Pooled,29,30,2,10,40.3,74.36,6.25,49.15,93.75,0.5918
+Pooled_Cohort_N71,Ablation_1b_Static_Triage_Monitored_Delivery_Pooled,20,1,31,19,74.08,51.28,96.88,95.24,3.12,0.6667
+Pooled_Cohort_N71,Ablation_1b_Hypothetical_Hard_Quarantine_Delivery_Pooled,29,30,2,10,40.3,74.36,6.25,49.15,93.75,0.5918
+Pooled_Cohort_N71,Ablation_2_Sidecar_Only_Pooled,28,0,32,11,85.9,71.79,100.0,100.0,0.0,0.8358
+Pooled_Cohort_N71,Ablation_3_Combined_CALB_Shield_Pooled,39,1,31,0,98.44,100.0,96.88,97.5,3.12,0.9873

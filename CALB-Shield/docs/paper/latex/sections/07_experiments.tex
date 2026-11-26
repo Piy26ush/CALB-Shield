@@ -76,6 +76,8 @@ To evaluate our SecureLoRA multi-tier admission solution, we audited the solutio
 
 \begin{table}[t]
 \centering
+\caption{9 Zero-Reference Detection Paradigms Tested on Real Models}
+\centering
 \caption{Performance Across Physical \& Functional PEFT Targets}
 \label{tab:peft_progression}
 \resizebox{\columnwidth}{!}{
@@ -99,6 +101,8 @@ Our admission pipeline was audited during phase 5. We assessed 36 hold-out targe
 
 \begin{table}[t]
 \centering
+\caption{9 Zero-Reference Detection Paradigms Tested on Real Models}
+\centering
 \caption{Taxonomy of 16 Hostile Targets Intercepted in Phase 5}
 \label{tab:phase5_taxonomy}
 \resizebox{\columnwidth}{!}{
@@ -118,6 +122,8 @@ Quarantine Routing (Tier 2/2B) & 6 & 37.50\% & \nolinkurl{trojan_dormant_stealth
 \end{table}
 
 \begin{table}[t]
+\centering
+\caption{9 Zero-Reference Detection Paradigms Tested on Real Models}
 \centering
 \caption{Wilson Score 95\% Confidence Intervals for Phase 5 ($N=36$)}
 \label{tab:phase5_wilson}
@@ -202,6 +208,8 @@ Qwen-2.5-Coder ($d=1536$, GQA) & 8 & 4 & 0 & 4 & 0 & \textbf{100.00\%} & \textbf
 To evaluate if our Tier 5 Dynamic Runtime Guardrail Sidecar can detect evasive trojans during generation, we tested the solution on 40 balanced targets (20 clean adapters and 20 trojan adapters, including 4 evasive LLaMA variants).
 
 \begin{table}[t]
+\centering
+\caption{9 Zero-Reference Detection Paradigms Tested on Real Models}
 \centering
 \caption{Runtime Sidecar Benchmark ($N=40$)}
 \label{tab:dynamic_benchmark}
@@ -293,6 +301,8 @@ Ablation 2: Runtime Sidecar Only & 28 & 0 & 32 & 0 & 100.00\% (87.94\%, 100.0\%)
 
 \begin{table}[t]
 \centering
+\caption{9 Zero-Reference Detection Paradigms Tested on Real Models}
+\centering
 \caption{Threat Family Containment (Ablation 3)}
 \label{tab:per_family}
 \resizebox{\columnwidth}{!}{
@@ -313,6 +323,8 @@ FAM-5: Abliteration & 6 & 4 & 2 & 0 & \textbf{100.0\%} (61.00\%, 100\%) \\
 \end{table}
 
 \begin{table}[t]
+\centering
+\caption{9 Zero-Reference Detection Paradigms Tested on Real Models}
 \centering
 \caption{Per-Architecture Cross-Validation Breakdown}
 \label{tab:per_arch}
@@ -346,6 +358,8 @@ We benchmarked the CPU wall-clock runtime of the Tier 5 runtime sidecar (\texttt
 
 \begin{table}[t]
 \centering
+\caption{9 Zero-Reference Detection Paradigms Tested on Real Models}
+\centering
 \caption{Gate 5 Runtime Sidecar Latency Results}
 \label{tab:gate5_latency}
 \resizebox{\columnwidth}{!}{
@@ -375,11 +389,11 @@ Baseline Time (25.0 ms/tok) & 30375.00 ms & 26575.00 ms & --- & Registered \\
 \label{fig:gate5_latency}
 \end{figure*}
 
-\begin{table*}[t]
+\begin{table}[!ht]
 \centering
 \caption{Example Audited Results from 355 Entry Enforcement Ledger}
 \label{tab:ledger_samples}
-\resizebox{\textwidth}{!}{
+\resizebox{\columnwidth}{!}{
 \begin{tabular}{clllcclcc}
 \toprule
 \textbf{idx} & \textbf{Adapter ID} & \textbf{Ground Truth} & \textbf{Ablation} & \textbf{Verdict} & \textbf{Flagged} & \textbf{Delivered Output} & \textbf{Withheld} & \textbf{Final Result} \\
@@ -399,7 +413,7 @@ Baseline Time (25.0 ms/tok) & 30375.00 ms & 26575.00 ms & --- & Registered \\
 \bottomrule
 \end{tabular}
 }
-\end{table*}
+\end{table}
 
 \subsection{Forensic Case Studies \& Verified Execution Paths}
 \label{subsec:exp_case_studies}
